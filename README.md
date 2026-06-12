@@ -4,9 +4,9 @@ A growing collection of bite-sized language-learning games, built to run
 **in the browser** and to be packaged for the **Apple App Store** and
 **Google Play** from a single codebase.
 
-The first game is **German Fill-in-the-Blanks**. The project is structured
-so additional game types (crosswords, number fill-ins, gamified flashcards,
-…) can be added later as independent modules.
+The first game is a German **Letter Cipher** (cryptogram). The project is
+structured so additional game types (crosswords, number fill-ins, gamified
+flashcards, …) can be added later as independent modules.
 
 - **React + Vite + TypeScript**
 - **Tailwind CSS** for styling and animations
@@ -21,76 +21,99 @@ npm install
 npm run dev
 ```
 
-Then open the printed URL (default http://localhost:5173). That's the full
-vertical slice — pick "Fill in the Blanks" and play.
+Then open the printed URL (default http://localhost:5173) and pick
+"Letter Cipher".
 
-Other scripts:
-
-| Command            | What it does                                  |
-| ------------------ | --------------------------------------------- |
-| `npm run dev`      | Start the dev server with hot reload          |
-| `npm run build`    | Type-check and build the production web app to `dist/` |
-| `npm run preview`  | Preview the production build locally          |
-| `npm run typecheck`| Type-check only                               |
+| Command             | What it does                                           |
+| ------------------- | ------------------------------------------------------ |
+| `npm run dev`       | Start the dev server with hot reload                   |
+| `npm run build`     | Type-check and build the production web app to `dist/` |
+| `npm run preview`   | Preview the production build locally                   |
+| `npm run typecheck` | Type-check only                                        |
 
 > **Note:** dependencies are not committed. Run `npm install` first — it was
 > not run in the environment that scaffolded this project.
 
 ---
 
-## How to play
+## The game: Letter Cipher (cryptogram)
 
-A German sentence appears with a missing word. Choose the correct word from
-four options. You get immediate right/wrong feedback, a running **score**, and
-a **streak** counter (your best streak is saved locally). Work through the set,
-then see your results and play again. On desktop you can use keys **1–4** to
-answer and **Enter** to advance.
+Each puzzle is a German sentence or proverb shown as a row of letter slots —
+one slot per letter, with spaces between words and punctuation shown as-is.
+Under every slot is a **number**.
+
+- Each distinct letter maps to a unique number, assigned freshly per puzzle
+  (e.g. O = 5, M = 19). The **same letter always shows the same number**, so
+  cracking one letter reveals where it goes everywhere else.
+- A couple of the most frequent letters start **pre-revealed** as footholds,
+  shown in a distinct "given" style.
+- A full **German on-screen keyboard** sits at the bottom — the alphabet plus
+  **ä, ö, ü and ß** as their own keys.
+
+**How you play (one letter at a time):** tap an empty slot to select it, then
+tap a keyboard letter. Correct → that single slot fills green and selection
+jumps to the next empty slot. Wrong → a brief red shake, nothing fills.
+(Filling *all* matching slots at once is intentionally **not** done — that's
+reserved as a future Pro feature; the code is structured to add it later.)
+
+**Keyboard colours:**
+
+- **Grey / disabled** — no empty slots need that letter (it's not in the
+  puzzle, or every slot for it is already filled).
+- **Green / active** — the letter has been discovered and still has empty
+  slots to fill.
+- **Neutral** — the letter is in the puzzle and undiscovered.
+
+A free **Show translation** toggle reveals the English meaning (off by
+default). Solve every slot to win, then advance to the next puzzle. On
+desktop you can also type on your physical keyboard; press **Enter** to
+advance after solving.
+
+> **German case note:** the engine uppercases text but keeps **ß** as a single
+> letter (plain `"ß".toUpperCase()` returns `"SS"` in JavaScript, which would
+> be wrong here). See `toUpperDE` in `cipher.ts`.
 
 ---
 
 ## Adding content (new sentences)
 
-All content for the first game lives in one easy-to-edit file:
+All content lives in one easy-to-edit file:
 
 ```
 src/games/fill-in-the-blanks/data/german-a1.ts
 ```
 
-Each item is a plain object. Copy an existing one and edit the fields:
+Each item is a plain object — copy one and edit:
 
 ```ts
 {
-  id: 'de-a1-023',                 // must be unique
-  sentence: 'Ich ___ ins Bett.',   // put ___ where the blank goes
-  answer: 'gehe',                  // the word that fills the blank
-  translation: 'I am going to bed.',
-  hint: 'gehen — to go',           // optional
-  options: ['gehe', 'gehst', 'geht', 'gehen'], // optional; auto-generated if omitted
+  id: 'de-a1-013',                 // must be unique
+  sentence: 'Ich heiße Anna.',     // natural case; ä ö ü ß welcome
+  translation: 'My name is Anna.', // shown only when the hint is toggled on
   level: 'A1',
 }
 ```
 
-If you omit `options`, the game automatically picks plausible wrong answers
-from the other items in the deck. Save the file and the new item appears
-immediately in dev mode.
+Punctuation is shown as-is and isn't part of the cipher. Shorter sentences
+make easier puzzles. Save the file and it appears immediately in dev mode.
 
-### Adding a whole new deck (e.g. A2, or another language)
+### Adding a whole new deck (A2, another language, …)
 
-1. Create a new file next to `german-a1.ts`, e.g. `german-a2.ts`, exporting a
-   `FillBlankDeck` (same shape — `{ name, language, items }`).
-2. Import and use it in `src/games/fill-in-the-blanks/FillInTheBlanks.tsx`
-   (currently it imports `germanA1`). A deck picker can be added later.
+1. Create a file next to `german-a1.ts` exporting a `CipherDeck`
+   (`{ name, language, items }`).
+2. Import it in `src/games/fill-in-the-blanks/FillInTheBlanks.tsx` (a deck
+   picker can be added later).
 
 ---
 
 ## Adding a new game type (the series grows here)
 
-Games are modular. Each one is a folder under `src/games/` that exports a
+Games are modular. Each is a folder under `src/games/` that exports a
 `GameModule` (see `src/games/types.ts`).
 
 1. Create `src/games/<your-game>/` with a root component that accepts
    `GameProps` (`{ onExit }`).
-2. Export a `GameModule` from that folder's `index.ts`:
+2. Export a `GameModule` from its `index.ts`:
 
    ```ts
    export const myGame: GameModule = {
@@ -105,11 +128,11 @@ Games are modular. Each one is a folder under `src/games/` that exports a
    };
    ```
 
-3. Register it in `src/games/registry.ts` by adding it to the `games` array.
+3. Register it in `src/games/registry.ts`.
 
-That's it — it shows up on the home screen automatically. (The registry
-already contains `coming-soon` placeholders for Crossword, Number Fill-ins,
-and Flashcards; flip one to `available` and add a `component` when ready.)
+It then appears on the home screen automatically. The registry already has
+`coming-soon` placeholders for Crossword, Number Fill-ins and Flashcards —
+flip one to `available` and add a `component` when ready.
 
 ### Project layout
 
@@ -122,20 +145,23 @@ src/
   games/
     types.ts           GameModule / GameProps contracts
     registry.ts        The list of all games
-    fill-in-the-blanks/
+    fill-in-the-blanks/  (the Letter Cipher module)
       index.ts         GameModule definition
-      FillInTheBlanks.tsx
-      components/       Game-specific UI
-      data/german-a1.ts  Editable content
+      FillInTheBlanks.tsx   Deck flow (order, progress, results)
+      cipher.ts        Pure cipher logic (case/ß, numbering, givens, key state)
+      components/      CipherBoard, Keyboard, Results
+      data/german-a1.ts     Editable content
   lib/                 Small helpers (shuffle, storage)
 ```
+
+The puzzle logic in `cipher.ts` is pure (no React) and unit-testable.
 
 ---
 
 ## Building for the App Store & Google Play (Capacitor)
 
 The web build in `dist/` is wrapped by Capacitor into native iOS and Android
-shells. The same code runs in the browser unchanged.
+shells; the same code runs unchanged in the browser.
 
 `capacitor.config.ts` is already configured:
 
@@ -154,17 +180,14 @@ npm install
 npm run build                 # produces dist/
 
 # Android (requires Android Studio + JDK 17)
-npm install @capacitor/android
 npx cap add android
 
 # iOS (requires macOS + Xcode + CocoaPods)
-npm install @capacitor/ios
 npx cap add ios
 ```
 
-`@capacitor/ios` and `@capacitor/android` are already listed in
-`package.json`, so `npm install` pulls them in; the `cap add` step scaffolds
-the native projects.
+`@capacitor/ios` and `@capacitor/android` are already in `package.json`, so
+`npm install` pulls them in; `cap add` scaffolds the native projects.
 
 ### Each time you change the app
 
@@ -176,33 +199,30 @@ npx cap sync         # copy dist/ + plugins into the native projects
 ### Open / run the native apps
 
 ```bash
-npx cap open ios       # opens Xcode      → run on a simulator/device, then Archive for the App Store
-npx cap open android   # opens Android Studio → run, then build a signed AAB for Google Play
+npx cap open ios       # Xcode → run on a simulator/device, then Archive for the App Store
+npx cap open android   # Android Studio → run, then build a signed AAB for Google Play
 ```
 
-Convenience scripts are included: `npm run cap:add:ios`, `cap:add:android`,
-`cap:sync`, `cap:open:ios`, `cap:open:android`.
+Convenience scripts: `npm run cap:add:ios`, `cap:add:android`, `cap:sync`,
+`cap:open:ios`, `cap:open:android`.
 
 ### Requirements / notes
 
 - **iOS:** a Mac with Xcode and an Apple Developer account; set a real
-  `appId`, signing team, and app icons before submitting.
-- **Android:** Android Studio with JDK 17; generate a signed release **AAB**
-  for Play.
-- App icons / splash screens can be generated with
-  [`@capacitor/assets`](https://github.com/ionic-team/capacitor-assets).
-- The viewport meta tag and CSS safe-area insets are already set so the UI
-  sits correctly under notches/home indicators.
+  `appId`, signing team and app icons before submitting.
+- **Android:** Android Studio with JDK 17; generate a signed release **AAB**.
+- App icons / splash screens: [`@capacitor/assets`](https://github.com/ionic-team/capacitor-assets).
+- Viewport meta and CSS safe-area insets are already set so the UI sits
+  correctly under notches/home indicators.
 
 ---
 
 ## Tech decisions
 
-- **No router dependency** — navigation is a single piece of state in
-  `App.tsx`. Easy to swap for React Router if deep linking is needed later.
-- **Multiple-choice answers** rather than free-text — far better on mobile
-  (no German keyboard / umlaut friction) while still teaching recall.
-- **Local-only progress** (best streak via `localStorage`). No backend.
+- **No router dependency** — navigation is one piece of state in `App.tsx`.
+- **One-at-a-time reveals** — auto-fill-all is deliberately omitted and kept
+  as a future Pro feature; `cipher.ts` already exposes the primitives for it.
+- **Pure cipher logic** in `cipher.ts`, separate from the React UI.
 - **CSS/Tailwind animations** (no animation library) to keep the bundle small.
 
 ## License

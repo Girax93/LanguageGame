@@ -1,34 +1,34 @@
 import { Button } from '../../../components/ui/Button';
 
 interface Props {
-  score: number;
-  total: number;
-  bestStreak: number;
+  solved: number;
+  mistakes: number;
   onPlayAgain: () => void;
   onExit: () => void;
 }
 
-export function Results({ score, total, bestStreak, onPlayAgain, onExit }: Props) {
-  const pct = total === 0 ? 0 : Math.round((score / total) * 100);
-  const { emoji, line } = grade(pct);
+export function Results({ solved, mistakes, onPlayAgain, onExit }: Props) {
+  const { emoji, line } = grade(solved, mistakes);
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center text-center animate-pop-in">
       <div className="text-6xl">{emoji}</div>
       <h2 className="mt-4 text-2xl font-extrabold">{line}</h2>
       <p className="mt-2 text-white/60">
-        You got <span className="font-bold text-white">{score}</span> of{' '}
-        <span className="font-bold text-white">{total}</span> correct.
+        You cracked <span className="font-bold text-white">{solved}</span>{' '}
+        {solved === 1 ? 'cipher' : 'ciphers'}.
       </p>
 
       <div className="mt-6 flex items-center gap-3">
         <div className="rounded-2xl bg-white/5 px-5 py-4">
-          <div className="text-3xl font-extrabold">{pct}%</div>
-          <div className="text-xs uppercase tracking-wide text-white/50">Score</div>
+          <div className="text-3xl font-extrabold">{solved}</div>
+          <div className="text-xs uppercase tracking-wide text-white/50">Solved</div>
         </div>
         <div className="rounded-2xl bg-white/5 px-5 py-4">
-          <div className="text-3xl font-extrabold">{bestStreak}🔥</div>
-          <div className="text-xs uppercase tracking-wide text-white/50">Best streak</div>
+          <div className="text-3xl font-extrabold">{mistakes}</div>
+          <div className="text-xs uppercase tracking-wide text-white/50">
+            Wrong guesses
+          </div>
         </div>
       </div>
 
@@ -42,9 +42,8 @@ export function Results({ score, total, bestStreak, onPlayAgain, onExit }: Props
   );
 }
 
-function grade(pct: number): { emoji: string; line: string } {
-  if (pct === 100) return { emoji: '🏆', line: 'Perfect!' };
-  if (pct >= 80) return { emoji: '🎉', line: 'Great job!' };
-  if (pct >= 50) return { emoji: '👍', line: 'Nicely done!' };
-  return { emoji: '🌱', line: 'Keep practicing!' };
+function grade(solved: number, mistakes: number): { emoji: string; line: string } {
+  if (mistakes === 0) return { emoji: '🏆', line: 'Perfect run!' };
+  if (mistakes <= solved) return { emoji: '🎉', line: 'Great decoding!' };
+  return { emoji: '🌱', line: 'Nicely done!' };
 }

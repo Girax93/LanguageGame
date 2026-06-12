@@ -1,29 +1,18 @@
 export type Level = 'A1' | 'A2' | 'B1';
 
-/**
- * One fill-in-the-blanks item.
- *
- * `sentence` must contain the blank marker "___" (three underscores),
- * which is where `answer` belongs.
- */
-export interface FillBlankItem {
+/** One cryptogram puzzle: a sentence/proverb the player decodes. */
+export interface CipherItem {
   id: string;
-  /** German sentence containing the "___" blank marker. */
+  /** German sentence in natural case; the engine normalizes to uppercase. */
   sentence: string;
-  /** The word that fills the blank. */
-  answer: string;
-  /** English translation of the full, completed sentence. */
+  /** English translation, shown only when the player toggles the hint on. */
   translation: string;
-  /** Optional curated wrong options. If omitted, distractors are auto-generated. */
-  options?: string[];
-  /** Optional extra hint shown under the sentence. */
-  hint?: string;
   level: Level;
 }
 
-export interface FillBlankDeck {
+export interface CipherDeck {
   /** Human-readable deck name, shown in the UI. */
   name: string;
   language: string;
-  items: FillBlankItem[];
+  items: CipherItem[];
 }
