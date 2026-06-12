@@ -149,23 +149,36 @@ export type KeyState = 'disabled' | 'active' | 'idle';
 
 /**
  * Visual state of a keyboard letter:
- *  - 'disabled': no empty slots need this letter (not in puzzle, or done).
+ *  - 'disabled': no empty slots need this letter (done, or — when greying is
+ *                on — not in the puzzle at all).
  *  - 'active':   letter has been discovered AND still has empty slots.
- *  - 'idle':     letter is in the puzzle, has empty slots, not yet found.
+ *  - 'idle':     letter is in the puzzle (or, at L6, possibly not) and not
+ *                yet found.
+ *
+ * `greyUnused` (default true) controls difficulty L6: when false, letters
+ * that are not in the puzzle are NOT greyed (so the keyboard no longer
+ * reveals which letters are in play). Completed letters are still greyed.
  */
 export function keyStateFor(
   letter: string,
   slotLetters: string[],
   filled: Set<number>,
+  greyUnused = true,
 ): KeyState {
+  let total = 0;
   let remaining = 0;
   let known = false;
   for (let i = 0; i < slotLetters.length; i++) {
     if (slotLetters[i] === letter) {
+      total++;
       if (filled.has(i)) known = true;
       else remaining++;
     }
   }
-  if (remaining === 0) return 'disabled';
+  if (remaining === 0) {
+    // Not needed: either fully solved (total>0) or absent (total===0).
+    if (!greyUnused && total === 0) return 'idle';
+    return 'disabled';
+  }
   return known ? 'active' : 'idle';
 }

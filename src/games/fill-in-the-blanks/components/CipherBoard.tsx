@@ -1,82 +1,131 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { CipherItem } from '../types';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { CipherContentItem } from '../../../content/cipherItems';
+import type { DifficultyFlags } from '../../../state/difficulty';
+import { ECONOMY } from '../../../state/economyConfig';
 import {
   buildPuzzle,
   initialFilled,
-  firstEmpty,
-  nextEmpty,
   keyStateFor,
   toUpperDE,
   isLetterDE,
 } from '../cipher';
 import { ProgressBar } from '../../../components/ui/ProgressBar';
-import { Button } from '../../../components/ui/Button';
+import { Hearts } from '../../../components/ui/Hearts';
 import { Keyboard } from './Keyboard';
 
 interface Props {
-  item: CipherItem;
-  /** Called when the puzzle is solved and the player taps Next. */
-  onNext: (mistakes: number) => void;
-  isLast: boolean;
+  item: CipherContentItem;
+  flags: DifficultyFlags;
+  onResult: (won: boolean) => void;
 }
 
-/**
- * One cryptogram. Mounted with a `key={item.id}` so all per-puzzle state
- * resets cleanly when advancing.
- */
-export function CipherBoard({ item, onNext, isLast }: Props) {
-  const puzzle = useMemo(() => buildPuzzle(item.sentence), [item.id]);
+export function CipherBoard({ item, flags, onResult }: Props) {
+  const puzzle = useMemo(
+    () => buildPuzzle(item.sentence, { givenCount: flags.footholds }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [item.id],
+  );
   const total = puzzle.slotLetters.length;
+
+  // Slots that begin a word are always unlocked (entry points for L5).
+  const wordStarts = useMemo(() => {
+    const set = new Set<number>();
+    for (const cells of puzzle.words) {
+      const first = cells.find((c) => c.kind === 'letter');
+      if (first) set.add(first.slot);
+    }
+    return set;
+  }, [puzzle]);
+
+  const isUnlocked = useCallback(
+    (slot: number, filledSet: Set<number>): boolean => {
+      if (!flags.neighborLock) return true;
+      if (wordStarts.has(slot)) return true;
+      if (slot - 1 >= 0 && filledSet.has(slot - 1)) return true;
+      if (slot + 1 < total && filledSet.has(slot + 1)) return true;
+      return false;
+    },
+    [flags.neighborLock, wordStarts, total],
+  );
+
+  const firstSelectable = useCallback(
+    (filledSet: Set<number>, from = -1): number | null => {
+      for (let step = 1; step <= total; step++) {
+        const i = (from + step) % total;
+        if (!filledSet.has(i) && isUnlocked(i, filledSet)) return i;
+      }
+      return null;
+    },
+    [total, isUnlocked],
+  );
 
   const seed = useMemo(() => {
     const f = initialFilled(puzzle);
-    return { filled: f, selected: firstEmpty(total, f) };
+    return { filled: f, selected: firstSelectable(f) };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item.id]);
 
   const [filled, setFilled] = useState<Set<number>>(seed.filled);
   const [selected, setSelected] = useState<number | null>(seed.selected);
   const [wrongSlot, setWrongSlot] = useState<number | null>(null);
-  const [mistakes, setMistakes] = useState(0);
+  const [lives, setLives] = useState(ECONOMY.livesPerLevel);
   const [showHint, setShowHint] = useState(false);
+  const done = useRef(false);
 
-  const solved = filled.size === total;
+  const finish = useCallback(
+    (won: boolean) => {
+      if (done.current) return;
+      done.current = true;
+      onResult(won);
+    },
+    [onResult],
+  );
+
+  const numberVisible = useCallback(
+    (slot: number): boolean => {
+      if (!flags.hideNumbersUntilAdjacent) return true;
+      if (filled.has(slot)) return true;
+      if (slot - 1 >= 0 && filled.has(slot - 1)) return true;
+      if (slot + 1 < total && filled.has(slot + 1)) return true;
+      return false;
+    },
+    [flags.hideNumbersUntilAdjacent, filled, total],
+  );
 
   const selectSlot = useCallback(
     (slot: number) => {
-      if (filled.has(slot)) return; // givens / already solved slots aren't selectable
+      if (filled.has(slot) || !isUnlocked(slot, filled)) return;
       setSelected(slot);
     },
-    [filled],
+    [filled, isUnlocked],
   );
 
   const pressLetter = useCallback(
     (letter: string) => {
-      if (solved || selected == null) return;
-
+      if (done.current || selected == null) return;
       if (puzzle.slotLetters[selected] === letter) {
-        // Correct: fill this ONE slot, advance to the next empty slot.
         const next = new Set(filled);
         next.add(selected);
         setFilled(next);
-        setSelected(nextEmpty(total, next, selected));
+        if (next.size === total) {
+          finish(true);
+        } else {
+          setSelected(firstSelectable(next, selected));
+        }
       } else {
-        // Wrong: brief shake, no fill.
-        setWrongSlot(selected);
-        setMistakes((m) => m + 1);
-        window.setTimeout(() => setWrongSlot(null), 400);
+        const slot = selected;
+        setWrongSlot(slot);
+        window.setTimeout(() => setWrongSlot((w) => (w === slot ? null : w)), 400);
+        const left = lives - 1;
+        setLives(left);
+        if (left <= 0) finish(false);
       }
     },
-    [solved, selected, puzzle.slotLetters, filled, total],
+    [selected, puzzle.slotLetters, filled, total, finish, firstSelectable, lives],
   );
 
-  // Physical keyboard: type a letter to guess; Enter to advance when solved.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Enter' && solved) {
-        onNext(mistakes);
-        return;
-      }
       if (e.key.length === 1) {
         const up = toUpperDE(e.key);
         if (isLetterDE(up)) pressLetter(up);
@@ -84,14 +133,18 @@ export function CipherBoard({ item, onNext, isLast }: Props) {
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [pressLetter, solved, onNext, mistakes]);
+  }, [pressLetter]);
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* per-puzzle progress */}
+      <div className="mb-3 flex items-center justify-between">
+        <Hearts total={ECONOMY.livesPerLevel} remaining={lives} />
+        <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white/60">
+          Difficulty L{item.level}
+        </span>
+      </div>
       <ProgressBar value={total === 0 ? 1 : filled.size / total} />
 
-      {/* the cryptogram */}
       <div className="mt-7 flex flex-1 flex-col justify-center">
         <div className="flex flex-wrap justify-center gap-x-4 gap-y-5">
           {puzzle.words.map((cells, wi) => (
@@ -102,17 +155,16 @@ export function CipherBoard({ item, onNext, isLast }: Props) {
                     key={ci}
                     letter={cell.char}
                     number={puzzle.numberForLetter[cell.char]}
+                    showNumber={numberVisible(cell.slot)}
                     filled={filled.has(cell.slot)}
                     given={puzzle.givens.has(cell.char)}
                     selected={selected === cell.slot}
                     wrong={wrongSlot === cell.slot}
+                    locked={!filled.has(cell.slot) && !isUnlocked(cell.slot, filled)}
                     onClick={() => selectSlot(cell.slot)}
                   />
                 ) : (
-                  <span
-                    key={ci}
-                    className="px-0.5 pb-6 text-2xl font-semibold text-white/70"
-                  >
+                  <span key={ci} className="px-0.5 pb-6 text-2xl font-semibold text-white/70">
                     {cell.char}
                   </span>
                 ),
@@ -121,7 +173,6 @@ export function CipherBoard({ item, onNext, isLast }: Props) {
           ))}
         </div>
 
-        {/* translation hint (free, off by default) */}
         <div className="mt-7 flex flex-col items-center">
           <button
             type="button"
@@ -131,33 +182,18 @@ export function CipherBoard({ item, onNext, isLast }: Props) {
             {showHint ? 'Hide translation' : 'Show translation'}
           </button>
           {showHint && (
-            <p className="mt-3 animate-fade-in text-center text-white/60">
-              {item.translation}
-            </p>
+            <p className="mt-3 animate-fade-in text-center text-white/60">{item.translation}</p>
           )}
         </div>
       </div>
 
-      {/* win banner or keyboard */}
       <div className="mt-6">
-        {solved ? (
-          <div className="animate-pop-in text-center">
-            <p className="text-lg font-bold text-emerald-300">Gelöst! 🎉</p>
-            <p className="mt-1 text-sm text-white/50">
-              {mistakes === 0
-                ? 'Flawless — no wrong guesses.'
-                : `${mistakes} wrong ${mistakes === 1 ? 'guess' : 'guesses'}.`}
-            </p>
-            <Button className="mt-4 w-full" onClick={() => onNext(mistakes)}>
-              {isLast ? 'See results' : 'Next puzzle'} →
-            </Button>
-          </div>
-        ) : (
-          <Keyboard
-            onKey={pressLetter}
-            stateFor={(letter) => keyStateFor(letter, puzzle.slotLetters, filled)}
-          />
-        )}
+        <Keyboard
+          onKey={pressLetter}
+          stateFor={(letter) =>
+            keyStateFor(letter, puzzle.slotLetters, filled, flags.greyUnusedKeys)
+          }
+        />
       </div>
     </div>
   );
@@ -166,29 +202,43 @@ export function CipherBoard({ item, onNext, isLast }: Props) {
 interface SlotProps {
   letter: string;
   number: number;
+  showNumber: boolean;
   filled: boolean;
   given: boolean;
   selected: boolean;
   wrong: boolean;
+  locked: boolean;
   onClick: () => void;
 }
 
-function Slot({ letter, number, filled, given, selected, wrong, onClick }: SlotProps) {
+function Slot({
+  letter,
+  number,
+  showNumber,
+  filled,
+  given,
+  selected,
+  wrong,
+  locked,
+  onClick,
+}: SlotProps) {
   const box = given
     ? 'border-amber-400/70 bg-amber-400/15 text-amber-200'
     : filled
       ? 'border-emerald-400/70 bg-emerald-400/15 text-emerald-100'
       : selected
         ? 'border-sky-400 bg-sky-400/10 text-white ring-2 ring-sky-400/60'
-        : 'border-white/25 bg-white/[0.03] text-white hover:border-white/50';
+        : locked
+          ? 'border-white/10 bg-white/[0.02] text-white/30'
+          : 'border-white/25 bg-white/[0.03] text-white hover:border-white/50';
 
   return (
     <button
       type="button"
       onClick={onClick}
-      disabled={filled}
-      aria-label={`Letter, code ${number}`}
-      className={`flex flex-col items-center ${filled ? 'cursor-default' : 'cursor-pointer'}`}
+      disabled={filled || locked}
+      aria-label={showNumber ? `Letter, code ${number}` : 'Letter'}
+      className={`flex flex-col items-center ${filled || locked ? 'cursor-default' : 'cursor-pointer'}`}
     >
       <span
         className={[
@@ -199,8 +249,8 @@ function Slot({ letter, number, filled, given, selected, wrong, onClick }: SlotP
       >
         {filled ? letter : ''}
       </span>
-      <span className="mt-1.5 text-xs font-medium tabular-nums text-white/45">
-        {number}
+      <span className="mt-1.5 h-4 text-xs font-medium tabular-nums text-white/45">
+        {showNumber ? number : ''}
       </span>
     </button>
   );

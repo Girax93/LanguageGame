@@ -1,39 +1,30 @@
 import type { GameModule } from './types';
+import { learnGame } from './learn';
 import { fillInTheBlanksGame } from './fill-in-the-blanks';
+import { grammarGame } from './grammar';
 
 /**
- * The master list of games. Order here is the order shown on the home
- * screen. To add a game, import its module and drop it into this array.
- *
- * 'coming-soon' entries are placeholders for the planned series and
- * render as disabled cards until a `component` is supplied and the
- * status is flipped to 'available'.
+ * Master list of games (order = home-screen order). The home screen applies
+ * each module's `gate` against player progress to decide lock state.
  */
 export const games: GameModule[] = [
+  learnGame,
   fillInTheBlanksGame,
+  grammarGame,
   {
     id: 'crossword',
     title: 'Crossword',
     subtitle: 'Vocabulary, interlocked',
-    description: 'Solve themed crosswords built from your vocabulary lists.',
+    description: 'Solve themed crosswords built from your learned words.',
     icon: '🧩',
     accent: 'from-emerald-500 to-teal-500',
-    status: 'coming-soon',
-  },
-  {
-    id: 'number-fill',
-    title: 'Number Fill-ins',
-    subtitle: 'Hear it, write it',
-    description: 'Practice numbers, dates and prices by filling in what you hear.',
-    icon: '🔢',
-    accent: 'from-amber-500 to-orange-500',
     status: 'coming-soon',
   },
   {
     id: 'flashcards',
     title: 'Flashcards',
     subtitle: 'Spaced & gamified',
-    description: 'Gamified flashcards with streaks, levels and smart review.',
+    description: 'Gamified spaced-repetition review of everything you know.',
     icon: '⚡',
     accent: 'from-fuchsia-500 to-pink-500',
     status: 'coming-soon',
