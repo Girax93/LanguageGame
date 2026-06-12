@@ -1,16 +1,14 @@
 # Language Games
 
-A growing collection of bite-sized language-learning games, built to run
-**in the browser** and to be packaged for the **Apple App Store** and
-**Google Play** from a single codebase.
+A word-gated German learning game that runs **in the browser** and packages
+for the **App Store** and **Google Play** from one codebase. Players acquire
+vocabulary in **Learn**, which unlocks **Cipher** and **Grammar** puzzles built
+only from words they already know. A lives + focus (energy) economy with
+monetization hooks sits on top. All progress persists in `localStorage`.
 
-The first game is a German **Letter Cipher** (cryptogram). The project is
-structured so additional game types (crosswords, number fill-ins, gamified
-flashcards, …) can be added later as independent modules.
-
-- **React + Vite + TypeScript**
-- **Tailwind CSS** for styling and animations
-- **Capacitor** for native iOS/Android packaging (web stays fully playable)
+- **React + Vite + TypeScript**, **Tailwind CSS**, **Capacitor** (iOS/Android).
+- Modular: every mode is a `GameModule` in `src/games/`. The systems
+  (economy, gating, difficulty) are pure, data-driven, and unit-tested.
 
 ---
 
@@ -21,209 +19,199 @@ npm install
 npm run dev
 ```
 
-Then open the printed URL (default http://localhost:5173) and pick
-"Letter Cipher".
+Open the printed URL (default http://localhost:5173).
 
-| Command             | What it does                                           |
-| ------------------- | ------------------------------------------------------ |
-| `npm run dev`       | Start the dev server with hot reload                   |
-| `npm run build`     | Type-check and build the production web app to `dist/` |
-| `npm run preview`   | Preview the production build locally                   |
-| `npm run typecheck` | Type-check only                                        |
+| Command             | What it does                                |
+| ------------------- | ------------------------------------------- |
+| `npm run dev`       | Dev server with hot reload                  |
+| `npm run build`     | Type-check + build the web app to `dist/`   |
+| `npm run preview`   | Preview the production build                |
+| `npm run typecheck` | Type-check only                             |
 
-> **Note:** dependencies are not committed. Run `npm install` first — it was
-> not run in the environment that scaffolded this project.
+> Dependencies aren't committed — run `npm install` first. (It wasn't run in
+> the environment that scaffolded this; the pure logic is unit-tested, but the
+> React build should be run on your machine.)
 
----
+### Reset progress
 
-## The game: Letter Cipher (cryptogram)
-
-Each puzzle is a German sentence or proverb shown as a row of letter slots —
-one slot per letter, with spaces between words and punctuation shown as-is.
-Under every slot is a **number**.
-
-- Each distinct letter maps to a unique number, assigned freshly per puzzle
-  (e.g. O = 5, M = 19). The **same letter always shows the same number**, so
-  cracking one letter reveals where it goes everywhere else.
-- A couple of the most frequent letters start **pre-revealed** as footholds,
-  shown in a distinct "given" style.
-- A full **German on-screen keyboard** sits at the bottom — the alphabet plus
-  **ä, ö, ü and ß** as their own keys.
-
-**How you play (one letter at a time):** tap an empty slot to select it, then
-tap a keyboard letter. Correct → that single slot fills green and selection
-jumps to the next empty slot. Wrong → a brief red shake, nothing fills.
-(Filling *all* matching slots at once is intentionally **not** done — that's
-reserved as a future Pro feature; the code is structured to add it later.)
-
-**Keyboard colours:**
-
-- **Grey / disabled** — no empty slots need that letter (it's not in the
-  puzzle, or every slot for it is already filled).
-- **Green / active** — the letter has been discovered and still has empty
-  slots to fill.
-- **Neutral** — the letter is in the puzzle and undiscovered.
-
-A free **Show translation** toggle reveals the English meaning (off by
-default). Solve every slot to win, then advance to the next puzzle. On
-desktop you can also type on your physical keyboard; press **Enter** to
-advance after solving.
-
-> **German case note:** the engine uppercases text but keeps **ß** as a single
-> letter (plain `"ß".toUpperCase()` returns `"SS"` in JavaScript, which would
-> be wrong here). See `toUpperDE` in `cipher.ts`.
+Progress lives in `localStorage` under `languagegames:player`. Clear it from
+the browser, or call the `resetProgress()` action exposed by `usePlayer()`.
 
 ---
 
-## Adding content (new sentences)
+## The progression spine (word-gating)
 
-All content lives in one easy-to-edit file:
+Vocabulary is split into **packs** of ~20 words (`src/content/vocab.ts`). Ship:
+Pack 1 (20 words) + a partial Pack 2 (8 words) to demo unlocking.
 
-```
-src/games/fill-in-the-blanks/data/german-a1.ts
-```
+1. A new player starts in **Learn** and must acquire **all of Pack 1** before
+   anything else opens.
+2. Finishing Pack 1 unlocks **Cipher** and **Grammar**. Their content is tagged
+   with a pack and only appears once that pack is fully learned — so a puzzle
+   never shows a word you haven't met, guaranteeing repetition before new load.
+3. Winning Cipher/Grammar levels unlocks the **next pack** to learn (default: 2
+   wins per pack), which unlocks more — and harder — puzzles.
 
-Each item is a plain object — copy one and edit:
+The Home screen shows packs, what's learned, what's unlocked next, your focus,
+and subscription state.
 
-```ts
-{
-  id: 'de-a1-013',                 // must be unique
-  sentence: 'Ich heiße Anna.',     // natural case; ä ö ü ß welcome
-  translation: 'My name is Anna.', // shown only when the hint is toggled on
-  level: 'A1',
-}
-```
-
-Punctuation is shown as-is and isn't part of the cipher. Shorter sentences
-make easier puzzles. Save the file and it appears immediately in dev mode.
-
-### Adding a whole new deck (A2, another language, …)
-
-1. Create a file next to `german-a1.ts` exporting a `CipherDeck`
-   (`{ name, language, items }`).
-2. Import it in `src/games/fill-in-the-blanks/FillInTheBlanks.tsx` (a deck
-   picker can be added later).
+Gating math is pure and in `src/state/progression.ts`
+(`completedPackCount`, `availablePackCount`, `modesUnlocked`, `isItemEligible`,
+`recordWordAnswer`, `wordsToStudy`).
 
 ---
 
-## Adding a new game type (the series grows here)
+## Modes
 
-Games are modular. Each is a folder under `src/games/` that exports a
-`GameModule` (see `src/games/types.ts`).
+**Learn** (`src/games/learn/`) — vocabulary acquisition. Recognition (de→en)
+and recall (en→de) checks; a word is marked *learned* after
+`PROGRESSION.learnThreshold` (default 2) correct answers in a row. Feeds the gate.
 
-1. Create `src/games/<your-game>/` with a root component that accepts
-   `GameProps` (`{ onExit }`).
-2. Export a `GameModule` from its `index.ts`:
+**Cipher** (`src/games/fill-in-the-blanks/`) — the number cryptogram. Sentences
+are drawn only from learned packs and carry a difficulty level (below).
 
-   ```ts
-   export const myGame: GameModule = {
-     id: 'my-game',
-     title: 'My Game',
-     subtitle: 'Short tagline',
-     description: 'One sentence about it.',
-     icon: '🎯',
-     accent: 'from-rose-500 to-orange-500',
-     status: 'available',
-     component: MyGameComponent,
-   };
-   ```
+**Grammar** (`src/games/grammar/`) — German article-ending drill. The article
+shows only its stem with the ending blank (`D_`, `EIN_`) and **no number**, so
+the ending can't be deduced — you must recall the gender/case. Reuses the
+cipher keyboard, feedback, and lives.
 
-3. Register it in `src/games/registry.ts`.
+Add a mode by exporting a `GameModule` from `src/games/<mode>/index.ts` and
+registering it in `src/games/registry.ts`.
 
-It then appears on the home screen automatically. The registry already has
-`coming-soon` placeholders for Crossword, Number Fill-ins and Flashcards —
-flip one to `available` and add a `component` when ready.
+---
 
-### Project layout
+## Difficulty curve (`src/state/difficulty.ts`)
+
+Each cipher item has a `level`; levels are sets of flags, so the curve is
+data-driven and easy to retune:
+
+| Level | footholds | hideNumbersUntilAdjacent | neighborLock | greyUnusedKeys |
+| ----- | --------- | ------------------------ | ------------ | -------------- |
+| L1    | 2         | –                        | –            | yes            |
+| L2    | 1         | –                        | –            | yes            |
+| L3    | 0         | –                        | –            | yes            |
+| L4    | 0         | **yes**                  | –            | yes            |
+| L5    | 0         | –                        | **yes**      | yes            |
+| L6    | 0         | –                        | –            | **no**         |
+
+- **footholds** — most-frequent letters pre-revealed.
+- **hideNumbersUntilAdjacent** — a slot's number stays hidden until it or a
+  neighbor is solved (you earn the “same number = same letter” hint).
+- **neighborLock** — a slot won't accept input until a neighbor is found
+  (word-initial slots stay open so the puzzle is still solvable).
+- **greyUnusedKeys** — when off (L6), the keyboard stops greying letters that
+  aren't in play, so it no longer reveals which letters are used.
+
+Retune by editing the `DIFFICULTY` table; no UI changes needed. (No timers in
+the core path.)
+
+---
+
+## Economy (`src/state/economyConfig.ts`)
+
+All numbers are centralized in `ECONOMY` — change them in one place:
+
+| Setting             | Default      | Meaning                                   |
+| ------------------- | ------------ | ----------------------------------------- |
+| `livesPerLevel`     | `3`          | Wrong guesses allowed; 0 left = fail      |
+| `focusMax`          | `5`          | Focus (energy) cap                        |
+| `focusStart`        | `5`          | New-player focus                          |
+| `focusRegenMs`      | `20 min`     | +1 focus every interval                   |
+| `focusToStart`      | `1`          | Focus needed to start a level             |
+| `focusCostOnWin`    | `0`          | Winning is free                           |
+| `focusCostOnFail`   | `1`          | Failing costs focus                       |
+
+Regen is computed from a stored `lastFocusRegenAt` timestamp, so it works
+across reloads/offline. The math is pure in `src/state/focus.ts`
+(`applyRegen`, `timeToNextFocusMs`, `canStartLevel`, `recordLevelResult`).
+
+### Monetization hooks (STUBS — no real billing)
+
+- **Refill** — `buyFocusRefill()` instantly fills focus.
+- **Subscription** — `setSubscribed(true)` grants unlimited focus (bypasses
+  all focus checks; never drains).
+
+Wired to buttons on Home and the out-of-focus screen (`LevelStage`). Real
+IAP / store billing would wrap these calls — search for `STUB` in
+`src/state/focus.ts` and `economyConfig.ts`.
+
+---
+
+## Adding content
+
+- **Words:** add to a pack's `words` in `src/content/vocab.ts` (unique ids;
+  give nouns a `gender`). Add a pack with the next `pack` number.
+- **Cipher sentences:** add to `src/content/cipherItems.ts` with `pack` +
+  `level`. Use only words from that pack or earlier (a test enforces this).
+- **Grammar drills:** add to `src/content/grammarItems.ts` (`before`, `stem`,
+  `ending`, `after`, `gender`, `pack`, `level`).
+
+---
+
+## Project layout
 
 ```
 src/
-  app/                 App shell + home screen (game picker)
-    App.tsx            Lightweight state-based router
-    Home.tsx           Renders the game cards from the registry
-  components/ui/        Shared UI primitives (Button, ProgressBar, …)
+  state/                 Pure systems + persistence + React context
+    economyConfig.ts     ECONOMY (lives/focus/costs/IAP labels)
+    progressionConfig.ts learnThreshold, unlockWinsPerPack
+    difficulty.ts        DIFFICULTY flags per level (L1–L6)
+    types.ts             PlayerState + defaults
+    focus.ts             pure focus/lives math
+    progression.ts       pure gating/learning math
+    storage.ts           versioned localStorage
+    PlayerContext.tsx    provider + usePlayer() + regen tick
+  content/
+    vocab.ts             packs of words
+    cipherItems.ts       cipher sentences (pack + level)
+    grammarItems.ts      grammar drills (pack + level)
+  components/ui/          Button, ProgressBar, Hearts, FocusMeter, …
   games/
-    types.ts           GameModule / GameProps contracts
-    registry.ts        The list of all games
-    fill-in-the-blanks/  (the Letter Cipher module)
-      index.ts         GameModule definition
-      FillInTheBlanks.tsx   Deck flow (order, progress, results)
-      cipher.ts        Pure cipher logic (case/ß, numbering, givens, key state)
-      components/      CipherBoard, Keyboard, Results
-      data/german-a1.ts     Editable content
-  lib/                 Small helpers (shuffle, storage)
+    types.ts, registry.ts
+    _shared/LevelStage.tsx   focus gate + lives + win/lose + IAP stubs
+    learn/                   Learn mode
+    fill-in-the-blanks/      Cipher (cipher.ts logic + CipherBoard + Keyboard)
+    grammar/                 Grammar (grammar.ts logic + GrammarBoard)
+  app/                   App shell + Home (progression screen)
 ```
 
-The puzzle logic in `cipher.ts` is pure (no React) and unit-testable.
+The systems in `src/state/` and `cipher.ts` / `grammar.ts` are pure (no React)
+and covered by unit tests.
 
 ---
 
 ## Building for the App Store & Google Play (Capacitor)
 
-The web build in `dist/` is wrapped by Capacitor into native iOS and Android
-shells; the same code runs unchanged in the browser.
-
-`capacitor.config.ts` is already configured:
-
-```ts
-appId:   'net.aribenjamin.languagegames'   // change to your real bundle id
-appName: 'Language Games'
-webDir:  'dist'
-```
-
-### One-time: add the native platforms
-
-The `ios/` and `android/` folders are generated locally (they're gitignored).
+`capacitor.config.ts` is configured (`appId: net.aribenjamin.languagegames`,
+`webDir: dist`). The web build runs unchanged in the browser.
 
 ```bash
 npm install
-npm run build                 # produces dist/
+npm run build            # -> dist/
 
-# Android (requires Android Studio + JDK 17)
-npx cap add android
+npx cap add android      # one-time (Android Studio + JDK 17)
+npx cap add ios          # one-time (macOS + Xcode + CocoaPods)
 
-# iOS (requires macOS + Xcode + CocoaPods)
-npx cap add ios
+# after each change:
+npm run build
+npx cap sync
+npx cap open ios         # Xcode -> Archive for the App Store
+npx cap open android     # Android Studio -> signed AAB for Play
 ```
 
-`@capacitor/ios` and `@capacitor/android` are already in `package.json`, so
-`npm install` pulls them in; `cap add` scaffolds the native projects.
-
-### Each time you change the app
-
-```bash
-npm run build        # rebuild the web app into dist/
-npx cap sync         # copy dist/ + plugins into the native projects
-```
-
-### Open / run the native apps
-
-```bash
-npx cap open ios       # Xcode → run on a simulator/device, then Archive for the App Store
-npx cap open android   # Android Studio → run, then build a signed AAB for Google Play
-```
-
-Convenience scripts: `npm run cap:add:ios`, `cap:add:android`, `cap:sync`,
-`cap:open:ios`, `cap:open:android`.
-
-### Requirements / notes
-
-- **iOS:** a Mac with Xcode and an Apple Developer account; set a real
-  `appId`, signing team and app icons before submitting.
-- **Android:** Android Studio with JDK 17; generate a signed release **AAB**.
-- App icons / splash screens: [`@capacitor/assets`](https://github.com/ionic-team/capacitor-assets).
-- Viewport meta and CSS safe-area insets are already set so the UI sits
-  correctly under notches/home indicators.
-
----
+`ios/` and `android/` are generated locally and gitignored. Set a real bundle
+id, signing, and icons before submitting. Real store billing (the focus
+refill / subscription) would be added with a Capacitor IAP plugin wrapping the
+stubs in `src/state/focus.ts`.
 
 ## Tech decisions
 
-- **No router dependency** — navigation is one piece of state in `App.tsx`.
-- **One-at-a-time reveals** — auto-fill-all is deliberately omitted and kept
-  as a future Pro feature; `cipher.ts` already exposes the primitives for it.
-- **Pure cipher logic** in `cipher.ts`, separate from the React UI.
-- **CSS/Tailwind animations** (no animation library) to keep the bundle small.
+- **Pure, data-driven systems** — economy, gating, and difficulty are plain
+  functions/config, unit-tested without a browser.
+- **No router/animation/state libraries** — one context + Tailwind keeps the
+  bundle small.
+- **Multiple-choice in Learn; one-letter-at-a-time in puzzles** — both are
+  mobile-friendly.
 
 ## License
 
