@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
-import { PACKS, ALL_WORDS, wordById, type VocabWord } from '../../content/vocab';
+import { SETS, ALL_WORDS, wordById, type VocabWord } from '../../content/vocab';
 import { PROGRESSION } from '../../state/progressionConfig';
-import { wordsToStudy } from '../../state/progression';
+import { wordsToStudy, currentLearnSetIndex } from '../../state/progression';
 import { shuffle, sampleExcluding } from '../../lib/array';
 import { Button } from '../../components/ui/Button';
 import { ProgressBar } from '../../components/ui/ProgressBar';
@@ -32,12 +32,13 @@ function makeTurn(studyIds: string[]): Turn | null {
 
 export function Learn({ onExit }: GameProps) {
   const { state, answerWord } = usePlayer();
-  const study = wordsToStudy(state, PACKS);
+  const study = wordsToStudy(state, SETS);
+  const setIdx = currentLearnSetIndex(state, SETS);
+  const currentSet = setIdx !== null ? SETS[setIdx] : null;
 
   const [turn, setTurn] = useState<Turn | null>(() => makeTurn(study));
   const [picked, setPicked] = useState<string | null>(null);
 
-  // Build a fresh turn whenever we cleared one and words remain.
   useEffect(() => {
     if (turn === null && picked === null && study.length > 0) {
       setTurn(makeTurn(study));
@@ -45,22 +46,19 @@ export function Learn({ onExit }: GameProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [turn, picked, study.length]);
 
-  // Progress across currently-available packs.
-  const availableWordIds = study.concat(state.learnedWords);
-  const availableCount = PACKS.flatMap((p) => p.words)
-    .filter((w) => availableWordIds.includes(w.id)).length;
-  const learnedInScope = availableCount - study.length;
+  const setSize = currentSet ? currentSet.words.length : 0;
+  const masteredInSet = currentSet
+    ? currentSet.words.filter((w) => state.learnedWords.includes(w.id)).length
+    : setSize;
 
   function choose(option: string) {
     if (!turn || picked) return;
-    const correct = option === turn.answer;
     setPicked(option);
-    answerWord(turn.word.id, correct);
+    answerWord(turn.word.id, option === turn.answer);
   }
-
   function next() {
     setPicked(null);
-    setTurn(null); // effect will build the next turn from refreshed state
+    setTurn(null);
   }
 
   return (
@@ -74,21 +72,21 @@ export function Learn({ onExit }: GameProps) {
           ←
         </button>
         <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300/80">
-          Learn
+          {currentSet ? `Learn · Set ${currentSet.index + 1}` : 'Learn'}
         </h2>
         <span className="text-xs tabular-nums text-white/45">
-          {learnedInScope}/{availableCount}
+          {masteredInSet}/{setSize}
         </span>
       </div>
-      <ProgressBar value={availableCount === 0 ? 1 : learnedInScope / availableCount} />
+      <ProgressBar value={setSize === 0 ? 1 : masteredInSet / setSize} />
 
       {turn === null ? (
         <div className="flex flex-1 flex-col items-center justify-center text-center animate-pop-in">
           <div className="text-6xl">🎉</div>
-          <h3 className="mt-4 text-2xl font-extrabold">Pack learned!</h3>
+          <h3 className="mt-4 text-2xl font-extrabold">Set complete!</h3>
           <p className="mt-2 max-w-xs text-white/60">
-            You’ve learned every available word. Win Cipher & Grammar levels to
-            unlock the next pack.
+            You’ve mastered this set. Win {PROGRESSION.gamesToAdvance} Cipher or
+            Grammar levels to unlock the next one.
           </p>
           <Button className="mt-8" onClick={onExit}>
             Back to home
@@ -107,19 +105,16 @@ export function Learn({ onExit }: GameProps) {
           </div>
 
           <div className="mt-auto grid grid-cols-1 gap-3 pt-8 sm:grid-cols-2">
-            {turn.options.map((option) => {
-              const state2 = optionState(option, picked, turn.answer);
-              return (
-                <button
-                  key={option}
-                  onClick={() => choose(option)}
-                  disabled={picked !== null}
-                  className={optionClasses(state2)}
-                >
-                  {option}
-                </button>
-              );
-            })}
+            {turn.options.map((option) => (
+              <button
+                key={option}
+                onClick={() => choose(option)}
+                disabled={picked !== null}
+                className={optionClasses(optionState(option, picked, turn.answer))}
+              >
+                {option}
+              </button>
+            ))}
           </div>
 
           {picked !== null && (
@@ -130,8 +125,8 @@ export function Learn({ onExit }: GameProps) {
                 }`}
               >
                 {picked === turn.answer
-                  ? wasJustLearned(state, turn.word.id)
-                    ? 'Learned! ✅'
+                  ? justMastered(state, turn.word.id)
+                    ? 'Mastered! ✅'
                     : 'Correct! ✓'
                   : `Answer: ${turn.answer}`}
               </p>
@@ -150,14 +145,13 @@ function genderLabel(g: 'm' | 'f' | 'n'): string {
   return g === 'm' ? 'der' : g === 'f' ? 'die' : 'das';
 }
 
-/** True if this word has just reached the learned threshold. */
-function wasJustLearned(
+function justMastered(
   state: { learnedWords: string[]; wordProgress: Record<string, number> },
   wordId: string,
 ): boolean {
   return (
     state.learnedWords.includes(wordId) ||
-    (state.wordProgress[wordId] ?? 0) >= PROGRESSION.learnThreshold
+    (state.wordProgress[wordId] ?? 0) >= PROGRESSION.masteryThreshold
   );
 }
 
