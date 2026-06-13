@@ -39,33 +39,46 @@ the browser, or call the `resetProgress()` action exposed by `usePlayer()`.
 
 ---
 
-## The progression spine (word-gating)
+## The learn → play → unlock rhythm
 
-Vocabulary is split into **packs** of ~20 words (`src/content/vocab.ts`). Ship:
-Pack 1 (20 words) + a partial Pack 2 (8 words) to demo unlocking.
+Vocabulary is one ordered list, chunked into small **sets** of
+`PROGRESSION.wordsPerSet` words (default 5). There is **one cumulative mastered
+pool** that grows over time. Every word that can appear in a sentence — nouns,
+verbs, adjectives **and** function words (der/die/das, ich, ist, und, …) — is a
+learnable item in `src/content/vocab.ts`.
 
-1. A new player starts in **Learn** and must acquire **all of Pack 1** before
-   anything else opens.
-2. Finishing Pack 1 unlocks **Cipher** and **Grammar**. Their content is tagged
-   with a pack and only appears once that pack is fully learned — so a puzzle
-   never shows a word you haven't met, guaranteeing repetition before new load.
-3. Winning Cipher/Grammar levels unlocks the **next pack** to learn (default: 2
-   wins per pack), which unlocks more — and harder — puzzles.
+The loop (mirrors the phone prototype):
 
-The Home screen shows packs, what's learned, what's unlocked next, your focus,
-and subscription state.
+1. **Learn** the current set (shown on top of Home as *Words to learn* with a
+   progress bar). Step 1.
+2. When that set is mastered, **games unlock** (Step 2), built only from the
+   words you know so far.
+3. **Clear `PROGRESSION.gamesToAdvance` levels** (default 2) and the **next set
+   unlocks** to learn. Repeat.
 
-Gating math is pure and in `src/state/progression.ts`
-(`completedPackCount`, `availablePackCount`, `modesUnlocked`, `isItemEligible`,
-`recordWordAnswer`, `wordsToStudy`).
+Because the pool grows each cycle, eligible sentences get longer and harder
+automatically, old words keep recurring, and new words get drilled.
 
----
+### Strict vocabulary gating (the important rule)
+
+A cipher or grammar puzzle may **only** use words the player has already
+mastered. Each item's required word-ids are **derived from its sentence**
+(`src/content/derive.ts`) — every token must be a real vocab word or content
+fails loudly — and an item is eligible **only when every required word is
+mastered**. So a puzzle can never show a letter the player hasn't earned.
+Difficulty (`level`, L1–L6) is derived from the deepest set among an item's
+required words, so it scales with progression.
+
+Gating math is pure and unit-tested in `src/state/progression.ts`
+(`masteredSetCount`, `availableSetCount`, `currentLearnSetIndex`,
+`modesUnlocked`, `gamesToNextSet`, `isItemEligible`, `wordsToStudy`).
 
 ## Modes
 
-**Learn** (`src/games/learn/`) — vocabulary acquisition. Recognition (de→en)
-and recall (en→de) checks; a word is marked *learned* after
-`PROGRESSION.learnThreshold` (default 2) correct answers in a row. Feeds the gate.
+**Learn** (`src/games/learn/`) — vocabulary acquisition for the **current
+set**. Recognition (de→en) and recall (en→de) checks; a word is *mastered*
+after `PROGRESSION.masteryThreshold` (default 2) correct answers in a row.
+Feeds the gate.
 
 **Cipher** (`src/games/fill-in-the-blanks/`) — the number cryptogram. Sentences
 are drawn only from learned packs and carry a difficulty level (below).
@@ -139,12 +152,14 @@ IAP / store billing would wrap these calls — search for `STUB` in
 
 ## Adding content
 
-- **Words:** add to a pack's `words` in `src/content/vocab.ts` (unique ids;
-  give nouns a `gender`). Add a pack with the next `pack` number.
-- **Cipher sentences:** add to `src/content/cipherItems.ts` with `pack` +
-  `level`. Use only words from that pack or earlier (a test enforces this).
+- **Words:** append to `ORDERED_WORDS` in `src/content/vocab.ts` (unique ids;
+  nouns get a `gender`). Sets are formed automatically by `wordsPerSet`. Order
+  matters — early words should be able to form a few sentences.
+- **Cipher sentences:** add to `src/content/cipherItems.ts` (just `id`,
+  `sentence`, `translation`). Required words and difficulty are **derived** —
+  every word must already exist in vocab (a test enforces this).
 - **Grammar drills:** add to `src/content/grammarItems.ts` (`before`, `stem`,
-  `ending`, `after`, `gender`, `pack`, `level`).
+  `ending`, `after`, `gender`). Requirements/difficulty are derived too.
 
 ---
 
@@ -154,7 +169,7 @@ IAP / store billing would wrap these calls — search for `STUB` in
 src/
   state/                 Pure systems + persistence + React context
     economyConfig.ts     ECONOMY (lives/focus/costs/IAP labels)
-    progressionConfig.ts learnThreshold, unlockWinsPerPack
+    progressionConfig.ts wordsPerSet, masteryThreshold, gamesToAdvance
     difficulty.ts        DIFFICULTY flags per level (L1–L6)
     types.ts             PlayerState + defaults
     focus.ts             pure focus/lives math
@@ -163,8 +178,9 @@ src/
     PlayerContext.tsx    provider + usePlayer() + regen tick
   content/
     vocab.ts             packs of words
-    cipherItems.ts       cipher sentences (pack + level)
-    grammarItems.ts      grammar drills (pack + level)
+    cipherItems.ts       cipher sentences (requires + level derived)
+    grammarItems.ts      grammar drills (requires + level derived)
+    derive.ts            requires/level derivation from sentence text
   components/ui/          Button, ProgressBar, Hearts, FocusMeter, …
   games/
     types.ts, registry.ts
