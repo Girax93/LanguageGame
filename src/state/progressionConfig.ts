@@ -1,14 +1,13 @@
 /**
- * PROGRESSION — tuning for word-gating and pack unlocks.
+ * PROGRESSION — tuning for the learn → play → unlock rhythm.
  */
 export const PROGRESSION = {
-  /** Correct answers (in a row) needed in LEARN to mark a word "learned". */
-  learnThreshold: 2,
+  /** Words delivered per set (vocabulary is chunked into ordered sets). */
+  wordsPerSet: 5,
 
-  /**
-   * Wins required to unlock the *next* pack, multiplied by the current pack
-   * number. e.g. with 2: pack 2 needs 2 wins, pack 3 needs 4 total wins, …
-   * (on top of having fully learned the current pack).
-   */
-  unlockWinsPerPack: 2,
+  /** Correct answers in a row in LEARN to "master" a word. */
+  masteryThreshold: 2,
+
+  /** Cipher/grammar levels to clear before the next word set unlocks. */
+  gamesToAdvance: 2,
 } as const;

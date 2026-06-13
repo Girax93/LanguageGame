@@ -1,14 +1,18 @@
 /**
- * Pure word-gating / progression math. No React, no storage.
+ * Pure word-gating / progression math for the learn → play → unlock rhythm.
  *
- * Gating rule: cipher & grammar items are tagged with the pack they belong
- * to, and a pack's content only ever uses that pack's (or earlier) words.
- * An item is eligible once the player has fully LEARNED every pack up to and
- * including the item's pack — so known words always repeat before new load.
+ * Model:
+ *  - Vocabulary is delivered in ordered SETS; there is ONE cumulative mastered
+ *    pool (learnedWords) that grows over time.
+ *  - STRICT gating: a cipher/grammar item is eligible only when EVERY word-id
+ *    it requires is mastered. A puzzle never contains an unmastered word.
+ *  - Loop: learn the current set → clear `gamesToAdvance` levels → the next
+ *    set unlocks to learn → repeat. The pool (and therefore puzzle
+ *    length/difficulty) grows each cycle.
  */
 import { PROGRESSION } from './progressionConfig';
 import type { PlayerState } from './types';
-import type { VocabPack } from '../content/vocab';
+import type { VocabSet } from '../content/vocab';
 
 export function learnedSet(s: PlayerState): Set<string> {
   return new Set(s.learnedWords);
@@ -18,10 +22,7 @@ export function isWordLearned(s: PlayerState, wordId: string): boolean {
   return s.learnedWords.includes(wordId);
 }
 
-/**
- * Record a LEARN answer for a word. Correct increments the streak; reaching
- * `learnThreshold` marks the word learned. A wrong answer resets the streak.
- */
+/** Record a LEARN answer; mastering happens at `masteryThreshold` correct. */
 export function recordWordAnswer(
   s: PlayerState,
   wordId: string,
@@ -31,39 +32,38 @@ export function recordWordAnswer(
   const cur = s.wordProgress[wordId] ?? 0;
   const next = correct ? cur + 1 : 0;
   const wordProgress = { ...s.wordProgress, [wordId]: next };
-  if (next >= PROGRESSION.learnThreshold) {
+  if (next >= PROGRESSION.masteryThreshold) {
     return { ...s, wordProgress, learnedWords: [...s.learnedWords, wordId] };
   }
   return { ...s, wordProgress };
 }
 
-export function isPackLearned(s: PlayerState, pack: VocabPack): boolean {
-  return pack.words.every((w) => s.learnedWords.includes(w.id));
+export function isSetMastered(s: PlayerState, set: VocabSet): boolean {
+  return set.words.every((w) => s.learnedWords.includes(w.id));
 }
 
-/** How many packs (in order) the player has fully learned. */
-export function completedPackCount(s: PlayerState, packs: VocabPack[]): number {
+/** How many sets (in order) are fully mastered. */
+export function masteredSetCount(s: PlayerState, sets: VocabSet[]): number {
   let n = 0;
-  for (const p of packs) {
-    if (isPackLearned(s, p)) n++;
+  for (const set of sets) {
+    if (isSetMastered(s, set)) n++;
     else break;
   }
   return n;
 }
 
 /**
- * How many packs are currently available to LEARN. Pack 1 is always
- * available; pack k+1 opens once pack k is fully learned AND the player has
- * enough cipher/grammar wins (unlockWinsPerPack * k).
+ * How many sets are available to learn. Set 0 is always available; set k+1
+ * opens once set k is mastered AND the player has cleared enough levels
+ * (gamesToAdvance * (k+1) total).
  */
-export function availablePackCount(s: PlayerState, packs: VocabPack[]): number {
-  if (packs.length === 0) return 0;
+export function availableSetCount(s: PlayerState, sets: VocabSet[]): number {
+  if (sets.length === 0) return 0;
   let available = 1;
-  for (let i = 0; i < packs.length; i++) {
-    const packNum = i + 1;
-    const enoughWins = s.levelsWon >= PROGRESSION.unlockWinsPerPack * packNum;
-    if (isPackLearned(s, packs[i]) && enoughWins) {
-      available = Math.min(packs.length, packNum + 1);
+  for (let i = 0; i < sets.length; i++) {
+    const enoughWins = s.levelsWon >= PROGRESSION.gamesToAdvance * (i + 1);
+    if (isSetMastered(s, sets[i]) && enoughWins) {
+      available = Math.min(sets.length, i + 2);
     } else {
       break;
     }
@@ -71,28 +71,48 @@ export function availablePackCount(s: PlayerState, packs: VocabPack[]): number {
   return available;
 }
 
-/** Cipher & grammar modes open once the first pack is fully learned. */
-export function modesUnlocked(s: PlayerState, packs: VocabPack[]): boolean {
-  return completedPackCount(s, packs) >= 1;
-}
-
-/** Is a pack-tagged item (cipher/grammar) currently playable? */
-export function isItemEligible(
-  item: { pack: number },
-  s: PlayerState,
-  packs: VocabPack[],
-): boolean {
-  return item.pack <= completedPackCount(s, packs);
-}
-
-/** Word ids the player should be studying now (available, not yet learned). */
-export function wordsToStudy(s: PlayerState, packs: VocabPack[]): string[] {
-  const count = availablePackCount(s, packs);
-  const ids: string[] = [];
-  for (let i = 0; i < count; i++) {
-    for (const w of packs[i].words) {
-      if (!s.learnedWords.includes(w.id)) ids.push(w.id);
-    }
+/** The set the player should be learning now, or null if none (games phase). */
+export function currentLearnSetIndex(s: PlayerState, sets: VocabSet[]): number | null {
+  const available = availableSetCount(s, sets);
+  for (let i = 0; i < available; i++) {
+    if (!isSetMastered(s, sets[i])) return i;
   }
-  return ids;
+  return null;
+}
+
+/** Games unlock once at least one set is mastered. */
+export function modesUnlocked(s: PlayerState, sets: VocabSet[]): boolean {
+  return masteredSetCount(s, sets) >= 1;
+}
+
+/**
+ * Progress toward unlocking the next set, or null when not in that phase
+ * (still learning a set, or all sets mastered).
+ */
+export function gamesToNextSet(
+  s: PlayerState,
+  sets: VocabSet[],
+): { cleared: number; needed: number } | null {
+  if (currentLearnSetIndex(s, sets) !== null) return null;
+  const ms = masteredSetCount(s, sets);
+  if (ms >= sets.length) return null;
+  const needed = PROGRESSION.gamesToAdvance;
+  const base = PROGRESSION.gamesToAdvance * (ms - 1);
+  const cleared = Math.max(0, Math.min(needed, s.levelsWon - base));
+  return { cleared, needed };
+}
+
+/** STRICT eligibility: every required word must be mastered. */
+export function isItemEligible(
+  item: { requires: string[] },
+  s: PlayerState,
+): boolean {
+  return item.requires.every((id) => s.learnedWords.includes(id));
+}
+
+/** Word-ids the player is studying now: the current set's unmastered words. */
+export function wordsToStudy(s: PlayerState, sets: VocabSet[]): string[] {
+  const idx = currentLearnSetIndex(s, sets);
+  if (idx === null) return [];
+  return sets[idx].words.filter((w) => !s.learnedWords.includes(w.id)).map((w) => w.id);
 }
