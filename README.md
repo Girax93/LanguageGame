@@ -93,6 +93,28 @@ registering it in `src/games/registry.ts`.
 
 ---
 
+## Screens & navigation
+
+The app is split into distinct, single-purpose screens (one primary action
+each) routed from `src/app/App.tsx`:
+
+- **Home** — a calm start screen: title, tagline, and ONE adaptive primary
+  button ("Learn words" / "Continue" / "Practice") with a quiet status line.
+  Two small icon buttons (Progress, Settings) top-right. Nothing else.
+- **Practice** (`src/app/Practice.tsx`) — hub with two mode cards (Cipher,
+  Grammar); dimmed when nothing is eligible yet.
+- **Progress** (`src/app/Progress.tsx`) — the word-set list (learned / x of n /
+  locked) and total words learned.
+- **Settings** (`src/app/Settings.tsx`) — all focus/economy UI: focus + regen
+  countdown, Free/Pro membership, the Refill / Get-Pro stubs, and Reset
+  progress.
+- **Gameplay** — a slim HUD (back · lives hearts · focus pips), the board and
+  keyboard, and a subtle "Need a hint?" link above the keyboard. Win / lose /
+  out-of-focus are clean centered screens with one primary button.
+
+Routes live in `src/app/routes.ts`. This is purely IA/layout — gating,
+economy, and difficulty are unchanged.
+
 ## Difficulty curve (`src/state/difficulty.ts`)
 
 Each cipher item has a `level`; levels are sets of flags, so the curve is

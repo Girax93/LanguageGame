@@ -1,25 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CipherContentItem } from '../../../content/cipherItems';
 import type { DifficultyFlags } from '../../../state/difficulty';
-import { ECONOMY } from '../../../state/economyConfig';
-import {
-  buildPuzzle,
-  initialFilled,
-  keyStateFor,
-  toUpperDE,
-  isLetterDE,
-} from '../cipher';
-import { ProgressBar } from '../../../components/ui/ProgressBar';
-import { Hearts } from '../../../components/ui/Hearts';
+import type { BoardControls } from '../../_shared/LevelStage';
+import { buildPuzzle, initialFilled, keyStateFor, toUpperDE, isLetterDE } from '../cipher';
 import { Keyboard } from './Keyboard';
 
 interface Props {
   item: CipherContentItem;
   flags: DifficultyFlags;
-  onResult: (won: boolean) => void;
+  controls: BoardControls;
 }
 
-export function CipherBoard({ item, flags, onResult }: Props) {
+export function CipherBoard({ item, flags, controls }: Props) {
   const puzzle = useMemo(
     () => buildPuzzle(item.sentence, { givenCount: flags.footholds }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -27,7 +19,6 @@ export function CipherBoard({ item, flags, onResult }: Props) {
   );
   const total = puzzle.slotLetters.length;
 
-  // Slots that begin a word are always unlocked (entry points for L5).
   const wordStarts = useMemo(() => {
     const set = new Set<number>();
     for (const cells of puzzle.words) {
@@ -68,18 +59,8 @@ export function CipherBoard({ item, flags, onResult }: Props) {
   const [filled, setFilled] = useState<Set<number>>(seed.filled);
   const [selected, setSelected] = useState<number | null>(seed.selected);
   const [wrongSlot, setWrongSlot] = useState<number | null>(null);
-  const [lives, setLives] = useState(ECONOMY.livesPerLevel);
   const [showHint, setShowHint] = useState(false);
   const done = useRef(false);
-
-  const finish = useCallback(
-    (won: boolean) => {
-      if (done.current) return;
-      done.current = true;
-      onResult(won);
-    },
-    [onResult],
-  );
 
   const numberVisible = useCallback(
     (slot: number): boolean => {
@@ -108,7 +89,8 @@ export function CipherBoard({ item, flags, onResult }: Props) {
         next.add(selected);
         setFilled(next);
         if (next.size === total) {
-          finish(true);
+          done.current = true;
+          controls.onSolved();
         } else {
           setSelected(firstSelectable(next, selected));
         }
@@ -116,12 +98,10 @@ export function CipherBoard({ item, flags, onResult }: Props) {
         const slot = selected;
         setWrongSlot(slot);
         window.setTimeout(() => setWrongSlot((w) => (w === slot ? null : w)), 400);
-        const left = lives - 1;
-        setLives(left);
-        if (left <= 0) finish(false);
+        controls.onWrong();
       }
     },
-    [selected, puzzle.slotLetters, filled, total, finish, firstSelectable, lives],
+    [selected, puzzle.slotLetters, filled, total, controls, firstSelectable],
   );
 
   useEffect(() => {
@@ -137,16 +117,8 @@ export function CipherBoard({ item, flags, onResult }: Props) {
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="mb-3 flex items-center justify-between">
-        <Hearts total={ECONOMY.livesPerLevel} remaining={lives} />
-        <span className="rounded-full bg-sand px-2.5 py-1 text-xs font-semibold text-taupe">
-          Difficulty L{item.level}
-        </span>
-      </div>
-      <ProgressBar value={total === 0 ? 1 : filled.size / total} />
-
-      <div className="mt-7 flex flex-1 flex-col justify-center">
-        <div className="flex flex-wrap justify-center gap-x-4 gap-y-5">
+      <div className="flex flex-1 flex-col justify-center">
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-6">
           {puzzle.words.map((cells, wi) => (
             <div key={wi} className="flex items-end gap-1">
               {cells.map((cell, ci) =>
@@ -172,28 +144,22 @@ export function CipherBoard({ item, flags, onResult }: Props) {
             </div>
           ))}
         </div>
-
-        <div className="mt-7 flex flex-col items-center">
-          <button
-            type="button"
-            onClick={() => setShowHint((s) => !s)}
-            className="rounded-full border border-line bg-card px-4 py-1.5 text-sm font-medium text-brown transition hover:bg-sand"
-          >
-            {showHint ? 'Hide translation' : 'Show translation'}
-          </button>
-          {showHint && (
-            <p className="mt-3 animate-fade-in text-center text-taupe">{item.translation}</p>
-          )}
-        </div>
       </div>
 
-      <div className="mt-6">
-        <Keyboard
-          onKey={pressLetter}
-          stateFor={(letter) =>
-            keyStateFor(letter, puzzle.slotLetters, filled, flags.greyUnusedKeys)
-          }
-        />
+      <div className="mt-6 flex flex-col items-center gap-4">
+        <button
+          type="button"
+          onClick={() => setShowHint((s) => !s)}
+          className="text-sm text-taupe underline-offset-4 transition hover:text-brown hover:underline"
+        >
+          {showHint ? item.translation : 'Need a hint?'}
+        </button>
+        <div className="w-full">
+          <Keyboard
+            onKey={pressLetter}
+            stateFor={(letter) => keyStateFor(letter, puzzle.slotLetters, filled, flags.greyUnusedKeys)}
+          />
+        </div>
       </div>
     </div>
   );
@@ -211,17 +177,7 @@ interface SlotProps {
   onClick: () => void;
 }
 
-function Slot({
-  letter,
-  number,
-  showNumber,
-  filled,
-  given,
-  selected,
-  wrong,
-  locked,
-  onClick,
-}: SlotProps) {
+function Slot({ letter, number, showNumber, filled, given, selected, wrong, locked, onClick }: SlotProps) {
   const box = given
     ? 'border-line bg-given/25 text-brown'
     : filled

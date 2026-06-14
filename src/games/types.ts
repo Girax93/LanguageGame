@@ -6,6 +6,8 @@ import type { ComponentType } from 'react';
  */
 export interface GameProps {
   onExit: () => void;
+  /** Open the Settings screen (e.g. to refill focus when out). */
+  onOpenSettings?: () => void;
 }
 
 export type GameStatus = 'available' | 'coming-soon';

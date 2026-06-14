@@ -1,18 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { GrammarContentItem } from '../../../content/grammarItems';
-import { ECONOMY } from '../../../state/economyConfig';
+import type { BoardControls } from '../../_shared/LevelStage';
 import { toUpperDE, isLetterDE } from '../../fill-in-the-blanks/cipher';
 import { endingLetters, isEndingLetterCorrect } from '../grammar';
-import { ProgressBar } from '../../../components/ui/ProgressBar';
-import { Hearts } from '../../../components/ui/Hearts';
 import { Keyboard } from '../../fill-in-the-blanks/components/Keyboard';
 
 interface Props {
   item: GrammarContentItem;
-  onResult: (won: boolean) => void;
+  controls: BoardControls;
 }
 
-export function GrammarBoard({ item, onResult }: Props) {
+export function GrammarBoard({ item, controls }: Props) {
   const ending = endingLetters(item.ending);
   const stemChars = [...toUpperDE(item.stem)];
   const total = ending.length;
@@ -20,18 +18,8 @@ export function GrammarBoard({ item, onResult }: Props) {
   const [filled, setFilled] = useState<Set<number>>(() => new Set());
   const [selected, setSelected] = useState<number>(0);
   const [wrongIdx, setWrongIdx] = useState<number | null>(null);
-  const [lives, setLives] = useState(ECONOMY.livesPerLevel);
   const [showHint, setShowHint] = useState(false);
   const done = useRef(false);
-
-  const finish = useCallback(
-    (won: boolean) => {
-      if (done.current) return;
-      done.current = true;
-      onResult(won);
-    },
-    [onResult],
-  );
 
   const pressLetter = useCallback(
     (letter: string) => {
@@ -41,9 +29,9 @@ export function GrammarBoard({ item, onResult }: Props) {
         next.add(selected);
         setFilled(next);
         if (next.size === total) {
-          finish(true);
+          done.current = true;
+          controls.onSolved();
         } else {
-          // advance to the next empty ending slot
           let i = selected + 1;
           while (i < total && next.has(i)) i++;
           setSelected(i < total ? i : selected);
@@ -52,12 +40,10 @@ export function GrammarBoard({ item, onResult }: Props) {
         const idx = selected;
         setWrongIdx(idx);
         window.setTimeout(() => setWrongIdx((w) => (w === idx ? null : w)), 400);
-        const left = lives - 1;
-        setLives(left);
-        if (left <= 0) finish(false);
+        controls.onWrong();
       }
     },
-    [item.ending, selected, filled, total, finish, lives],
+    [item.ending, selected, filled, total, controls],
   );
 
   useEffect(() => {
@@ -73,18 +59,7 @@ export function GrammarBoard({ item, onResult }: Props) {
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="mb-3 flex items-center justify-between">
-        <Hearts total={ECONOMY.livesPerLevel} remaining={lives} />
-        <span className="rounded-full bg-sand px-2.5 py-1 text-xs font-semibold text-taupe">
-          Article ending
-        </span>
-      </div>
-      <ProgressBar value={total === 0 ? 1 : filled.size / total} />
-
-      <div className="mt-8 flex flex-1 flex-col justify-center">
-        <p className="mb-5 text-center eyebrow">
-          Fill the article ending
-        </p>
+      <div className="flex flex-1 flex-col justify-center">
         <div className="flex flex-wrap items-end justify-center gap-x-1.5 gap-y-3 font-serif text-2xl font-semibold text-espresso">
           {item.before && <span className="pb-7 text-espresso">{item.before}</span>}
           {stemChars.map((c, i) => (
@@ -108,23 +83,19 @@ export function GrammarBoard({ item, onResult }: Props) {
           ))}
           {item.after && <span className="pb-7 text-espresso">{item.after}</span>}
         </div>
-
-        <div className="mt-8 flex flex-col items-center">
-          <button
-            type="button"
-            onClick={() => setShowHint((s) => !s)}
-            className="rounded-full border border-line bg-card px-4 py-1.5 text-sm font-medium text-brown transition hover:bg-sand"
-          >
-            {showHint ? 'Hide translation' : 'Show translation'}
-          </button>
-          {showHint && (
-            <p className="mt-3 animate-fade-in text-center text-taupe">{item.translation}</p>
-          )}
-        </div>
       </div>
 
-      <div className="mt-6">
-        <Keyboard onKey={pressLetter} stateFor={() => 'idle'} />
+      <div className="mt-6 flex flex-col items-center gap-4">
+        <button
+          type="button"
+          onClick={() => setShowHint((s) => !s)}
+          className="text-sm text-taupe underline-offset-4 transition hover:text-brown hover:underline"
+        >
+          {showHint ? item.translation : 'Need a hint?'}
+        </button>
+        <div className="w-full">
+          <Keyboard onKey={pressLetter} stateFor={() => 'idle'} />
+        </div>
       </div>
     </div>
   );
@@ -132,15 +103,7 @@ export function GrammarBoard({ item, onResult }: Props) {
 
 type CellKind = 'given' | 'filled' | 'empty' | 'selected' | 'wrong';
 
-function Cell({
-  char,
-  kind,
-  onClick,
-}: {
-  char: string;
-  kind: CellKind;
-  onClick?: () => void;
-}) {
+function Cell({ char, kind, onClick }: { char: string; kind: CellKind; onClick?: () => void }) {
   const style =
     kind === 'given'
       ? 'border-line bg-given/25 text-brown'
