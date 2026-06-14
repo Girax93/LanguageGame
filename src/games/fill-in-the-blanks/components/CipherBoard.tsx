@@ -116,8 +116,8 @@ export function CipherBoard({ item, flags, controls }: Props) {
   }, [pressLetter]);
 
   return (
-    <div className="flex flex-1 flex-col">
-      <div className="flex flex-1 flex-col justify-center">
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col justify-center overflow-y-auto">
         <div className="flex flex-wrap justify-center gap-x-4 gap-y-6">
           {puzzle.words.map((cells, wi) => (
             <div key={wi} className="flex items-end gap-1">
@@ -146,7 +146,7 @@ export function CipherBoard({ item, flags, controls }: Props) {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 mt-4 flex flex-col items-center gap-3 border-t border-line bg-page pt-3 pb-2">
+      <div className="mt-4 flex shrink-0 flex-col items-center gap-3 border-t border-line bg-page pt-3 pb-2">
         <button
           type="button"
           onClick={() => setShowHint((s) => !s)}

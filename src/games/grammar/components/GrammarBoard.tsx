@@ -58,10 +58,10 @@ export function GrammarBoard({ item, controls }: Props) {
   }, [pressLetter]);
 
   return (
-    <div className="flex flex-1 flex-col">
-      <div className="flex flex-1 flex-col justify-center">
-        <div className="flex flex-wrap items-end justify-center gap-x-1.5 gap-y-3 font-serif text-2xl font-semibold text-espresso">
-          {item.before && <span className="pb-7 text-espresso">{item.before}</span>}
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col justify-center overflow-y-auto">
+        <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-2 font-serif text-2xl font-semibold text-espresso">
+          {item.before && <span className="text-espresso">{item.before}</span>}
           {stemChars.map((c, i) => (
             <Cell key={`s${i}`} char={c} kind="given" />
           ))}
@@ -81,11 +81,11 @@ export function GrammarBoard({ item, controls }: Props) {
               onClick={() => !filled.has(i) && setSelected(i)}
             />
           ))}
-          {item.after && <span className="pb-7 text-espresso">{item.after}</span>}
+          {item.after && <span className="text-espresso">{item.after}</span>}
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 mt-4 flex flex-col items-center gap-3 border-t border-line bg-page pt-3 pb-2">
+      <div className="mt-4 flex shrink-0 flex-col items-center gap-3 border-t border-line bg-page pt-3 pb-2">
         <button
           type="button"
           onClick={() => setShowHint((s) => !s)}

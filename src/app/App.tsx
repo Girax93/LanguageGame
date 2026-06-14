@@ -21,6 +21,7 @@ export function App() {
     );
   }
 
+  const pinned = route === 'fill-in-the-blanks' || route === 'grammar';
   let screen;
   switch (route) {
     case 'practice':
@@ -46,8 +47,12 @@ export function App() {
   }
 
   return (
-    <div className="min-h-full bg-page text-espresso">
-      <div className="mx-auto flex min-h-[100dvh] w-full max-w-screen-sm flex-col px-5 pb-10 pt-6">
+    <div className="h-full bg-page text-espresso">
+      <div
+        className={`mx-auto flex h-full w-full max-w-screen-sm flex-col px-5 pt-6 ${
+          pinned ? 'overflow-hidden pb-4' : 'overflow-y-auto pb-10'
+        }`}
+      >
         {screen}
       </div>
     </div>

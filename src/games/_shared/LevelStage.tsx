@@ -119,9 +119,9 @@ export function LevelStage<T extends { id: string }>({
   }
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col">
       {/* slim HUD: back · hearts · focus pips */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex shrink-0 items-center justify-between">
         <button
           onClick={onExit}
           aria-label="Back"
@@ -133,7 +133,7 @@ export function LevelStage<T extends { id: string }>({
         <FocusPips focus={state.focus} max={ECONOMY.focusMax} subscribed={state.subscribed} />
       </div>
 
-      <div key={`${index}-${attempt}`} className="flex flex-1 flex-col">
+      <div key={`${index}-${attempt}`} className="flex min-h-0 flex-1 flex-col">
         {item && renderBoard(item, controls)}
       </div>
     </div>
