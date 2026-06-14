@@ -7,6 +7,9 @@ export type Route =
   | 'statistics'
   | 'store'
   | 'settings'
+  | 'account'
+  | 'subscription'
+  | 'reset'
   | 'learn'
   | 'fill-in-the-blanks'
   | 'grammar';

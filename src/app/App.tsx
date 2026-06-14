@@ -6,6 +6,9 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { Statistics } from './Statistics';
 import { Store } from './Store';
 import { Settings } from './Settings';
+import { Account } from './Account';
+import { Subscription } from './Subscription';
+import { ResetProgress } from './ResetProgress';
 
 /**
  * App shell + screen router with a real navigation stack wired to browser
@@ -87,7 +90,16 @@ export function App() {
       screen = <Store onBack={back} onMain={requestMain} />;
       break;
     case 'settings':
-      screen = <Settings onBack={back} onMain={requestMain} />;
+      screen = <Settings onBack={back} onMain={requestMain} onOpen={navigate} />;
+      break;
+    case 'account':
+      screen = <Account onBack={back} onMain={requestMain} />;
+      break;
+    case 'subscription':
+      screen = <Subscription onBack={back} onMain={requestMain} />;
+      break;
+    case 'reset':
+      screen = <ResetProgress onBack={back} onMain={requestMain} />;
       break;
     case 'learn':
     case 'fill-in-the-blanks':
