@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+
 interface IconProps {
   className?: string;
   size?: number;
@@ -25,6 +26,17 @@ function svg(path: ReactNode, size: number, className: string) {
 
 export function ChevronLeft({ className = '', size = 22 }: IconProps) {
   return svg(<path d="M15 18l-6-6 6-6" />, size, className);
+}
+
+export function HomeIcon({ className = '', size = 22 }: IconProps) {
+  return svg(
+    <>
+      <path d="M3 11l9-8 9 8" />
+      <path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5" />
+    </>,
+    size,
+    className,
+  );
 }
 
 export function ProgressIcon({ className = '', size = 20 }: IconProps) {

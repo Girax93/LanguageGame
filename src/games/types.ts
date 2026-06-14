@@ -8,6 +8,8 @@ export interface GameProps {
   onExit: () => void;
   /** Open the Settings screen (e.g. to refill focus when out). */
   onOpenSettings?: () => void;
+  /** Request returning to the main menu (host shows a confirm). */
+  onMain?: () => void;
 }
 
 export type GameStatus = 'available' | 'coming-soon';

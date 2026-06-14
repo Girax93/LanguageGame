@@ -3,10 +3,11 @@ import { usePlayer } from '../state/PlayerContext';
 import { ECONOMY } from '../state/economyConfig';
 import { timeToNextFocusMs } from '../state/focus';
 import { FocusPips } from '../components/ui/FocusPips';
-import { TopBar } from './Practice';
+import { TopBar } from '../components/ui/TopBar';
 
 interface Props {
   onBack: () => void;
+  onMain: () => void;
 }
 
 function fmt(ms: number): string {
@@ -14,14 +15,14 @@ function fmt(ms: number): string {
   return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
 }
 
-export function Settings({ onBack }: Props) {
+export function Settings({ onBack, onMain }: Props) {
   const { state, now, buyFocus, setSubscribed, resetProgress } = usePlayer();
   const next = timeToNextFocusMs(state, now);
   const [confirmReset, setConfirmReset] = useState(false);
 
   return (
     <div className="flex flex-1 flex-col animate-fade-in">
-      <TopBar title="Settings" onBack={onBack} />
+      <TopBar title="Settings" onBack={onBack} onMain={onMain} />
 
       <div className="mt-6 flex flex-col gap-4">
         {/* Focus */}

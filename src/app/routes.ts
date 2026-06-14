@@ -1,8 +1,11 @@
 /** All navigable screens. Game ids match the registry. */
 export type Route =
-  | 'home'
+  | 'main'
+  | 'languages'
+  | 'lang-menu'
   | 'practice'
-  | 'progress'
+  | 'statistics'
+  | 'store'
   | 'settings'
   | 'learn'
   | 'fill-in-the-blanks'

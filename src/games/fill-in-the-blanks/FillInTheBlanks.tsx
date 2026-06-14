@@ -6,7 +6,7 @@ import { flagsForLevel } from '../../state/difficulty';
 import { LevelStage } from '../_shared/LevelStage';
 import { CipherBoard } from './components/CipherBoard';
 
-export function FillInTheBlanks({ onExit, onOpenSettings }: GameProps) {
+export function FillInTheBlanks({ onExit, onOpenSettings, onMain }: GameProps) {
   const { state } = usePlayer();
   const items: CipherContentItem[] = CIPHER_ITEMS.filter((i) =>
     isItemEligible(i, state),
@@ -17,6 +17,7 @@ export function FillInTheBlanks({ onExit, onOpenSettings }: GameProps) {
       items={items}
       onExit={onExit}
       onOpenSettings={onOpenSettings}
+      onMain={onMain}
       renderBoard={(item, controls) => (
         <CipherBoard item={item} flags={flagsForLevel(item.level)} controls={controls} />
       )}

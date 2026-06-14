@@ -5,7 +5,7 @@ import { canStartLevel, timeToNextFocusMs } from '../../state/focus';
 import { Button } from '../../components/ui/Button';
 import { Hearts } from '../../components/ui/Hearts';
 import { FocusPips } from '../../components/ui/FocusPips';
-import { ChevronLeft } from '../../components/ui/icons';
+import { ChevronLeft, HomeIcon } from '../../components/ui/icons';
 
 /** A board reports outcomes through these; LevelStage owns lives + flow. */
 export interface BoardControls {
@@ -19,6 +19,7 @@ interface Props<T> {
   items: T[];
   onExit: () => void;
   onOpenSettings?: () => void;
+  onMain?: () => void;
   renderBoard: (item: T, controls: BoardControls) => ReactNode;
 }
 
@@ -29,6 +30,7 @@ export function LevelStage<T extends { id: string }>({
   items,
   onExit,
   onOpenSettings,
+  onMain,
   renderBoard,
 }: Props<T>) {
   const { state, now, recordLevel } = usePlayer();
@@ -129,8 +131,21 @@ export function LevelStage<T extends { id: string }>({
         >
           <ChevronLeft />
         </button>
-        <Hearts total={ECONOMY.livesPerLevel} remaining={lives} />
-        <FocusPips focus={state.focus} max={ECONOMY.focusMax} subscribed={state.subscribed} />
+        <div className="flex items-center gap-3">
+          <Hearts total={ECONOMY.livesPerLevel} remaining={lives} />
+          <FocusPips focus={state.focus} max={ECONOMY.focusMax} subscribed={state.subscribed} />
+        </div>
+        {onMain ? (
+          <button
+            onClick={onMain}
+            aria-label="Main menu"
+            className="rounded-full p-2 text-taupe transition hover:bg-sand hover:text-espresso"
+          >
+            <HomeIcon />
+          </button>
+        ) : (
+          <span className="w-9" />
+        )}
       </div>
 
       <div key={`${index}-${attempt}`} className="flex min-h-0 flex-1 flex-col">

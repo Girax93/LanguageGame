@@ -5,7 +5,7 @@ import { isItemEligible } from '../../state/progression';
 import { LevelStage } from '../_shared/LevelStage';
 import { GrammarBoard } from './components/GrammarBoard';
 
-export function Grammar({ onExit, onOpenSettings }: GameProps) {
+export function Grammar({ onExit, onOpenSettings, onMain }: GameProps) {
   const { state } = usePlayer();
   const items: GrammarContentItem[] = GRAMMAR_ITEMS.filter((i) =>
     isItemEligible(i, state),
@@ -16,6 +16,7 @@ export function Grammar({ onExit, onOpenSettings }: GameProps) {
       items={items}
       onExit={onExit}
       onOpenSettings={onOpenSettings}
+      onMain={onMain}
       renderBoard={(item, controls) => <GrammarBoard item={item} controls={controls} />}
     />
   );

@@ -7,6 +7,7 @@ import { wordsToStudy, currentLearnSetIndex } from '../../state/progression';
 import { shuffle, sampleExcluding } from '../../lib/array';
 import { Button } from '../../components/ui/Button';
 import { ProgressBar } from '../../components/ui/ProgressBar';
+import { HomeIcon } from '../../components/ui/icons';
 
 type Mode = 'recognition' | 'recall';
 
@@ -30,7 +31,7 @@ function makeTurn(studyIds: string[]): Turn | null {
   return { word, mode, prompt, answer, options };
 }
 
-export function Learn({ onExit }: GameProps) {
+export function Learn({ onExit, onMain }: GameProps) {
   const { state, answerWord } = usePlayer();
   const study = wordsToStudy(state, SETS);
   const setIdx = currentLearnSetIndex(state, SETS);
@@ -74,9 +75,20 @@ export function Learn({ onExit }: GameProps) {
         <h2 className="eyebrow">
           {currentSet ? `Learn · Set ${currentSet.index + 1}` : 'Learn'}
         </h2>
-        <span className="text-xs tabular-nums text-taupe">
-          {masteredInSet}/{setSize}
-        </span>
+        <div className="flex items-center gap-1">
+          <span className="text-xs tabular-nums text-taupe">
+            {masteredInSet}/{setSize}
+          </span>
+          {onMain && (
+            <button
+              onClick={onMain}
+              aria-label="Main menu"
+              className="rounded-full p-2 text-taupe transition hover:bg-sand hover:text-espresso"
+            >
+              <HomeIcon />
+            </button>
+          )}
+        </div>
       </div>
       <ProgressBar value={setSize === 0 ? 1 : masteredInSet / setSize} />
 
