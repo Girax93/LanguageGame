@@ -18,9 +18,9 @@ interface Props {
 }
 
 const KEY_STYLES: Record<KeyState, string> = {
-  active: 'bg-emerald-500/90 text-white shadow-sm shadow-emerald-900/40',
-  idle: 'bg-white/12 text-white hover:bg-white/20',
-  disabled: 'bg-white/[0.04] text-white/25',
+  active: 'bg-brown text-cream',
+  idle: 'bg-sand text-espresso hover:bg-[#ddcdb2]',
+  disabled: 'bg-page text-given',
 };
 
 export function Keyboard({ onKey, stateFor, disabled = false }: Props) {

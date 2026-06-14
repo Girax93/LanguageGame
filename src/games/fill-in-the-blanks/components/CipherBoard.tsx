@@ -139,7 +139,7 @@ export function CipherBoard({ item, flags, onResult }: Props) {
     <div className="flex flex-1 flex-col">
       <div className="mb-3 flex items-center justify-between">
         <Hearts total={ECONOMY.livesPerLevel} remaining={lives} />
-        <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white/60">
+        <span className="rounded-full bg-sand px-2.5 py-1 text-xs font-semibold text-taupe">
           Difficulty L{item.level}
         </span>
       </div>
@@ -164,7 +164,7 @@ export function CipherBoard({ item, flags, onResult }: Props) {
                     onClick={() => selectSlot(cell.slot)}
                   />
                 ) : (
-                  <span key={ci} className="px-0.5 pb-6 text-2xl font-semibold text-white/70">
+                  <span key={ci} className="px-0.5 pb-6 font-serif text-2xl font-semibold text-espresso">
                     {cell.char}
                   </span>
                 ),
@@ -177,12 +177,12 @@ export function CipherBoard({ item, flags, onResult }: Props) {
           <button
             type="button"
             onClick={() => setShowHint((s) => !s)}
-            className="rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/70 transition hover:bg-white/20"
+            className="rounded-full border border-line bg-card px-4 py-1.5 text-sm font-medium text-brown transition hover:bg-sand"
           >
             {showHint ? 'Hide translation' : 'Show translation'}
           </button>
           {showHint && (
-            <p className="mt-3 animate-fade-in text-center text-white/60">{item.translation}</p>
+            <p className="mt-3 animate-fade-in text-center text-taupe">{item.translation}</p>
           )}
         </div>
       </div>
@@ -223,14 +223,14 @@ function Slot({
   onClick,
 }: SlotProps) {
   const box = given
-    ? 'border-amber-400/70 bg-amber-400/15 text-amber-200'
+    ? 'border-line bg-given/25 text-brown'
     : filled
-      ? 'border-emerald-400/70 bg-emerald-400/15 text-emerald-100'
+      ? 'border-sage/60 bg-sage/15 text-espresso'
       : selected
-        ? 'border-sky-400 bg-sky-400/10 text-white ring-2 ring-sky-400/60'
+        ? 'border-brown bg-sand text-espresso ring-2 ring-brown/40'
         : locked
-          ? 'border-white/10 bg-white/[0.02] text-white/30'
-          : 'border-white/25 bg-white/[0.03] text-white hover:border-white/50';
+          ? 'border-line bg-page text-given'
+          : 'border-line bg-card text-espresso hover:border-brown/50';
 
   return (
     <button
@@ -242,14 +242,14 @@ function Slot({
     >
       <span
         className={[
-          'flex h-11 w-9 items-center justify-center rounded-md border-2 text-xl font-bold uppercase transition sm:h-12 sm:w-10',
+          'flex h-11 w-9 items-center justify-center rounded-xl border-2 font-serif text-xl font-semibold uppercase transition sm:h-12 sm:w-10',
           box,
-          wrong ? 'animate-shake border-rose-400 text-rose-300' : '',
+          wrong ? 'animate-shake border-terracotta text-terracotta' : '',
         ].join(' ')}
       >
         {filled ? letter : ''}
       </span>
-      <span className="mt-1.5 h-4 text-xs font-medium tabular-nums text-white/45">
+      <span className="mt-1.5 h-4 text-xs font-medium tabular-nums text-taupe">
         {showNumber ? number : ''}
       </span>
     </button>

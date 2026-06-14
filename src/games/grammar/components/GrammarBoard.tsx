@@ -75,18 +75,18 @@ export function GrammarBoard({ item, onResult }: Props) {
     <div className="flex flex-1 flex-col">
       <div className="mb-3 flex items-center justify-between">
         <Hearts total={ECONOMY.livesPerLevel} remaining={lives} />
-        <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-white/60">
+        <span className="rounded-full bg-sand px-2.5 py-1 text-xs font-semibold text-taupe">
           Article ending
         </span>
       </div>
       <ProgressBar value={total === 0 ? 1 : filled.size / total} />
 
       <div className="mt-8 flex flex-1 flex-col justify-center">
-        <p className="mb-5 text-center text-xs font-semibold uppercase tracking-[0.2em] text-violet-300/70">
+        <p className="mb-5 text-center eyebrow">
           Fill the article ending
         </p>
-        <div className="flex flex-wrap items-end justify-center gap-x-1.5 gap-y-3 text-2xl font-semibold">
-          {item.before && <span className="pb-7">{item.before}</span>}
+        <div className="flex flex-wrap items-end justify-center gap-x-1.5 gap-y-3 font-serif text-2xl font-semibold text-espresso">
+          {item.before && <span className="pb-7 text-espresso">{item.before}</span>}
           {stemChars.map((c, i) => (
             <Cell key={`s${i}`} char={c} kind="given" />
           ))}
@@ -106,19 +106,19 @@ export function GrammarBoard({ item, onResult }: Props) {
               onClick={() => !filled.has(i) && setSelected(i)}
             />
           ))}
-          {item.after && <span className="pb-7">{item.after}</span>}
+          {item.after && <span className="pb-7 text-espresso">{item.after}</span>}
         </div>
 
         <div className="mt-8 flex flex-col items-center">
           <button
             type="button"
             onClick={() => setShowHint((s) => !s)}
-            className="rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/70 transition hover:bg-white/20"
+            className="rounded-full border border-line bg-card px-4 py-1.5 text-sm font-medium text-brown transition hover:bg-sand"
           >
             {showHint ? 'Hide translation' : 'Show translation'}
           </button>
           {showHint && (
-            <p className="mt-3 animate-fade-in text-center text-white/60">{item.translation}</p>
+            <p className="mt-3 animate-fade-in text-center text-taupe">{item.translation}</p>
           )}
         </div>
       </div>
@@ -143,14 +143,14 @@ function Cell({
 }) {
   const style =
     kind === 'given'
-      ? 'border-white/15 bg-white/[0.06] text-white'
+      ? 'border-line bg-given/25 text-brown'
       : kind === 'filled'
-        ? 'border-emerald-400/70 bg-emerald-400/15 text-emerald-100'
+        ? 'border-sage/60 bg-sage/15 text-espresso'
         : kind === 'selected'
-          ? 'border-violet-400 bg-violet-400/10 text-white ring-2 ring-violet-400/60'
+          ? 'border-brown bg-sand text-espresso ring-2 ring-brown/40'
           : kind === 'wrong'
-            ? 'border-rose-400 bg-rose-400/10 text-rose-300 animate-shake'
-            : 'border-white/25 bg-white/[0.03] text-white hover:border-white/50';
+            ? 'border-terracotta bg-terracotta/10 text-terracotta animate-shake'
+            : 'border-line bg-card text-espresso hover:border-brown/50';
 
   return (
     <button
@@ -158,7 +158,7 @@ function Cell({
       onClick={onClick}
       disabled={!onClick}
       className={[
-        'flex h-11 w-9 items-center justify-center rounded-md border-2 text-xl font-bold uppercase transition sm:h-12 sm:w-10',
+        'flex h-11 w-9 items-center justify-center rounded-xl border-2 text-xl font-semibold uppercase transition sm:h-12 sm:w-10',
         style,
         onClick ? 'cursor-pointer' : 'cursor-default',
       ].join(' ')}

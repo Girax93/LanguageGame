@@ -66,15 +66,15 @@ export function Learn({ onExit }: GameProps) {
       <div className="mb-4 flex items-center justify-between">
         <button
           onClick={onExit}
-          className="rounded-full p-2 text-white/60 transition hover:bg-white/10 hover:text-white"
+          className="rounded-full p-2 text-taupe transition hover:bg-sand hover:text-espresso"
           aria-label="Back to home"
         >
           ←
         </button>
-        <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300/80">
+        <h2 className="eyebrow">
           {currentSet ? `Learn · Set ${currentSet.index + 1}` : 'Learn'}
         </h2>
-        <span className="text-xs tabular-nums text-white/45">
+        <span className="text-xs tabular-nums text-taupe">
           {masteredInSet}/{setSize}
         </span>
       </div>
@@ -82,9 +82,9 @@ export function Learn({ onExit }: GameProps) {
 
       {turn === null ? (
         <div className="flex flex-1 flex-col items-center justify-center text-center animate-pop-in">
-          <div className="text-6xl">🎉</div>
-          <h3 className="mt-4 text-2xl font-extrabold">Set complete!</h3>
-          <p className="mt-2 max-w-xs text-white/60">
+          <div className="text-4xl text-brown">✦</div>
+          <h3 className="mt-5 font-serif text-2xl font-semibold text-espresso">Set complete!</h3>
+          <p className="mt-2 max-w-xs text-taupe">
             You’ve mastered this set. Win {PROGRESSION.gamesToAdvance} Cipher or
             Grammar levels to unlock the next one.
           </p>
@@ -95,12 +95,12 @@ export function Learn({ onExit }: GameProps) {
       ) : (
         <div className="flex flex-1 flex-col">
           <div className="mt-10 text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
+            <p className="eyebrow">
               {turn.mode === 'recognition' ? 'What does this mean?' : 'Say it in German'}
             </p>
-            <p className="mt-4 text-4xl font-extrabold">{turn.prompt}</p>
+            <p className="mt-4 font-serif text-4xl font-semibold text-espresso">{turn.prompt}</p>
             {turn.mode === 'recall' && turn.word.gender && (
-              <p className="mt-1 text-sm text-white/40">({genderLabel(turn.word.gender)})</p>
+              <p className="mt-1 text-sm text-taupe">({genderLabel(turn.word.gender)})</p>
             )}
           </div>
 
@@ -121,7 +121,7 @@ export function Learn({ onExit }: GameProps) {
             <div className="mt-5 animate-fade-in">
               <p
                 className={`mb-3 text-center font-semibold ${
-                  picked === turn.answer ? 'text-emerald-300' : 'text-rose-300'
+                  picked === turn.answer ? 'text-sage' : 'text-terracotta'
                 }`}
               >
                 {picked === turn.answer
@@ -167,12 +167,12 @@ function optionClasses(s: OptState): string {
     'rounded-2xl border px-4 py-4 text-lg font-medium transition active:scale-[0.99] disabled:cursor-default';
   switch (s) {
     case 'correct':
-      return `${base} border-emerald-400/60 bg-emerald-400/15 text-emerald-100`;
+      return `${base} border-sage/60 bg-sage/15 text-espresso`;
     case 'wrong':
-      return `${base} border-rose-400/60 bg-rose-400/15 text-rose-100`;
+      return `${base} border-terracotta/60 bg-terracotta/10 text-terracotta`;
     case 'muted':
-      return `${base} border-white/10 bg-white/[0.03] text-white/40`;
+      return `${base} border-line bg-card text-taupe`;
     default:
-      return `${base} border-white/10 bg-white/[0.06] text-white hover:border-white/25 hover:bg-white/[0.1]`;
+      return `${base} border-line bg-card text-espresso hover:border-brown/40 hover:bg-sand`;
   }
 }

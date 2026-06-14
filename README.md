@@ -220,6 +220,26 @@ id, signing, and icons before submitting. Real store billing (the focus
 refill / subscription) would be added with a Capacitor IAP plugin wrapping the
 stubs in `src/state/focus.ts`.
 
+## Design / theme
+
+Calm, warm, minimal (light mode). The theme is centralized so it's easy to
+retune:
+
+- **Palette** lives in `tailwind.config.js` (`theme.extend.colors`): `page`
+  (#f1e9da cream), `sand` (insets/keys), `card` + `line` (panels/borders),
+  `brown` (primary, with `light`/`dark`), `espresso`/`taupe` (text), and muted
+  status colors `sage` (success), `terracotta` (error), `ochre` (focus/energy),
+  `given` (disabled). Mirrored as CSS variables in `src/index.css`.
+- **Fonts:** a refined serif (Fraunces, falling back to Palatino/Georgia) for
+  display — headings, the big word in Learn, and the cipher/grammar letter
+  tiles; **Inter** for body/UI. Set in `tailwind.config.js` + the font link in
+  `index.html`.
+- **Shared classes** in `src/index.css` (`@layer components`): `.card`,
+  `.eyebrow`, `.btn-primary` (solid brown / cream text), `.btn-secondary`
+  (outlined). Solid fills only — no gradients, glows, or heavy shadows.
+
+To re-skin the app, edit the `colors` map (and fonts) in `tailwind.config.js`.
+
 ## Tech decisions
 
 - **Pure, data-driven systems** — economy, gating, and difficulty are plain

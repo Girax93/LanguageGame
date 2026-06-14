@@ -3,9 +3,8 @@ import { getGame } from '../games/registry';
 import { Home } from './Home';
 
 /**
- * App shell + ultra-light router. We keep a single piece of state — the
- * active game id — instead of pulling in a router dependency. Each game
- * is a self-contained module from the registry.
+ * App shell + ultra-light router. A single piece of state — the active game
+ * id — instead of a router dependency. Each game is a registry module.
  */
 export function App() {
   const [activeGameId, setActiveGameId] = useState<string | null>(null);
@@ -14,8 +13,8 @@ export function App() {
   const GameComponent = active?.component;
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 text-white">
-      <div className="mx-auto flex min-h-full w-full max-w-screen-sm flex-col px-5 pb-10 pt-8">
+    <div className="min-h-full bg-page text-espresso">
+      <div className="mx-auto flex min-h-full w-full max-w-screen-sm flex-col px-5 pb-12 pt-9">
         {GameComponent ? (
           <GameComponent onExit={() => setActiveGameId(null)} />
         ) : (

@@ -15,13 +15,13 @@ export function FocusMeter() {
   const next = timeToNextFocusMs(state, now);
 
   return (
-    <div className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-sm backdrop-blur">
-      <span aria-hidden>⚡</span>
-      <span className="font-semibold text-white">
+    <div className="flex items-center gap-2 rounded-full border border-line bg-card px-3 py-1.5 text-sm">
+      <span className="text-ochre" aria-hidden>⬣</span>
+      <span className="font-semibold text-espresso">
         {state.subscribed ? '∞' : `${state.focus}/${ECONOMY.focusMax}`}
       </span>
       {!state.subscribed && next != null && (
-        <span className="text-white/45">+1 in {fmt(next)}</span>
+        <span className="text-taupe">+1 in {fmt(next)}</span>
       )}
     </div>
   );

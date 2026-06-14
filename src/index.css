@@ -2,8 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Theme tokens mirrored as CSS variables for any non-Tailwind use. The source
+   of truth for Tailwind classes is tailwind.config.js. */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+  --c-page: #f1e9da;
+  --c-sand: #e8dcc6;
+  --c-card: #fbf6ec;
+  --c-line: #e4d8c4;
+  --c-brown: #7b5d44;
+  --c-espresso: #3b2f26;
+  --c-taupe: #9d8c79;
 }
 
 html,
@@ -15,15 +24,39 @@ body,
 body {
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
+  color: var(--c-espresso);
+  background: var(--c-page);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* Respect device safe areas so it looks right inside the native shells. */
   padding: env(safe-area-inset-top) env(safe-area-inset-right)
     env(safe-area-inset-bottom) env(safe-area-inset-left);
-  background: #0b1020;
 }
 
-/* Prevent the iOS "tap flash" on buttons for a more native feel. */
 button {
   -webkit-tap-highlight-color: transparent;
+}
+
+@layer components {
+  /* Centralized building blocks so screens stay consistent. */
+  .card {
+    @apply rounded-3xl border border-line bg-card;
+  }
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-taupe;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-brown px-6 py-3
+      font-semibold text-cream transition hover:bg-brown-dark active:scale-[0.99]
+      disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-brown/40
+      bg-transparent px-6 py-3 font-semibold text-brown transition hover:bg-brown/5
+      active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none;
+  }
+  /* A letter tile (cipher / grammar). State is layered on with utilities. */
+  .tile {
+    @apply flex h-12 w-10 items-center justify-center rounded-xl border text-xl font-semibold
+      uppercase font-serif transition;
+  }
 }

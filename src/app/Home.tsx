@@ -23,17 +23,18 @@ export function Home({ onSelect }: Props) {
   const modesOpen = modesUnlocked(state, SETS);
   const gamesProg = gamesToNextSet(state, SETS);
   const mastered = state.learnedWords.length;
+  const setMastered = currentSet
+    ? currentSet.words.filter((w) => state.learnedWords.includes(w.id)).length
+    : 0;
 
   return (
     <div className="animate-fade-in">
-      <header className="mb-5 mt-2 flex items-start justify-between">
+      <header className="mb-8 mt-1 flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-sky-300/80">
-            Language Games
-          </p>
-          <h1 className="mt-1 text-3xl font-extrabold">Deutsch</h1>
-          <p className="mt-1 text-xs text-white/40">
-            {mastered}/{ALL_WORDS.length} words mastered
+          <p className="eyebrow">Language Games</p>
+          <h1 className="mt-2 font-serif text-4xl font-semibold text-espresso">Deutsch</h1>
+          <p className="mt-1.5 text-sm text-taupe">
+            {mastered} of {ALL_WORDS.length} words mastered
           </p>
         </div>
         <FocusMeter />
@@ -43,22 +44,18 @@ export function Home({ onSelect }: Props) {
       <Section step={1} label="Words to learn">
         {currentSet ? (
           <Card
-            icon="🌱"
-            accent="from-lime-500 to-emerald-500"
+            icon="✦"
             title={`Set ${currentSet.index + 1}`}
             subtitle="Master these to keep going"
             onClick={() => onSelect('learn')}
             progress={{
-              value:
-                currentSet.words.filter((w) => state.learnedWords.includes(w.id)).length /
-                currentSet.words.length,
-              label: `${currentSet.words.filter((w) => state.learnedWords.includes(w.id)).length}/${currentSet.words.length}`,
+              value: setMastered / currentSet.words.length,
+              label: `${setMastered}/${currentSet.words.length}`,
             }}
           />
         ) : gamesProg ? (
           <Card
-            icon="✅"
-            accent="from-emerald-500 to-teal-500"
+            icon="✓"
             title="Set mastered"
             subtitle={`Clear ${gamesProg.needed} games to unlock the next set`}
             progress={{
@@ -67,12 +64,7 @@ export function Home({ onSelect }: Props) {
             }}
           />
         ) : (
-          <Card
-            icon="🏆"
-            accent="from-amber-500 to-orange-500"
-            title="All words learned"
-            subtitle="You’ve mastered every set in this demo."
-          />
+          <Card icon="✶" title="All words learned" subtitle="You’ve mastered every set in this demo." />
         )}
       </Section>
 
@@ -103,41 +95,41 @@ export function Home({ onSelect }: Props) {
       </Section>
 
       {/* Focus / monetization */}
-      <section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-4">
+      <section className="mt-8 card p-[22px]">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold">
+            <p className="text-sm font-semibold text-espresso">
               {state.subscribed ? 'Unlimited focus (Pro)' : 'Focus'}
             </p>
-            <p className="text-xs text-white/50">
+            <p className="mt-0.5 text-xs text-taupe">
               {state.subscribed
                 ? 'Thanks for subscribing.'
                 : `Energy to start levels. Max ${ECONOMY.focusMax}. +1 every 20 min.`}
             </p>
           </div>
-          <span className="text-2xl">{state.subscribed ? '∞' : state.focus}</span>
+          <span className="font-serif text-2xl text-ochre">{state.subscribed ? '∞' : state.focus}</span>
         </div>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2">
           {!state.subscribed && (
             <button
               onClick={buyFocus}
-              className="rounded-xl bg-amber-400/90 px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-amber-300"
+              className="rounded-xl bg-ochre px-3.5 py-2 text-sm font-semibold text-cream transition hover:opacity-90"
             >
               Refill · {ECONOMY.iap.refillPriceLabel}
             </button>
           )}
           <button
             onClick={() => setSubscribed(!state.subscribed)}
-            className="rounded-xl bg-white/10 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+            className="rounded-xl border border-brown/40 px-3.5 py-2 text-sm font-semibold text-brown transition hover:bg-brown/5"
           >
             {state.subscribed ? 'Cancel Pro (demo)' : `Go Pro · ${ECONOMY.iap.subscriptionPriceLabel}`}
           </button>
         </div>
-        <p className="mt-2 text-[11px] text-white/30">Demo only — no real payment.</p>
+        <p className="mt-3 text-[11px] text-taupe">Demo only — no real payment.</p>
       </section>
 
-      <p className="mt-8 text-center text-xs text-white/30">
-        v0.4 · learn {PROGRESSION.wordsPerSet} words → clear {PROGRESSION.gamesToAdvance} games → repeat
+      <p className="mt-8 text-center text-xs text-taupe">
+        learn {PROGRESSION.wordsPerSet} words → clear {PROGRESSION.gamesToAdvance} games → repeat
       </p>
     </div>
   );
@@ -155,29 +147,35 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="mb-6">
-      <div className="mb-2 flex items-baseline gap-2">
-        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[11px] font-bold text-white/70">
+    <section className="mb-7">
+      <div className="mb-3 flex items-center gap-2">
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-sand text-[11px] font-bold text-brown">
           {step}
         </span>
-        <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40">{label}</h2>
+        <h2 className="eyebrow">{label}</h2>
       </div>
       {children}
-      {hint && <p className="mt-2 text-[11px] text-white/35">{hint}</p>}
+      {hint && <p className="mt-2.5 text-[11px] text-taupe">{hint}</p>}
     </section>
+  );
+}
+
+function Chip({ icon }: { icon: string }) {
+  return (
+    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-sand font-serif text-2xl text-brown">
+      <span aria-hidden>{icon}</span>
+    </div>
   );
 }
 
 function Card({
   icon,
-  accent,
   title,
   subtitle,
   onClick,
   progress,
 }: {
   icon: string;
-  accent: string;
   title: string;
   subtitle: string;
   onClick?: () => void;
@@ -190,37 +188,28 @@ function Card({
       disabled={!interactive}
       onClick={onClick}
       className={[
-        'group relative w-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-5 text-left transition',
-        interactive ? 'hover:-translate-y-0.5 hover:bg-white/[0.07] active:scale-[0.99]' : 'cursor-default',
+        'card w-full p-[22px] text-left transition',
+        interactive ? 'hover:-translate-y-0.5 hover:bg-[#fdf9f1] active:scale-[0.99]' : 'cursor-default',
       ].join(' ')}
     >
-      <div
-        className={`pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${accent} opacity-30 blur-2xl`}
-      />
       <div className="flex items-center gap-4">
-        <div
-          className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${accent} text-2xl shadow-lg`}
-        >
-          <span aria-hidden>{icon}</span>
-        </div>
+        <Chip icon={icon} />
         <div className="min-w-0 flex-1">
-          <h3 className="text-lg font-bold">{title}</h3>
-          <p className="text-sm text-white/55">{subtitle}</p>
+          <h3 className="font-serif text-lg font-semibold text-espresso">{title}</h3>
+          <p className="text-sm text-taupe">{subtitle}</p>
           {progress && (
-            <div className="mt-2 flex items-center gap-2">
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
+            <div className="mt-2.5 flex items-center gap-2">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-sand">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-sky-400 to-indigo-400"
+                  className="h-full rounded-full bg-brown"
                   style={{ width: `${Math.min(1, progress.value) * 100}%` }}
                 />
               </div>
-              <span className="text-xs tabular-nums text-white/50">{progress.label}</span>
+              <span className="text-xs tabular-nums text-taupe">{progress.label}</span>
             </div>
           )}
         </div>
-        {interactive && (
-          <span className="text-white/40 transition group-hover:translate-x-1 group-hover:text-white">→</span>
-        )}
+        {interactive && <span className="text-brown/50">→</span>}
       </div>
     </button>
   );
@@ -242,33 +231,24 @@ function GameCard({
       disabled={disabled}
       onClick={() => onSelect(game.id)}
       className={[
-        'group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-5 text-left transition',
-        disabled ? 'cursor-not-allowed opacity-70' : 'hover:-translate-y-0.5 hover:bg-white/[0.07] active:scale-[0.99]',
+        'card w-full p-[22px] text-left transition',
+        disabled ? 'cursor-not-allowed opacity-70' : 'hover:-translate-y-0.5 hover:bg-[#fdf9f1] active:scale-[0.99]',
       ].join(' ')}
     >
-      <div
-        className={`pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${game.accent} opacity-30 blur-2xl`}
-      />
       <div className="flex items-start gap-4">
-        <div
-          className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${game.accent} text-2xl shadow-lg`}
-        >
-          <span aria-hidden>{game.icon}</span>
-        </div>
+        <Chip icon={game.icon} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="truncate text-lg font-bold">{game.title}</h3>
+            <h3 className="truncate font-serif text-lg font-semibold text-espresso">{game.title}</h3>
             {game.status === 'coming-soon' && <Badge>Soon</Badge>}
-            {locked && game.status === 'available' && <Badge>🔒 Locked</Badge>}
+            {locked && game.status === 'available' && <Badge>Locked</Badge>}
           </div>
-          <p className="text-sm font-medium text-sky-200/70">{game.subtitle}</p>
-          <p className="mt-1 text-sm text-white/55">
+          <p className="text-sm font-medium text-brown/80">{game.subtitle}</p>
+          <p className="mt-1 text-sm text-taupe">
             {locked && game.status === 'available' ? 'Finish Set 1 in Learn to unlock.' : game.description}
           </p>
         </div>
-        {!disabled && (
-          <span className="mt-1 text-white/40 transition group-hover:translate-x-1 group-hover:text-white">→</span>
-        )}
+        {!disabled && <span className="mt-1 text-brown/50">→</span>}
       </div>
     </button>
   );
@@ -276,7 +256,7 @@ function GameCard({
 
 function Badge({ children }: { children: ReactNode }) {
   return (
-    <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white/60">
+    <span className="rounded-full bg-sand px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-taupe">
       {children}
     </span>
   );
