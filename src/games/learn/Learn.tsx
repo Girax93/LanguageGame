@@ -1,35 +1,41 @@
 import { useEffect, useState } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
-import { SETS, ALL_WORDS, wordById, type VocabWord } from '../../content/vocab';
-import { PROGRESSION } from '../../state/progressionConfig';
+import { SETS, ALL_WORDS, wordById, type VocabWord, type Gender } from '../../content/vocab';
 import { wordsToStudy, currentLearnSetIndex } from '../../state/progression';
 import { shuffle, sampleExcluding } from '../../lib/array';
 import { Button } from '../../components/ui/Button';
 import { ProgressBar } from '../../components/ui/ProgressBar';
-import { HomeIcon } from '../../components/ui/icons';
+import { ChevronLeft, HomeIcon } from '../../components/ui/icons';
 
-type Mode = 'recognition' | 'recall';
-
-interface Turn {
-  word: VocabWord;
-  mode: Mode;
-  prompt: string;
-  answer: string;
-  options: string[];
+/** Nouns are always shown with their article — "der Hund", never "Hund". */
+function articleFor(g?: Gender): string | null {
+  return g === 'm' ? 'der' : g === 'f' ? 'die' : g === 'n' ? 'das' : null;
+}
+export function germanWithArticle(w: VocabWord): string {
+  const a = articleFor(w.gender);
+  return a ? `${a} ${w.de}` : w.de;
 }
 
-function makeTurn(studyIds: string[]): Turn | null {
+interface Step {
+  word: VocabWord;
+  enOptions: string[];
+  deOptions: string[];
+}
+
+function makeStep(studyIds: string[]): Step | null {
   if (studyIds.length === 0) return null;
   const id = studyIds[Math.floor(Math.random() * studyIds.length)];
   const word = wordById(id)!;
-  const mode: Mode = Math.random() < 0.5 ? 'recognition' : 'recall';
-  const prompt = mode === 'recognition' ? word.de : word.en;
-  const answer = mode === 'recognition' ? word.en : word.de;
-  const pool = ALL_WORDS.map((w) => (mode === 'recognition' ? w.en : w.de));
-  const options = shuffle([answer, ...sampleExcluding(pool, [answer], 3)]);
-  return { word, mode, prompt, answer, options };
+  const enPool = ALL_WORDS.map((w) => w.en);
+  const enOptions = shuffle([word.en, ...sampleExcluding(enPool, [word.en], 3)]);
+  const dePool = ALL_WORDS.map((w) => germanWithArticle(w));
+  const correctDe = germanWithArticle(word);
+  const deOptions = shuffle([correctDe, ...sampleExcluding(dePool, [correctDe], 3)]);
+  return { word, enOptions, deOptions };
 }
+
+type Round = 1 | 2 | 3;
 
 export function Learn({ onExit, onMain }: GameProps) {
   const { state, answerWord } = usePlayer();
@@ -37,29 +43,38 @@ export function Learn({ onExit, onMain }: GameProps) {
   const setIdx = currentLearnSetIndex(state, SETS);
   const currentSet = setIdx !== null ? SETS[setIdx] : null;
 
-  const [turn, setTurn] = useState<Turn | null>(() => makeTurn(study));
+  const [step, setStep] = useState<Step | null>(() => makeStep(study));
+  const [round, setRound] = useState<Round>(1);
   const [picked, setPicked] = useState<string | null>(null);
 
+  // Build the next step once the current one is cleared and words remain.
   useEffect(() => {
-    if (turn === null && picked === null && study.length > 0) {
-      setTurn(makeTurn(study));
+    if (step === null && study.length > 0) {
+      setStep(makeStep(study));
+      setRound(1);
+      setPicked(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [turn, picked, study.length]);
+  }, [step, study.length]);
 
   const setSize = currentSet ? currentSet.words.length : 0;
   const masteredInSet = currentSet
     ? currentSet.words.filter((w) => state.learnedWords.includes(w.id)).length
     : setSize;
 
-  function choose(option: string) {
-    if (!turn || picked) return;
+  function pick(option: string, answer: string) {
+    if (picked) return;
     setPicked(option);
-    answerWord(turn.word.id, option === turn.answer);
+    answerWord(step!.word.id, option === answer);
   }
-  function next() {
-    setPicked(null);
-    setTurn(null);
+  function advance() {
+    if (round === 2) {
+      setRound(3);
+      setPicked(null);
+    } else {
+      setStep(null);
+      setPicked(null);
+    }
   }
 
   return (
@@ -67,14 +82,12 @@ export function Learn({ onExit, onMain }: GameProps) {
       <div className="mb-4 flex items-center justify-between">
         <button
           onClick={onExit}
-          className="rounded-full p-2 text-taupe transition hover:bg-sand hover:text-espresso"
-          aria-label="Back to home"
+          aria-label="Back"
+          className="-ml-2 rounded-full p-2 text-taupe transition hover:bg-sand hover:text-espresso"
         >
-          ←
+          <ChevronLeft />
         </button>
-        <h2 className="eyebrow">
-          {currentSet ? `Learn · Set ${currentSet.index + 1}` : 'Learn'}
-        </h2>
+        <h2 className="eyebrow">{currentSet ? `Learn · Set ${currentSet.index + 1}` : 'Learn'}</h2>
         <div className="flex items-center gap-1">
           <span className="text-xs tabular-nums text-taupe">
             {masteredInSet}/{setSize}
@@ -92,78 +105,122 @@ export function Learn({ onExit, onMain }: GameProps) {
       </div>
       <ProgressBar value={setSize === 0 ? 1 : masteredInSet / setSize} />
 
-      {turn === null ? (
+      {step === null ? (
         <div className="flex flex-1 flex-col items-center justify-center text-center animate-pop-in">
           <div className="text-4xl text-brown">✦</div>
           <h3 className="mt-5 font-serif text-2xl font-semibold text-espresso">Set complete!</h3>
           <p className="mt-2 max-w-xs text-taupe">
-            You’ve mastered this set. Win {PROGRESSION.gamesToAdvance} Cipher or
-            Grammar levels to unlock the next one.
+            You’ve mastered every word in this set. Win games in Practice to unlock the next one.
           </p>
           <Button className="mt-8" onClick={onExit}>
-            Back to home
+            Back
           </Button>
         </div>
       ) : (
-        <div className="flex flex-1 flex-col">
-          <div className="mt-10 text-center">
-            <p className="eyebrow">
-              {turn.mode === 'recognition' ? 'What does this mean?' : 'Say it in German'}
-            </p>
-            <p className="mt-4 font-serif text-4xl font-semibold text-espresso">{turn.prompt}</p>
-            {turn.mode === 'recall' && turn.word.gender && (
-              <p className="mt-1 text-sm text-taupe">({genderLabel(turn.word.gender)})</p>
-            )}
-          </div>
-
-          <div className="mt-auto grid grid-cols-1 gap-3 pt-8 sm:grid-cols-2">
-            {turn.options.map((option) => (
-              <button
-                key={option}
-                onClick={() => choose(option)}
-                disabled={picked !== null}
-                className={optionClasses(optionState(option, picked, turn.answer))}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-
-          {picked !== null && (
-            <div className="mt-5 animate-fade-in">
-              <p
-                className={`mb-3 text-center font-semibold ${
-                  picked === turn.answer ? 'text-sage' : 'text-terracotta'
-                }`}
-              >
-                {picked === turn.answer
-                  ? justMastered(state, turn.word.id)
-                    ? 'Mastered! ✅'
-                    : 'Correct! ✓'
-                  : `Answer: ${turn.answer}`}
-              </p>
-              <Button className="w-full" onClick={next}>
-                Continue →
-              </Button>
-            </div>
-          )}
-        </div>
+        <Round123
+          step={step}
+          round={round}
+          picked={picked}
+          onIntroNext={() => setRound(2)}
+          onPick={pick}
+          onAdvance={advance}
+        />
       )}
     </div>
   );
 }
 
-function genderLabel(g: 'm' | 'f' | 'n'): string {
-  return g === 'm' ? 'der' : g === 'f' ? 'die' : 'das';
+function RoundDots({ round }: { round: Round }) {
+  return (
+    <div className="flex items-center justify-center gap-1.5">
+      {[1, 2, 3].map((n) => (
+        <span
+          key={n}
+          className={`h-1.5 w-1.5 rounded-full ${n <= round ? 'bg-brown' : 'bg-given/50'}`}
+        />
+      ))}
+    </div>
+  );
 }
 
-function justMastered(
-  state: { learnedWords: string[]; wordProgress: Record<string, number> },
-  wordId: string,
-): boolean {
+function Round123({
+  step,
+  round,
+  picked,
+  onIntroNext,
+  onPick,
+  onAdvance,
+}: {
+  step: Step;
+  round: Round;
+  picked: string | null;
+  onIntroNext: () => void;
+  onPick: (option: string, answer: string) => void;
+  onAdvance: () => void;
+}) {
+  const de = germanWithArticle(step.word);
+
+  if (round === 1) {
+    return (
+      <div className="flex flex-1 flex-col">
+        <div className="mt-6">
+          <RoundDots round={1} />
+        </div>
+        <div className="flex flex-1 flex-col items-center justify-center text-center">
+          <p className="eyebrow">New word</p>
+          <p className="mt-4 font-serif text-4xl font-semibold text-espresso">{de}</p>
+          <p className="mt-3 text-xl text-taupe">{step.word.en}</p>
+        </div>
+        <Button className="mt-6 w-full" onClick={onIntroNext}>
+          Next →
+        </Button>
+      </div>
+    );
+  }
+
+  const prompt = round === 2 ? de : step.word.en;
+  const answer = round === 2 ? step.word.en : de;
+  const options = round === 2 ? step.enOptions : step.deOptions;
+  const label = round === 2 ? 'What does this mean?' : 'Say it in German';
+
   return (
-    state.learnedWords.includes(wordId) ||
-    (state.wordProgress[wordId] ?? 0) >= PROGRESSION.masteryThreshold
+    <div className="flex flex-1 flex-col">
+      <div className="mt-6">
+        <RoundDots round={round} />
+      </div>
+      <div className="mt-8 text-center">
+        <p className="eyebrow">{label}</p>
+        <p className="mt-4 font-serif text-4xl font-semibold text-espresso">{prompt}</p>
+      </div>
+
+      <div className="mt-auto grid grid-cols-1 gap-3 pt-8 sm:grid-cols-2">
+        {options.map((option) => (
+          <button
+            key={option}
+            onClick={() => onPick(option, answer)}
+            disabled={picked !== null}
+            className={optionClasses(optionState(option, picked, answer))}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+
+      {picked !== null && (
+        <div className="mt-5 animate-fade-in">
+          <p
+            className={`mb-3 text-center font-semibold ${
+              picked === answer ? 'text-sage' : 'text-terracotta'
+            }`}
+          >
+            {picked === answer ? 'Correct! ✓' : `Answer: ${answer}`}
+          </p>
+          <Button className="w-full" onClick={onAdvance}>
+            Continue →
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }
 
