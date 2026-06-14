@@ -6,7 +6,7 @@
   "description": "A growing collection of language-learning mini-games. First game: German fill-in-the-blanks.",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "cap:sync": "cap sync",
