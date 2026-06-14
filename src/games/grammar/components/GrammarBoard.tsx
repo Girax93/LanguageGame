@@ -61,7 +61,7 @@ export function GrammarBoard({ item, controls }: Props) {
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex min-h-0 flex-1 flex-col justify-center overflow-y-auto">
         <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-2 font-serif text-2xl font-semibold text-espresso">
-          {item.before && <span className="text-espresso">{item.before}</span>}
+          {item.before && <span className="flex h-11 items-center text-espresso sm:h-12">{item.before}</span>}
           {stemChars.map((c, i) => (
             <Cell key={`s${i}`} char={c} kind="given" />
           ))}
@@ -81,7 +81,7 @@ export function GrammarBoard({ item, controls }: Props) {
               onClick={() => !filled.has(i) && setSelected(i)}
             />
           ))}
-          {item.after && <span className="text-espresso">{item.after}</span>}
+          {item.after && <span className="flex h-11 items-center text-espresso sm:h-12">{item.after}</span>}
         </div>
       </div>
 
