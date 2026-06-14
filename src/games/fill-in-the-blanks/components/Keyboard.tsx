@@ -27,7 +27,7 @@ export function Keyboard({ onKey, stateFor, disabled = false }: Props) {
   return (
     <div className="select-none space-y-1.5">
       {ROWS.map((row, r) => (
-        <div key={r} className="flex justify-center gap-1.5">
+        <div key={r} className="flex justify-center gap-1">
           {row.map((letter) => {
             const state = stateFor(letter);
             const isDisabled = disabled || state === 'disabled';
@@ -38,9 +38,9 @@ export function Keyboard({ onKey, stateFor, disabled = false }: Props) {
                 disabled={isDisabled}
                 onClick={() => onKey(letter)}
                 className={[
-                  'h-11 min-w-[2rem] flex-1 rounded-lg text-base font-semibold',
+                  'h-11 min-w-0 flex-1 rounded-lg text-[15px] font-semibold',
                   'transition active:scale-95 disabled:cursor-default disabled:active:scale-100',
-                  'max-w-[2.75rem]',
+                  'max-w-[2.6rem]',
                   KEY_STYLES[state],
                 ].join(' ')}
               >

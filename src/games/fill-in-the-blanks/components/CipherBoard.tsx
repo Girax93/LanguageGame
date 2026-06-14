@@ -146,7 +146,7 @@ export function CipherBoard({ item, flags, controls }: Props) {
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col items-center gap-4">
+      <div className="sticky bottom-0 z-10 mt-4 flex flex-col items-center gap-3 border-t border-line bg-page pt-3 pb-2">
         <button
           type="button"
           onClick={() => setShowHint((s) => !s)}
