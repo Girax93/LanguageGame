@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { CROSSWORDS, type CrosswordContentItem } from '../../content/crosswords';
@@ -10,7 +11,12 @@ export function Crossword({ onExit, onOpenSettings, onMain, scope = 'recap' }: G
   const { state } = usePlayer();
   // Crosswords need several intersecting words, so they always draw from the
   // full mastered pool (strict gate: a puzzle needs ALL its answers learned).
-  const items: CrosswordContentItem[] = shuffle(CROSSWORDS.filter((p) => isItemEligible(p, state)));
+  // Memoized so the per-second focus tick doesn't re-shuffle the round mid-game.
+  const items: CrosswordContentItem[] = useMemo(
+    () => shuffle(CROSSWORDS.filter((p) => isItemEligible(p, state))),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state.learnedWords],
+  );
 
   return (
     <LevelStage
