@@ -55,12 +55,18 @@ export default {
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
         'fade-in': { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+        'focus-drop': {
+          '0%': { transform: 'translateY(-6px) scale(1.35)', opacity: '1' },
+          '55%': { transform: 'translateY(3px) scale(1)', opacity: '1' },
+          '100%': { transform: 'translateY(0) scale(0.8)', opacity: '0.3' },
+        },
       },
       animation: {
         'pop-in': 'pop-in 0.25s ease-out',
         shake: 'shake 0.4s ease-in-out',
         'slide-up': 'slide-up 0.35s ease-out',
         'fade-in': 'fade-in 0.4s ease-out',
+        'focus-drop': 'focus-drop 0.7s ease-out forwards',
       },
     },
   },

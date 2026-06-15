@@ -361,7 +361,9 @@ export function CrosswordBoard({ item, controls }: Props) {
   const down = built.entries.filter((e) => e.dir === 'down');
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col">
+      {/* top region: clue bar + grid + clues overlay; the keyboard sits below and is never covered */}
+      <div className="relative flex min-h-0 flex-1 flex-col">
       {/* selected clue + controls */}
       <div className="mb-3 flex shrink-0 items-center gap-2">
         <p className="min-w-0 flex-1 text-sm text-espresso">
@@ -444,13 +446,21 @@ export function CrosswordBoard({ item, controls }: Props) {
         </div>
       </div>
 
-      {/* keyboard */}
-      <div className="mt-4 shrink-0 border-t border-line bg-page pt-3 pb-2">
-        <Keyboard onKey={pressLetter} stateFor={() => 'idle'} />
-      </div>
+      {/* peek handle — a sliver of the clues pane stays on the left edge; tap to open */}
+      {!showClues && (
+        <button
+          type="button"
+          onClick={() => setShowClues(true)}
+          aria-label="Open clues"
+          className="absolute left-0 top-1/2 z-30 flex -translate-y-1/2 items-center gap-1 rounded-r-xl border border-l-0 border-line bg-card py-5 pl-1.5 pr-2 text-taupe shadow-lg transition hover:bg-sand"
+        >
+          <span className="text-[10px] font-semibold uppercase tracking-[0.15em] [writing-mode:vertical-rl] rotate-180">Clues</span>
+          <span aria-hidden>❯</span>
+        </button>
+      )}
 
       {/* clues — slide-out pane from the left with its own background */}
-      <div className={`absolute inset-0 z-20 ${showClues ? '' : 'pointer-events-none'}`}>
+      <div className={`absolute inset-0 z-20 overflow-hidden ${showClues ? '' : 'pointer-events-none'}`}>
         <div
           className={`absolute inset-0 bg-espresso/25 transition-opacity duration-200 ${showClues ? 'opacity-100' : 'opacity-0'}`}
           onClick={() => setShowClues(false)}
@@ -492,6 +502,12 @@ export function CrosswordBoard({ item, controls }: Props) {
             <ClueGroup title={lang === 'de' ? 'Senkrecht' : 'Down'} entries={down} selEntry={selEntry} onPick={selectClue} done={sageCells} lang={lang} />
           </div>
         </div>
+      </div>
+      </div>
+
+      {/* keyboard — outside the clues overlay so it is never covered */}
+      <div className="mt-4 shrink-0 border-t border-line bg-page pt-3 pb-2">
+        <Keyboard onKey={pressLetter} stateFor={() => 'idle'} />
       </div>
     </div>
   );

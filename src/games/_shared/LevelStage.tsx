@@ -4,7 +4,6 @@ import { ECONOMY } from '../../state/economyConfig';
 import { canStartLevel, timeToNextFocusMs } from '../../state/focus';
 import { Button } from '../../components/ui/Button';
 import { Hearts } from '../../components/ui/Hearts';
-import { FocusPips } from '../../components/ui/FocusPips';
 import { ChevronLeft, HomeIcon } from '../../components/ui/icons';
 
 /** A board reports outcomes through these; LevelStage owns lives + flow. */
@@ -110,6 +109,7 @@ export function LevelStage<T extends { id: string }>({
     return (
       <Centered onBack={onExit} icon="○" title="Out of lives"
         body={state.subscribed ? 'Pro keeps your focus full.' : `That cost ${ECONOMY.focusCostOnFail} focus.`}
+        extra={state.subscribed ? undefined : <FocusDrop focus={state.focus} max={ECONOMY.focusMax} />}
         primary={{ label: 'Try again', onClick: retry }} />
     );
   }
@@ -133,7 +133,7 @@ export function LevelStage<T extends { id: string }>({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      {/* slim HUD: back · hearts · focus pips */}
+      {/* slim HUD: back · hearts */}
       <div className="mb-6 flex shrink-0 items-center justify-between">
         <button
           onClick={onExit}
@@ -144,7 +144,6 @@ export function LevelStage<T extends { id: string }>({
         </button>
         <div className="flex items-center gap-3">
           <Hearts total={ECONOMY.livesPerLevel} remaining={lives} />
-          <FocusPips focus={state.focus} max={ECONOMY.focusMax} subscribed={state.subscribed} />
         </div>
         {onMain ? (
           <button
@@ -206,6 +205,28 @@ function Centered({
           {primary.label}
         </Button>
       </div>
+    </div>
+  );
+}
+
+/**
+ * One-shot animation for the "Out of lives" screen: the focus pip the player
+ * just spent pops and fades out, so the focus economy is still felt without a
+ * persistent in-game meter. `focus` is the value AFTER the loss, so the pip at
+ * that index is the one that just dropped.
+ */
+function FocusDrop({ focus, max }: { focus: number; max: number }) {
+  return (
+    <div className="mt-6 flex items-center gap-2" aria-label={`Focus dropped to ${focus} of ${max}`}>
+      {Array.from({ length: max }, (_, i) => (
+        <span
+          key={i}
+          className={[
+            'h-2.5 w-2.5 rounded-full',
+            i < focus ? 'bg-ochre' : i === focus ? 'bg-ochre animate-focus-drop' : 'bg-given/40',
+          ].join(' ')}
+        />
+      ))}
     </div>
   );
 }
