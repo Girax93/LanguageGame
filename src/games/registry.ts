@@ -2,6 +2,7 @@ import type { GameModule } from './types';
 import { learnGame } from './learn';
 import { fillInTheBlanksGame } from './fill-in-the-blanks';
 import { grammarGame } from './grammar';
+import { crosswordGame } from './crossword';
 
 /**
  * Master list of games (order = home-screen order). The home screen applies
@@ -11,15 +12,7 @@ export const games: GameModule[] = [
   learnGame,
   fillInTheBlanksGame,
   grammarGame,
-  {
-    id: 'crossword',
-    title: 'Crossword',
-    subtitle: 'Vocabulary, interlocked',
-    description: 'Solve themed crosswords built from your learned words.',
-    icon: '🧩',
-    accent: 'from-emerald-500 to-teal-500',
-    status: 'coming-soon',
-  },
+  crosswordGame,
   {
     id: 'flashcards',
     title: 'Flashcards',

@@ -15,4 +15,5 @@ export type Route =
   | 'fill-in-the-blanks'
   | 'grammar'
   | 'recap-cipher'
-  | 'recap-grammar';
+  | 'recap-grammar'
+  | 'recap-crossword';

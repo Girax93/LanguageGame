@@ -128,11 +128,11 @@ export function App() {
   const practiceItems: MenuItem[] = [
     { icon: '🧠', label: 'Grammar', sublabel: 'Articles: der / die / das …', onClick: () => navigate('grammar') },
     { icon: '🔡', label: 'Letter Cipher', sublabel: 'Decode the sentence', onClick: () => navigate('fill-in-the-blanks') },
-    { icon: '🧩', label: 'Crosswords', sublabel: 'Interlocking vocabulary', badge: 'Coming', locked: true },
   ];
   const recapItems: MenuItem[] = [
     { icon: '🧠', label: 'Grammar', sublabel: 'Articles across everything you know', onClick: () => navigate('recap-grammar') },
     { icon: '🔡', label: 'Letter Cipher', sublabel: 'Sentences from your whole vocabulary', onClick: () => navigate('recap-cipher') },
+    { icon: '🧩', label: 'Crossword', sublabel: 'Interlocking grids from your vocabulary', onClick: () => navigate('recap-crossword') },
   ];
 
   let screen: ReactNode;
@@ -206,6 +206,13 @@ export function App() {
       ) : null;
       break;
     }
+    case 'recap-crossword': {
+      const Game = getGame('crossword')?.component;
+      screen = Game ? (
+        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
+      ) : null;
+      break;
+    }
     default:
       screen = <MenuScreen items={mainItems} />;
   }
@@ -214,7 +221,8 @@ export function App() {
     route === 'fill-in-the-blanks' ||
     route === 'grammar' ||
     route === 'recap-cipher' ||
-    route === 'recap-grammar';
+    route === 'recap-grammar' ||
+    route === 'recap-crossword';
 
   return (
     <div className="h-full bg-page text-espresso">
