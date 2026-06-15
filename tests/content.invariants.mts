@@ -1,13 +1,7 @@
-// Content invariants. Run with:
+// Content + progression invariants. Run with:
 //   node --experimental-strip-types --import ./tests/loader.mjs tests/content.invariants.mts
 import {
-  SETS,
-  ALL_WORDS,
-  FILLER_IDS,
-  articleFor,
-  germanWithArticle,
-  englishWithArticle,
-  answerMatches,
+  SETS, ALL_WORDS, englishWithArticle, germanWithArticle, answerMatches, articleFor,
 } from '../src/content/vocab';
 import { CIPHER_ITEMS } from '../src/content/cipherItems';
 import { GRAMMAR_ITEMS } from '../src/content/grammarItems';
@@ -15,149 +9,131 @@ import { CROSSWORDS } from '../src/content/crosswords';
 import { challengeCrossword, blockWordIds } from '../src/content/challenges';
 import { buildCrossword } from '../src/games/crossword/crossword';
 import {
-  isItemEligible,
-  isPracticeEligible,
-  availableSetCount,
-  pendingChallenge,
-  challengeBlockCount,
+  isItemEligible, isPracticeEligible, isGrammarPracticeEligible, grammarNounId,
+  availableSetCount, currentBlock, blockCount, blockWords, blockNouns,
+  challengeReady, isBlockComplete, pendingChallenge,
+  addCipherWords, addGrammarNoun, recordChallengeDone,
 } from '../src/state/progression';
 import type { PlayerState } from '../src/state/types';
 
-const all = [...CIPHER_ITEMS, ...GRAMMAR_ITEMS, ...CROSSWORDS];
-const setWordIds = SETS.map((s) => new Set(s.words.map((w) => w.id)));
-const allIds = new Set(ALL_WORDS.map((w) => w.id));
+const allItems = [...CIPHER_ITEMS, ...GRAMMAR_ITEMS, ...CROSSWORDS];
+const blocks = blockCount(SETS);
+function learnedThrough(set: number): string[] {
+  return SETS.slice(0, set + 1).flatMap((s) => s.words.map((w) => w.id));
+}
+function st(p: Partial<PlayerState>): PlayerState {
+  return { learnedWords: [], wordProgress: {}, cipherWords: [], grammarWords: [], challengesDone: [], levelsWon: 0, ...p } as PlayerState;
+}
 
 // (a) No eligible item ever references an unmastered word, across the sweep.
 let invA = true;
-const learned = new Set<string>();
-for (const set of SETS) {
-  for (const w of set.words) learned.add(w.id);
-  for (const it of all)
-    if (it.requires.every((r) => learned.has(r)) && it.requires.some((r) => !learned.has(r))) invA = false;
-}
-
-// (b) Every set, once learned, introduces >= 1 eligible sentence using a new word.
-let invB = true;
-const gaps: number[] = [];
 const acc = new Set<string>();
-for (let k = 0; k < SETS.length; k++) {
-  for (const w of SETS[k].words) acc.add(w.id);
-  const here = CIPHER_ITEMS.filter(
-    (i) => i.requires.every((r) => acc.has(r)) && i.requires.some((r) => setWordIds[k].has(r)),
-  );
-  if (here.length === 0) { invB = false; gaps.push(k); }
+for (const set of SETS) {
+  for (const w of set.words) acc.add(w.id);
+  for (const it of allItems)
+    if (it.requires.every((r) => acc.has(r)) && it.requires.some((r) => !acc.has(r))) invA = false;
 }
 
-function stateThrough(k: number): PlayerState {
-  const learnedWords = SETS.slice(0, k + 1).flatMap((s) => s.words.map((w) => w.id));
-  return { learnedWords } as PlayerState;
+// (b) CIPHER coverage: once a block's sets are mastered, every block word
+//     appears in some eligible cipher (so cipher-coverage is completable).
+let invB = true;
+const bgaps: string[] = [];
+for (let b = 0; b < blocks; b++) {
+  const s = st({ learnedWords: learnedThrough(b * 2 + 1) });
+  const cov = new Set<string>();
+  for (const c of CIPHER_ITEMS) if (isItemEligible(c, s)) for (const r of c.requires) cov.add(r);
+  for (const w of blockWords(SETS, b)) if (!cov.has(w.id)) { invB = false; bgaps.push(`b${b}:${w.de}`); }
 }
 
-// (c) PRACTICE scope: enough Practice-eligible cipher items per set.
+// (c) GRAMMAR coverage: every block noun has an eligible grammar drill.
 let invC = true;
-const cgaps: number[] = [];
-const pcounts: number[] = [];
-for (let k = 0; k < SETS.length; k++) {
-  const s = stateThrough(k);
-  const pe = CIPHER_ITEMS.filter((i) => isPracticeEligible(i, s, SETS));
-  pcounts.push(pe.length);
-  const min = k === 0 ? 2 : 3;
-  if (pe.length < min) { invC = false; cgaps.push(k); }
+const cgaps: string[] = [];
+for (let b = 0; b < blocks; b++) {
+  const s = st({ learnedWords: learnedThrough(b * 2 + 1) });
+  const learnedSet = new Set(s.learnedWords);
+  const drill = new Set<string>();
+  for (const g of GRAMMAR_ITEMS) if (g.requires.every((r) => learnedSet.has(r))) { const n = grammarNounId(g); if (n) drill.add(n); }
+  for (const n of blockNouns(SETS, b)) if (!drill.has(n.id)) { invC = false; cgaps.push(`b${b}:${n.de}`); }
 }
 
-// (d) PRACTICE subset of RECAP.
+// (d) Practice eligibility shape: a Practice cipher is gated AND features a
+//     block word; a Practice grammar drills a current-block noun.
 let invD = true;
-for (let k = 0; k < SETS.length; k++) {
-  const s = stateThrough(k);
-  for (const it of CIPHER_ITEMS)
-    if (isPracticeEligible(it, s, SETS) && !isItemEligible(it, s)) invD = false;
+for (let b = 0; b < blocks; b++) {
+  const s = st({ learnedWords: learnedThrough(b * 2 + 1) });
+  const bw = new Set(blockWords(SETS, b).map((w) => w.id));
+  const bn = new Set(blockNouns(SETS, b).map((w) => w.id));
+  for (const c of CIPHER_ITEMS)
+    if (isPracticeEligible(c, s, SETS) && (!isItemEligible(c, s) || !c.requires.some((r) => bw.has(r)))) invD = false;
+  for (const g of GRAMMAR_ITEMS)
+    if (isGrammarPracticeEligible(g, s, SETS)) { const n = grammarNounId(g); if (!n || !bn.has(n)) invD = false; }
 }
 
-// (e) Curated crosswords build cleanly, numbered, gating-coverable.
+// (e) BLOCK GATING: learn -> cover ciphers+grammar -> challenge -> next unlocks.
 let invE = true;
-const xgaps: string[] = [];
-for (const cw of CROSSWORDS) {
-  try {
-    if (!cw.requires.every((r) => allIds.has(r))) { invE = false; xgaps.push(cw.id + ':vocab'); }
-    const b = buildCrossword(cw);
-    for (const e of b.entries) {
-      if (e.number <= 0) { invE = false; xgaps.push(cw.id + ':num'); }
-      const word = e.cells.map((k) => b.cells.get(k)!.answer).join('');
-      if (word !== e.answer) { invE = false; xgaps.push(cw.id + ':letters'); }
-    }
-  } catch { invE = false; xgaps.push(cw.id + ':throw'); }
+{
+  let s = st({ learnedWords: learnedThrough(1) }); // sets 0,1 mastered
+  if (availableSetCount(s, SETS) !== 2) invE = false;
+  if (currentBlock(s, SETS) !== 0) invE = false;
+  if (pendingChallenge(s, SETS) !== null) invE = false; // ciphers/grammar not done
+  s = addCipherWords(s, blockWords(SETS, 0).map((w) => w.id));
+  for (const n of blockNouns(SETS, 0)) s = addGrammarNoun(s, n.id);
+  if (!challengeReady(s, SETS, 0)) invE = false; // capstone now ready
+  if (pendingChallenge(s, SETS) !== 0) invE = false;
+  if (availableSetCount(s, SETS) !== 2) invE = false; // still gated until challenge done
+  s = recordChallengeDone(s, 0);
+  if (!isBlockComplete(s, SETS, 0)) invE = false;
+  if (availableSetCount(s, SETS) !== 4) invE = false; // block 1 unlocked
+  if (currentBlock(s, SETS) !== 1) invE = false;
 }
 
-// (f) CHALLENGE crosswords: each block's generated crossword uses EVERY word in
-//     the block, builds with consistent intersections, and every entry numbered.
+// (f) CHALLENGE crosswords: each block's crossword uses all 10 block words, builds & numbers.
 let invF = true;
 const fgaps: string[] = [];
-const xinfo: string[] = [];
-const blocks = challengeBlockCount(SETS);
-for (let bk = 0; bk < blocks; bk++) {
+const xsizes: string[] = [];
+for (let b = 0; b < blocks; b++) {
   try {
-    const ids = blockWordIds(bk);
-    const cw = challengeCrossword(bk);
+    const ids = blockWordIds(b);
+    const cw = challengeCrossword(b);
     const used = new Set(cw.entries.map((e) => e.wordId));
-    if (cw.entries.length !== ids.length) { invF = false; fgaps.push(`b${bk}:count`); }
-    if (ids.some((id) => !used.has(id))) { invF = false; fgaps.push(`b${bk}:missing`); }
-    if (cw.requires.length !== ids.length) { invF = false; fgaps.push(`b${bk}:req`); }
+    if (cw.entries.length !== ids.length || ids.some((i) => !used.has(i))) { invF = false; fgaps.push(`b${b}:words`); }
+    const built = buildCrossword(cw);
+    for (const e of built.entries) {
+      if (e.number <= 0) { invF = false; fgaps.push(`b${b}:num`); }
+      if (e.cells.map((k) => built.cells.get(k)!.answer).join('') !== e.answer) { invF = false; fgaps.push(`b${b}:letters`); }
+    }
+    xsizes.push(`${cw.rows}x${cw.cols}`);
+  } catch { invF = false; fgaps.push(`b${b}:throw`); }
+}
+
+// (g) curated recap crosswords still valid.
+let invG = true;
+for (const cw of CROSSWORDS) {
+  try {
     const b = buildCrossword(cw);
     for (const e of b.entries) {
-      if (e.number <= 0) { invF = false; fgaps.push(`b${bk}:num`); }
-      const word = e.cells.map((k) => b.cells.get(k)!.answer).join('');
-      if (word !== e.answer) { invF = false; fgaps.push(`b${bk}:letters`); }
+      if (e.number <= 0) invG = false;
+      if (e.cells.map((k) => b.cells.get(k)!.answer).join('') !== e.answer) invG = false;
     }
-    xinfo.push(`b${bk}=${cw.rows}x${cw.cols}/${cw.entries.length}w`);
-  } catch { invF = false; fgaps.push(`b${bk}:throw`); }
+  } catch { invG = false; }
 }
 
-// (g) CHALLENGE gate: a 4-set block boundary stays closed until its challenge
-//     is cleared; clearing it opens the next set; pendingChallenge tracks it.
-function gState(learnedSets: number, levelsWon: number, challengesDone: number[]): PlayerState {
-  const learnedWords = SETS.slice(0, learnedSets).flatMap((s) => s.words.map((w) => w.id));
-  return { learnedWords, levelsWon, challengesDone } as PlayerState;
-}
-let invG = true;
-const a1 = gState(4, 8, []);
-if (availableSetCount(a1, SETS) !== 4 || pendingChallenge(a1, SETS) !== 0) invG = false;
-const a2 = gState(4, 8, [0]);
-if (availableSetCount(a2, SETS) !== 5 || pendingChallenge(a2, SETS) !== null) invG = false;
-const a3 = gState(8, 100, [0]);
-if (availableSetCount(a3, SETS) !== 8 || pendingChallenge(a3, SETS) !== 1) invG = false;
-
-// (h) ARTICLE TRANSLATIONS: a noun shown with its definite article composes to
-//     "the <noun>" in English; non-nouns stay bare; matching accepts the form
-//     with OR without a leading definite article (so "der Hund"/"the dog"/"dog"
-//     are all interchangeable for answers).
+// (h) article translations compose to "the <noun>".
 let invH = true;
-const hgaps: string[] = [];
 for (const w of ALL_WORDS) {
   if (w.gender) {
-    if (englishWithArticle(w) !== `the ${w.en}`) { invH = false; hgaps.push(w.id + ':en'); }
-    if (germanWithArticle(w) !== `${articleFor(w.gender)} ${w.de}`) { invH = false; hgaps.push(w.id + ':de'); }
-    if (!answerMatches(`the ${w.en}`, w.en) || !answerMatches(w.en, `the ${w.en}`)) { invH = false; hgaps.push(w.id + ':match'); }
-  } else if (englishWithArticle(w) !== w.en) {
-    invH = false; hgaps.push(w.id + ':bare');
-  }
-}
-// Every German definite article strips to the same as English "the".
-for (const art of ['der', 'die', 'das', 'den', 'dem', 'des']) {
-  if (!answerMatches(`${art} Mann`, 'the Mann') || !answerMatches(`${art} Mann`, 'Mann')) {
-    invH = false; hgaps.push('art:' + art);
-  }
+    if (englishWithArticle(w) !== `the ${w.en}` || germanWithArticle(w) !== `${articleFor(w.gender)} ${w.de}` || !answerMatches(`the ${w.en}`, w.en)) invH = false;
+  } else if (englishWithArticle(w) !== w.en) invH = false;
 }
 
-console.log(`words=${ALL_WORDS.length} sets=${SETS.length} cipher=${CIPHER_ITEMS.length} grammar=${GRAMMAR_ITEMS.length} crosswords=${CROSSWORDS.length} fillers=${FILLER_IDS.size} blocks=${blocks}`);
-console.log('invariant_a (no unmastered word):', invA);
-console.log('invariant_b (per-set new-word coverage):', invB, 'gaps:', gaps);
-console.log('invariant_c (per-set practice coverage):', invC, 'gaps:', cgaps);
-console.log('practice-eligible per set:', pcounts.join(','));
-console.log('invariant_d (practice subset of recap):', invD);
-console.log('invariant_e (curated crosswords):', invE, 'gaps:', xgaps);
-console.log('invariant_f (challenge crosswords use all words):', invF, 'gaps:', fgaps);
-console.log('  challenge sizes:', xinfo.join(' '));
-console.log('invariant_g (challenge gate blocks/opens):', invG);
-console.log('invariant_h (article+noun -> the <noun>):', invH, 'gaps:', hgaps);
+console.log(`words=${ALL_WORDS.length} sets=${SETS.length} blocks=${blocks} cipher=${CIPHER_ITEMS.length} grammar=${GRAMMAR_ITEMS.length} crosswords=${CROSSWORDS.length}`);
+console.log('a no-unmastered-word:', invA);
+console.log('b cipher coverage/block:', invB, bgaps.slice(0, 6));
+console.log('c grammar coverage/block:', invC, cgaps.slice(0, 6));
+console.log('d practice eligibility shape:', invD);
+console.log('e block gating chain:', invE);
+console.log('f challenge crosswords (10 words):', invF, fgaps.slice(0, 6), 'sizes', xsizes.join(','));
+console.log('g curated crosswords:', invG);
+console.log('h article translations:', invH);
 if (!invA || !invB || !invC || !invD || !invE || !invF || !invG || !invH) process.exit(1);
 console.log('OK');

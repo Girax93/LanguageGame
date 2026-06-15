@@ -17,7 +17,12 @@ import {
   buyFocusRefill,
   setSubscribed as setSubscribedPure,
 } from './focus';
-import { recordWordAnswer, recordChallengeDone } from './progression';
+import {
+  recordWordAnswer,
+  recordChallengeDone,
+  addCipherWords,
+  addGrammarNoun,
+} from './progression';
 
 interface PlayerContextValue {
   state: PlayerState;
@@ -32,6 +37,10 @@ interface PlayerContextValue {
   recordLevel: (won: boolean, countsTowardGate?: boolean) => void;
   /** Mark the given challenge block cleared. */
   recordChallenge: (block: number) => void;
+  /** Mark words used in a solved Practice cipher (block cipher-coverage). */
+  recordCipherWords: (ids: string[]) => void;
+  /** Mark a noun's article drilled in a solved Practice grammar (coverage). */
+  recordGrammarNoun: (id: string | undefined) => void;
   buyFocus: () => void;
   setSubscribed: (value: boolean) => void;
   resetProgress: () => void;
@@ -72,6 +81,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
           (countsTowardGate ? recordLevelResult : recordLevelResultNoGate)(s, won, Date.now()),
         ),
       recordChallenge: (block) => setState((s) => recordChallengeDone(s, block)),
+      recordCipherWords: (ids) => setState((s) => addCipherWords(s, ids)),
+      recordGrammarNoun: (id) => setState((s) => addGrammarNoun(s, id)),
       buyFocus: () => setState((s) => buyFocusRefill(s, Date.now())),
       setSubscribed: (v) => setState((s) => setSubscribedPure(s, v, Date.now())),
       resetProgress: () => {

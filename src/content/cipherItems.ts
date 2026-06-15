@@ -103,6 +103,7 @@ const RAW: RawCipher[] = [
   { id: 'c-086', sentence: "Vielleicht kommt der Hund.", translation: "Maybe the dog is coming." },
   { id: 'c-087', sentence: "Das Kind ist in der Schule.", translation: "The child is at school." },
   { id: 'c-088', sentence: "Der Freund wohnt in der Stadt.", translation: "The friend lives in the city." },
+  { id: 'c-089', sentence: "Der Mann trinkt Kaffee, aber das Kind trinkt Wasser.", translation: "The man drinks coffee, but the child drinks water." },
 ];
 
 export const CIPHER_ITEMS: CipherContentItem[] = RAW.map((r) => {

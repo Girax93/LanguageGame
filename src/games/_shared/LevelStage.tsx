@@ -22,8 +22,8 @@ interface Props<T> {
   onMain?: () => void;
   /** When false, a win does not advance the unlock gate (used by Recap). */
   countsTowardGate?: boolean;
-  /** Extra callback fired when a level is won (e.g. mark a challenge cleared). */
-  onWin?: () => void;
+  /** Extra callback fired with the solved item when a level is won. */
+  onWin?: (item: T) => void;
   renderBoard: (item: T, controls: BoardControls) => ReactNode;
 }
 
@@ -52,7 +52,7 @@ export function LevelStage<T extends { id: string }>({
 
   function handleResult(won: boolean) {
     recordLevel(won, countsTowardGate);
-    if (won) onWin?.();
+    if (won && item) onWin?.(item);
     setPhase(won ? 'win' : 'lose');
   }
   const controls: BoardControls = {

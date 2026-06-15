@@ -1,40 +1,34 @@
 /**
- * Pure word-gating / progression math for the learn → play → unlock rhythm.
+ * Pure word-gating / progression math.
  *
- * Model:
- *  - Vocabulary is delivered in ordered SETS; there is ONE cumulative mastered
- *    pool (learnedWords) that grows over time.
- *  - STRICT gating: a cipher/grammar item is eligible only when EVERY word-id
- *    it requires is mastered. A puzzle never contains an unmastered word.
- *  - Loop: learn the current set -> clear `gamesToAdvance` levels -> the next
- *    set unlocks to learn -> repeat. The pool (and therefore puzzle
- *    length/difficulty) grows each cycle.
- *  - CHALLENGE GATE: after every `setsPerChallenge` sets (a "block"), the player
- *    must clear a challenge crossword built from ALL the block's words before
- *    the next block opens to learn.
- *  - SCOPING (Practice vs Recap): Practice draws only from the current +
- *    previous set (plus always-available filler/scaffold words); Recap draws
- *    from the whole learned pool.
+ * BLOCK model: vocabulary is delivered in ordered SETS, grouped into BLOCKS of
+ * `setsPerBlock` sets (2 sets = 10 words). To unlock the next block the player
+ * must, for the current block:
+ *   1. learn (master) both sets,
+ *   2. use every block word in a solved Practice letter cipher,
+ *   3. drill every block noun's article in a solved Practice grammar item,
+ *   4. complete the block's crossword challenge (the capstone, unlocked once
+ *      ciphers + grammar are done).
+ * STRICT gating still holds everywhere: a puzzle never contains an unmastered
+ * word. Practice draws from the whole learned pool but every Practice puzzle
+ * features at least one current-block word, so the new words get used.
  */
 import { PROGRESSION } from './progressionConfig';
 import type { PlayerState } from './types';
-import type { VocabSet } from '../content/vocab';
-import { isFiller } from '../content/vocab';
+import type { VocabSet, VocabWord } from '../content/vocab';
+import { wordById } from '../content/vocab';
+
+const B = PROGRESSION.setsPerBlock;
 
 export function learnedSet(s: PlayerState): Set<string> {
   return new Set(s.learnedWords);
 }
-
 export function isWordLearned(s: PlayerState, wordId: string): boolean {
   return s.learnedWords.includes(wordId);
 }
 
 /** Record a LEARN answer; mastering happens at `masteryThreshold` correct. */
-export function recordWordAnswer(
-  s: PlayerState,
-  wordId: string,
-  correct: boolean,
-): PlayerState {
+export function recordWordAnswer(s: PlayerState, wordId: string, correct: boolean): PlayerState {
   if (isWordLearned(s, wordId)) return s;
   const cur = s.wordProgress[wordId] ?? 0;
   const next = correct ? cur + 1 : 0;
@@ -48,8 +42,6 @@ export function recordWordAnswer(
 export function isSetMastered(s: PlayerState, set: VocabSet): boolean {
   return set.words.every((w) => s.learnedWords.includes(w.id));
 }
-
-/** How many sets (in order) are fully mastered. */
 export function masteredSetCount(s: PlayerState, sets: VocabSet[]): number {
   let n = 0;
   for (const set of sets) {
@@ -59,151 +51,167 @@ export function masteredSetCount(s: PlayerState, sets: VocabSet[]): number {
   return n;
 }
 
-// ── Challenge blocks ────────────────────────────────────────────────────────
-
-/** The challenge block a set belongs to (sets are grouped in fours). */
-export function challengeBlockOf(setIndex: number): number {
-  return Math.floor(setIndex / PROGRESSION.setsPerChallenge);
+// ── Blocks ──────────────────────────────────────────────────────────────────
+export function blockOf(setIndex: number): number {
+  return Math.floor(setIndex / B);
+}
+/** Number of FULL blocks for the given set list. */
+export function blockCount(sets: VocabSet[]): number {
+  return Math.floor(sets.length / B);
+}
+export function blockSets(sets: VocabSet[], block: number): VocabSet[] {
+  return sets.slice(block * B, block * B + B);
+}
+export function blockWords(sets: VocabSet[], block: number): VocabWord[] {
+  return blockSets(sets, block).flatMap((s) => s.words);
+}
+export function blockNouns(sets: VocabSet[], block: number): VocabWord[] {
+  return blockWords(sets, block).filter((w) => w.gender);
+}
+export function isBlockLearned(s: PlayerState, sets: VocabSet[], block: number): boolean {
+  const bs = blockSets(sets, block);
+  return bs.length === B && bs.every((set) => isSetMastered(s, set));
 }
 
-/** How many FULL challenge blocks exist for the given set list. */
-export function challengeBlockCount(sets: VocabSet[]): number {
-  return Math.floor(sets.length / PROGRESSION.setsPerChallenge);
+// ── Coverage (cipher / grammar / challenge) ─────────────────────────────────
+export function cipherProgress(s: PlayerState, sets: VocabSet[], block: number): { done: number; total: number } {
+  const cov = new Set(s.cipherWords ?? []);
+  const w = blockWords(sets, block);
+  return { done: w.filter((x) => cov.has(x.id)).length, total: w.length };
 }
-
+export function grammarProgress(s: PlayerState, sets: VocabSet[], block: number): { done: number; total: number } {
+  const cov = new Set(s.grammarWords ?? []);
+  const n = blockNouns(sets, block);
+  return { done: n.filter((x) => cov.has(x.id)).length, total: n.length };
+}
 export function isChallengeDone(s: PlayerState, block: number): boolean {
   return (s.challengesDone ?? []).includes(block);
 }
+export function cipherComplete(s: PlayerState, sets: VocabSet[], block: number): boolean {
+  const p = cipherProgress(s, sets, block);
+  return p.done >= p.total;
+}
+export function grammarComplete(s: PlayerState, sets: VocabSet[], block: number): boolean {
+  const p = grammarProgress(s, sets, block);
+  return p.done >= p.total;
+}
+/** The crossword challenge is the capstone: available once both sets are learned
+ *  and ciphers + grammar are fully covered, and it isn't already done. */
+export function challengeReady(s: PlayerState, sets: VocabSet[], block: number): boolean {
+  return (
+    isBlockLearned(s, sets, block) &&
+    cipherComplete(s, sets, block) &&
+    grammarComplete(s, sets, block) &&
+    !isChallengeDone(s, block)
+  );
+}
+export function isBlockComplete(s: PlayerState, sets: VocabSet[], block: number): boolean {
+  return (
+    isBlockLearned(s, sets, block) &&
+    cipherComplete(s, sets, block) &&
+    grammarComplete(s, sets, block) &&
+    isChallengeDone(s, block)
+  );
+}
 
-/**
- * The block whose sets are all mastered but whose challenge crossword has not
- * yet been cleared — the challenge the player must complete now, or null.
- */
+/** The block the player is working on now (lowest incomplete full block), or
+ *  blockCount when everything available is done. */
+export function currentBlock(s: PlayerState, sets: VocabSet[]): number {
+  const blocks = blockCount(sets);
+  for (let b = 0; b < blocks; b++) if (!isBlockComplete(s, sets, b)) return b;
+  return blocks;
+}
+/** The block whose challenge crossword is ready to play (capstone), or null. */
 export function pendingChallenge(s: PlayerState, sets: VocabSet[]): number | null {
-  const blocks = challengeBlockCount(sets);
-  for (let b = 0; b < blocks; b++) {
-    const lo = b * PROGRESSION.setsPerChallenge;
-    const blockSets = sets.slice(lo, lo + PROGRESSION.setsPerChallenge);
-    const allMastered = blockSets.length > 0 && blockSets.every((st) => isSetMastered(s, st));
-    if (allMastered && !isChallengeDone(s, b)) return b;
-  }
+  const blocks = blockCount(sets);
+  for (let b = 0; b < blocks; b++) if (challengeReady(s, sets, b)) return b;
   return null;
 }
 
-/** Mark a challenge block cleared (idempotent). */
-export function recordChallengeDone(s: PlayerState, block: number): PlayerState {
-  if (isChallengeDone(s, block)) return s;
-  return { ...s, challengesDone: [...(s.challengesDone ?? []), block] };
-}
-
-/**
- * How many sets are available to learn. Set 0 is always available; set k+1
- * opens once set k is mastered AND the player has cleared enough levels
- * (gamesToAdvance * (k+1) total) AND — when k+1 crosses into a new challenge
- * block — that block's challenge crossword has been cleared.
- */
+// ── Availability / learning ─────────────────────────────────────────────────
 export function availableSetCount(s: PlayerState, sets: VocabSet[]): number {
   if (sets.length === 0) return 0;
-  let available = 1;
-  for (let i = 0; i < sets.length; i++) {
-    const enoughWins = s.levelsWon >= PROGRESSION.gamesToAdvance * (i + 1);
-    const crossesBlock = (i + 1) % PROGRESSION.setsPerChallenge === 0;
-    const challengeOk = !crossesBlock || isChallengeDone(s, challengeBlockOf(i));
-    if (isSetMastered(s, sets[i]) && enoughWins && challengeOk) {
-      available = Math.min(sets.length, i + 2);
-    } else {
-      break;
-    }
+  let completed = 0;
+  const blocks = blockCount(sets);
+  for (let b = 0; b < blocks; b++) {
+    if (isBlockComplete(s, sets, b)) completed++;
+    else break;
   }
-  return available;
+  return Math.min(sets.length, (completed + 1) * B);
 }
-
-/** The set the player should be learning now, or null if none (games phase). */
 export function currentLearnSetIndex(s: PlayerState, sets: VocabSet[]): number | null {
-  const available = availableSetCount(s, sets);
-  for (let i = 0; i < available; i++) {
-    if (!isSetMastered(s, sets[i])) return i;
-  }
+  const avail = availableSetCount(s, sets);
+  for (let i = 0; i < avail; i++) if (!isSetMastered(s, sets[i])) return i;
   return null;
 }
-
-/** Games unlock once at least one set is mastered. */
 export function modesUnlocked(s: PlayerState, sets: VocabSet[]): boolean {
   return masteredSetCount(s, sets) >= 1;
 }
-
-/**
- * Progress toward unlocking the next set, or null when not in that phase
- * (still learning a set, or all sets mastered).
- */
-export function gamesToNextSet(
-  s: PlayerState,
-  sets: VocabSet[],
-): { cleared: number; needed: number } | null {
-  if (currentLearnSetIndex(s, sets) !== null) return null;
-  const ms = masteredSetCount(s, sets);
-  if (ms >= sets.length) return null;
-  const needed = PROGRESSION.gamesToAdvance;
-  const base = PROGRESSION.gamesToAdvance * (ms - 1);
-  const cleared = Math.max(0, Math.min(needed, s.levelsWon - base));
-  return { cleared, needed };
+/** Word-ids the player is studying now: the current set's unmastered words. */
+export function wordsToStudy(s: PlayerState, sets: VocabSet[]): string[] {
+  const idx = currentLearnSetIndex(s, sets);
+  if (idx === null) return [];
+  return sets[idx].words.filter((w) => !s.learnedWords.includes(w.id)).map((w) => w.id);
 }
 
+// ── Eligibility ─────────────────────────────────────────────────────────────
 /** STRICT eligibility: every required word must be mastered. */
-export function isItemEligible(
-  item: { requires: string[] },
-  s: PlayerState,
-): boolean {
+export function isItemEligible(item: { requires: string[] }, s: PlayerState): boolean {
   return item.requires.every((id) => s.learnedWords.includes(id));
 }
-
-/** Highest set index that contains any mastered word, or -1 if none yet. */
 export function frontierSetIndex(s: PlayerState, sets: VocabSet[]): number {
   for (let k = sets.length - 1; k >= 0; k--) {
     if (sets[k].words.some((w) => s.learnedWords.includes(w.id))) return k;
   }
   return -1;
 }
-
-/**
- * The Practice word scope: ids in the current set + the immediately-previous
- * set (the two most-recently-reached sets). Filler/scaffold words are handled
- * separately (always allowed) and are NOT included here.
- */
-export function practiceScopeIds(s: PlayerState, sets: VocabSet[]): Set<string> {
+/** The block the player is currently practising (from the frontier set). */
+export function practiceBlock(s: PlayerState, sets: VocabSet[]): number {
   const f = frontierSetIndex(s, sets);
-  const ids = new Set<string>();
-  for (const k of [f - 1, f]) {
-    if (k >= 0 && k < sets.length) for (const w of sets[k].words) ids.add(w.id);
-  }
-  return ids;
+  return f < 0 ? 0 : blockOf(f);
 }
 
 /**
- * PRACTICE eligibility (narrow scope): every required word is mastered AND
- * every required NON-filler word belongs to the current or previous set.
+ * PRACTICE cipher eligibility: every required word mastered AND the sentence
+ * features at least one current-block word, so practice exercises the new
+ * vocabulary (older words may scaffold the rest).
  */
-export function isPracticeEligible(
-  item: { requires: string[] },
-  s: PlayerState,
-  sets: VocabSet[],
-): boolean {
+export function isPracticeEligible(item: { requires: string[] }, s: PlayerState, sets: VocabSet[]): boolean {
   if (!isItemEligible(item, s)) return false;
-  const scope = practiceScopeIds(s, sets);
-  return item.requires.every((id) => isFiller(id) || scope.has(id));
+  const bw = new Set(blockWords(sets, practiceBlock(s, sets)).map((w) => w.id));
+  return item.requires.some((r) => bw.has(r));
 }
 
-/**
- * RECAP eligibility (broad scope): the original strict gate. Same rule as
- * isItemEligible; named for clarity at the call sites.
- */
+/** The noun a grammar item drills (its one gendered required word). */
+export function grammarNounId(item: { requires: string[] }): string | undefined {
+  return item.requires.find((r) => wordById(r)?.gender);
+}
+/** PRACTICE grammar eligibility: eligible AND it drills a current-block noun. */
+export function isGrammarPracticeEligible(item: { requires: string[] }, s: PlayerState, sets: VocabSet[]): boolean {
+  if (!isItemEligible(item, s)) return false;
+  const n = grammarNounId(item);
+  if (!n) return false;
+  const bn = new Set(blockNouns(sets, practiceBlock(s, sets)).map((w) => w.id));
+  return bn.has(n);
+}
+
+/** RECAP eligibility (broad): the original strict gate. */
 export function isRecapEligible(item: { requires: string[] }, s: PlayerState): boolean {
   return isItemEligible(item, s);
 }
 
-/** Word-ids the player is studying now: the current set's unmastered words. */
-export function wordsToStudy(s: PlayerState, sets: VocabSet[]): string[] {
-  const idx = currentLearnSetIndex(s, sets);
-  if (idx === null) return [];
-  return sets[idx].words.filter((w) => !s.learnedWords.includes(w.id)).map((w) => w.id);
+// ── Recording coverage ──────────────────────────────────────────────────────
+export function addCipherWords(s: PlayerState, ids: string[]): PlayerState {
+  const cur = new Set(s.cipherWords ?? []);
+  let changed = false;
+  for (const id of ids) if (!cur.has(id)) { cur.add(id); changed = true; }
+  return changed ? { ...s, cipherWords: [...cur] } : s;
+}
+export function addGrammarNoun(s: PlayerState, id: string | undefined): PlayerState {
+  if (!id || (s.grammarWords ?? []).includes(id)) return s;
+  return { ...s, grammarWords: [...(s.grammarWords ?? []), id] };
+}
+export function recordChallengeDone(s: PlayerState, block: number): PlayerState {
+  if (isChallengeDone(s, block)) return s;
+  return { ...s, challengesDone: [...(s.challengesDone ?? []), block] };
 }

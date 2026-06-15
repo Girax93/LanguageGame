@@ -2,6 +2,9 @@ import { useEffect, useState, type ReactNode } from 'react';
 import type { Route } from './routes';
 import { getGame } from '../games/registry';
 import { ChallengeCrossword } from '../games/crossword/ChallengeCrossword';
+import { LevelStage } from '../games/_shared/LevelStage';
+import { CrosswordBoard } from '../games/crossword/components/CrosswordBoard';
+import { challengeCrossword } from '../content/challenges';
 import { MenuScreen, type MenuItem } from '../components/ui/MenuScreen';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { Statistics } from './Statistics';
@@ -12,13 +15,15 @@ import { Subscription } from './Subscription';
 import { ResetProgress } from './ResetProgress';
 import { usePlayer } from '../state/PlayerContext';
 import { SETS } from '../content/vocab';
-import { PROGRESSION } from '../state/progressionConfig';
 import {
   currentLearnSetIndex,
-  gamesToNextSet,
-  availableSetCount,
   masteredSetCount,
-  pendingChallenge,
+  currentBlock,
+  blockCount,
+  cipherProgress,
+  grammarProgress,
+  challengeReady,
+  isChallengeDone,
 } from '../state/progression';
 
 /**
@@ -30,6 +35,7 @@ export function App() {
   const { state } = usePlayer();
   const [stack, setStack] = useState<Route[]>(['main']);
   const [confirmMain, setConfirmMain] = useState(false);
+  const [recapBlock, setRecapBlock] = useState<number | null>(null);
   const route = stack[stack.length - 1];
 
   useEffect(() => {
@@ -56,7 +62,15 @@ export function App() {
   }
   const requestMain = () => setConfirmMain(true);
 
-  // ── Learn/Practice hub progress (reads the existing gate; no logic change) ──
+  // ── Block-coverage progress ────────────────────────────────────────────────
+  const blocks = blockCount(SETS);
+  const block = currentBlock(state, SETS); // the block being worked on (or `blocks`)
+  const onBlock = block < blocks;
+  const cp = onBlock ? cipherProgress(state, SETS, block) : { done: 0, total: 0 };
+  const gp = onBlock ? grammarProgress(state, SETS, block) : { done: 0, total: 0 };
+  const challengeReadyNow = onBlock && challengeReady(state, SETS, block);
+  const challengeDoneForBlock = onBlock && isChallengeDone(state, block);
+
   const curIdx = currentLearnSetIndex(state, SETS);
   let learnStatus: string;
   let learnProgress: number;
@@ -64,36 +78,24 @@ export function App() {
     const set = SETS[curIdx];
     const masteredN = set.words.filter((w) => state.learnedWords.includes(w.id)).length;
     learnStatus = 'Available';
-    learnProgress = masteredN === 0 && curIdx > 0 ? 1 : set.words.length ? masteredN / set.words.length : 0;
+    learnProgress = set.words.length ? masteredN / set.words.length : 1;
+  } else if (onBlock) {
+    learnStatus = 'Practice to advance';
+    learnProgress = 1;
   } else {
-    const gp = gamesToNextSet(state, SETS);
-    if (gp) {
-      learnStatus = 'Keep practicing';
-      learnProgress = gp.needed ? gp.cleared / gp.needed : 1;
-    } else {
-      learnStatus = 'All learned';
-      learnProgress = 1;
-    }
-  }
-
-  const needed = PROGRESSION.gamesToAdvance;
-  const available = availableSetCount(state, SETS);
-  const moreSets = available < SETS.length;
-  const cleared = Math.min(needed, Math.max(0, state.levelsWon - needed * (available - 1)));
-  const practiceMet = !moreSets || cleared >= needed;
-  const practiceProgress = moreSets ? cleared / needed : 1;
-  const practiceStatus = moreSets ? `${cleared}/${needed}${practiceMet ? ' ✓' : ''}` : `${needed}/${needed} ✓`;
-
-  // Recap unlocks once there's enough learned material to make review worthwhile.
-  const masteredSets = masteredSetCount(state, SETS);
-  const recapUnlocked = masteredSets >= 2;
-
-  // A challenge crossword gates the next 4-set block until it's cleared.
-  const pending = pendingChallenge(state, SETS);
-  if (pending !== null && curIdx === null) {
-    learnStatus = 'Challenge required';
+    learnStatus = 'All learned';
     learnProgress = 1;
   }
+
+  // Overall block progress = ciphers + grammar + the one challenge.
+  const totalSteps = onBlock ? cp.total + gp.total + 1 : 0;
+  const doneSteps = onBlock ? cp.done + gp.done + (challengeDoneForBlock ? 1 : 0) : 0;
+  const practiceProgress = totalSteps ? doneSteps / totalSteps : 1;
+  const practiceStatus = onBlock ? `${doneSteps}/${totalSteps}` : 'Done ✓';
+
+  const masteredSets = masteredSetCount(state, SETS);
+  const recapUnlocked = masteredSets >= 2;
+  const completedChallenges = [...(state.challengesDone ?? [])].sort((a, b) => a - b);
 
   const mainItems: MenuItem[] = [
     { icon: '📖', label: 'Learn', sublabel: 'Acquire words in a language', onClick: () => navigate('languages') },
@@ -109,7 +111,7 @@ export function App() {
     {
       icon: '📖',
       label: 'Learn',
-      sublabel: 'Pick up new words',
+      sublabel: 'Pick up the next words',
       status: learnStatus,
       progress: learnProgress,
       onClick: () => navigate('learn'),
@@ -117,7 +119,7 @@ export function App() {
     {
       icon: '🎯',
       label: 'Practice',
-      sublabel: 'Play with your newest words',
+      sublabel: 'Cover the new words to unlock the next set',
       status: practiceStatus,
       progress: practiceProgress,
       onClick: () => navigate('practice'),
@@ -134,26 +136,52 @@ export function App() {
       onClick: recapUnlocked ? () => navigate('recap') : undefined,
     },
   ];
+
   const practiceItems: MenuItem[] = [
+    {
+      icon: '🔡',
+      label: 'Letter Cipher',
+      sublabel: 'Use every new word in a sentence',
+      status: onBlock ? `${cp.done}/${cp.total}` : '✓',
+      progress: onBlock && cp.total ? cp.done / cp.total : 1,
+      onClick: () => navigate('fill-in-the-blanks'),
+    },
+    {
+      icon: '🧠',
+      label: 'Grammar',
+      sublabel: 'Drill der / die / das for the new nouns',
+      status: onBlock ? (gp.total ? `${gp.done}/${gp.total}` : 'none') : '✓',
+      progress: onBlock && gp.total ? gp.done / gp.total : 1,
+      onClick: () => navigate('grammar'),
+    },
     {
       icon: '🏆',
       label: 'Challenge',
-      sublabel:
-        pending !== null
-          ? `One crossword, every word from sets ${pending * 4 + 1}–${pending * 4 + 4}`
-          : 'Master 4 sets to unlock a challenge',
-      status: pending !== null ? '3 lives' : undefined,
-      badge: pending !== null ? 'Required' : undefined,
-      locked: pending === null,
-      onClick: pending !== null ? () => navigate('challenge') : undefined,
+      sublabel: challengeReadyNow
+        ? 'One crossword with all 10 new words'
+        : challengeDoneForBlock || !onBlock
+          ? 'Crossword complete'
+          : 'Finish ciphers & grammar first',
+      status: challengeReadyNow ? '3 lives' : challengeDoneForBlock || !onBlock ? '✓' : undefined,
+      badge: challengeReadyNow ? 'Required' : undefined,
+      locked: !challengeReadyNow,
+      onClick: challengeReadyNow ? () => navigate('challenge') : undefined,
     },
-    { icon: '🧠', label: 'Grammar', sublabel: 'Articles: der / die / das …', onClick: () => navigate('grammar') },
-    { icon: '🔡', label: 'Letter Cipher', sublabel: 'Decode the sentence', onClick: () => navigate('fill-in-the-blanks') },
   ];
+
   const recapItems: MenuItem[] = [
     { icon: '🧠', label: 'Grammar', sublabel: 'Articles across everything you know', onClick: () => navigate('recap-grammar') },
     { icon: '🔡', label: 'Letter Cipher', sublabel: 'Sentences from your whole vocabulary', onClick: () => navigate('recap-cipher') },
     { icon: '🧩', label: 'Crossword', sublabel: 'Interlocking grids from your vocabulary', onClick: () => navigate('recap-crossword') },
+    ...completedChallenges.map((b) => ({
+      icon: '🏆',
+      label: `Challenge — sets ${b * 2 + 1}–${b * 2 + 2}`,
+      sublabel: 'Replay this block’s crossword',
+      onClick: () => {
+        setRecapBlock(b);
+        navigate('recap-challenge');
+      },
+    })),
   ];
 
   let screen: ReactNode;
@@ -168,7 +196,7 @@ export function App() {
       screen = (
         <MenuScreen
           title="Practice"
-          intro="Your two newest word sets — plus the little glue words."
+          intro="Use every new word in ciphers, drill the new articles, then beat the crossword to unlock the next set."
           items={practiceItems}
           onBack={back}
           onMain={requestMain}
@@ -179,7 +207,7 @@ export function App() {
       screen = (
         <MenuScreen
           title="Recap"
-          intro="Mixed review from every word you've learned. Optional — it won't change your unlock progress."
+          intro="Mixed review from everything you've learned, plus your past challenges. Optional — it won't change your unlock progress."
           items={recapItems}
           onBack={back}
           onMain={requestMain}
@@ -234,6 +262,19 @@ export function App() {
       ) : null;
       break;
     }
+    case 'recap-challenge':
+      screen =
+        recapBlock !== null ? (
+          <LevelStage
+            items={[challengeCrossword(recapBlock)]}
+            onExit={back}
+            onOpenSettings={() => navigate('settings')}
+            onMain={requestMain}
+            countsTowardGate={false}
+            renderBoard={(item, controls) => <CrosswordBoard item={item} controls={controls} />}
+          />
+        ) : null;
+      break;
     case 'challenge':
       screen = (
         <ChallengeCrossword onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} />
@@ -249,6 +290,7 @@ export function App() {
     route === 'recap-cipher' ||
     route === 'recap-grammar' ||
     route === 'recap-crossword' ||
+    route === 'recap-challenge' ||
     route === 'challenge';
 
   return (

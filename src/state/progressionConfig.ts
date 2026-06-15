@@ -1,5 +1,10 @@
 /**
- * PROGRESSION — tuning for the learn → play → unlock rhythm.
+ * PROGRESSION — tuning for the learn → practise → unlock rhythm.
+ *
+ * Loop: learn a BLOCK of `setsPerBlock` sets (the new words), then fully
+ * practise that block — use every new word in letter ciphers, drill every new
+ * article in grammar, and finish the block's crossword challenge — before the
+ * next block of sets unlocks.
  */
 export const PROGRESSION = {
   /** Words delivered per set (vocabulary is chunked into ordered sets). */
@@ -8,10 +13,6 @@ export const PROGRESSION = {
   /** Correct answers in a row in LEARN to "master" a word. */
   masteryThreshold: 2,
 
-  /** Cipher/grammar levels to clear before the next word set unlocks. */
-  gamesToAdvance: 2,
-
-  /** A challenge crossword (using every word in the block) gates progress after
-   *  every this-many sets. 4 sets * 5 words = a 20-word challenge. */
-  setsPerChallenge: 4,
+  /** Sets learned + practised together as one block (2 sets = 10 words). */
+  setsPerBlock: 2,
 } as const;

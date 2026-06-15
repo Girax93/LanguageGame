@@ -47,6 +47,7 @@ const RAW: RawGrammar[] = [
   { id: 'g-021', before: "", stem: "d", ending: "ie", after: " Sonne ist warm.", translation: "The sun is warm.", gender: "f" },
   { id: 'g-022', before: "", stem: "d", ending: "er", after: " Park ist groß.", translation: "The park is big.", gender: "m" },
   { id: 'g-023', before: "", stem: "d", ending: "er", after: " Ball ist klein.", translation: "The ball is small.", gender: "m" },
+  { id: 'g-024', before: "", stem: "d", ending: "as", after: " Wasser ist gut.", translation: "The water is good.", gender: "n" },
 ];
 
 function articleBaseId(stem: string, gender: Gender): string {

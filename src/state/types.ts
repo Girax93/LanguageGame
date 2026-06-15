@@ -3,14 +3,18 @@
  */
 export interface PlayerState {
   version: number;
-  /** Word ids the player has fully learned (feeds the gate). */
+  /** Word ids the player has fully learned (feeds every gate). */
   learnedWords: string[];
   /** Per-word progress toward "learned" (correct-answer streak). */
   wordProgress: Record<string, number>;
-  /** Total cipher/grammar levels won (drives pack unlocks). */
-  levelsWon: number;
-  /** Challenge-block indices the player has cleared (every 4 sets = one block). */
+  /** Words used in a solved Practice cipher (block cipher-coverage). */
+  cipherWords: string[];
+  /** Nouns whose article was drilled in a solved Practice grammar (coverage). */
+  grammarWords: string[];
+  /** Challenge-block indices whose crossword has been completed. */
   challengesDone: number[];
+  /** Total games won (a statistic only — no longer gates anything). */
+  levelsWon: number;
   /** Current focus (energy). */
   focus: number;
   /** Epoch ms anchor used to compute focus regen. */
@@ -19,15 +23,18 @@ export interface PlayerState {
   subscribed: boolean;
 }
 
-export const STATE_VERSION = 1;
+// Bumped to 2 for the block-coverage progression rework (old saves reset).
+export const STATE_VERSION = 2;
 
 export function defaultPlayerState(now: number, focusStart: number): PlayerState {
   return {
     version: STATE_VERSION,
     learnedWords: [],
     wordProgress: {},
-    levelsWon: 0,
+    cipherWords: [],
+    grammarWords: [],
     challengesDone: [],
+    levelsWon: 0,
     focus: focusStart,
     lastFocusRegenAt: now,
     subscribed: false,

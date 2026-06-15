@@ -1,8 +1,8 @@
 /**
- * Challenge crosswords: after every `setsPerChallenge` sets, the player must
- * clear one crossword built from EVERY word in that block (4 sets * 5 = 20
- * words). Fully procedural and deterministic (seeded by block index) so the
- * player always retries the same puzzle and nothing is hand-authored.
+ * Challenge crosswords: the capstone of each block. One crossword built from
+ * EVERY word in the block (2 sets * 5 = 10 words), generated procedurally and
+ * deterministically (seeded by block index) so retries are the same puzzle and
+ * nothing is hand-authored.
  */
 import { SETS, wordById } from './vocab';
 import { PROGRESSION } from '../state/progressionConfig';
@@ -11,13 +11,11 @@ import { levelForRequires } from './derive';
 import { generateLayout } from '../games/crossword/generate';
 import type { CrosswordContentItem } from './crosswords';
 
-/** The word-ids in a challenge block (one block = setsPerChallenge sets). */
 export function blockWordIds(block: number): string[] {
-  const lo = block * PROGRESSION.setsPerChallenge;
-  return SETS.slice(lo, lo + PROGRESSION.setsPerChallenge).flatMap((s) => s.words.map((w) => w.id));
+  const lo = block * PROGRESSION.setsPerBlock;
+  return SETS.slice(lo, lo + PROGRESSION.setsPerBlock).flatMap((s) => s.words.map((w) => w.id));
 }
 
-/** Procedurally generate the challenge crossword for a block. */
 export function challengeCrossword(block: number): CrosswordContentItem {
   const ids = blockWordIds(block);
   const words = ids.map((id) => ({ id, surface: toUpperDE(wordById(id)!.de) }));
