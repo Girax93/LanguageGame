@@ -168,3 +168,43 @@ export const FILLER_IDS: Set<string> = new Set(
 export function isFiller(id: string): boolean {
   return FILLER_IDS.has(id);
 }
+
+// ── Display + answer-matching helpers ───────────────────────────────────────
+
+/** Nominative definite article for a noun's gender. */
+export function articleFor(gender: Gender): string {
+  return gender === 'm' ? 'der' : gender === 'f' ? 'die' : 'das';
+}
+
+/** German display form: nouns carry their definite article ("der Hund");
+ *  everything else is shown bare. */
+export function germanWithArticle(w: VocabWord): string {
+  return w.gender ? `${articleFor(w.gender)} ${w.de}` : w.de;
+}
+
+/** English gloss as presented: an article+noun phrase composes to "the <noun>"
+ *  (so "der Hund" -> "the dog"); non-nouns stay bare. */
+export function englishWithArticle(w: VocabWord): string {
+  return w.gender ? `the ${w.en}` : w.en;
+}
+
+/** Definite articles (English + German) treated as "the" when matching answers. */
+const DEFINITE_ARTICLES = ['the', 'der', 'die', 'das', 'den', 'dem', 'des'];
+
+/** Drop a single leading definite article for tolerant matching:
+ *  "the man" -> "man", "der Hund" -> "Hund". */
+export function stripArticle(s: string): string {
+  const t = s.trim();
+  const lower = t.toLowerCase();
+  for (const a of DEFINITE_ARTICLES) {
+    if (lower.startsWith(a + ' ')) return t.slice(a.length + 1).trim();
+  }
+  return t;
+}
+
+/** Case-insensitive answer equality that accepts the form WITH or WITHOUT a
+ *  leading definite article, so a learner is never penalised for "the". */
+export function answerMatches(a: string, b: string): boolean {
+  if (a.trim().toLowerCase() === b.trim().toLowerCase()) return true;
+  return stripArticle(a).toLowerCase() === stripArticle(b).toLowerCase();
+}

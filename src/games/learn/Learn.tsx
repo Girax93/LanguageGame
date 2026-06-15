@@ -1,21 +1,20 @@
 import { useEffect, useState } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
-import { SETS, ALL_WORDS, wordById, type VocabWord, type Gender } from '../../content/vocab';
+import {
+  SETS,
+  ALL_WORDS,
+  wordById,
+  germanWithArticle,
+  englishWithArticle,
+  answerMatches,
+  type VocabWord,
+} from '../../content/vocab';
 import { wordsToStudy, currentLearnSetIndex } from '../../state/progression';
-import { shuffle, sampleExcluding } from '../../lib/array';
+import { shuffle } from '../../lib/array';
 import { Button } from '../../components/ui/Button';
 import { ProgressBar } from '../../components/ui/ProgressBar';
 import { ChevronLeft, HomeIcon } from '../../components/ui/icons';
-
-/** Nouns are always shown with their article — "der Hund", never "Hund". */
-function articleFor(g?: Gender): string | null {
-  return g === 'm' ? 'der' : g === 'f' ? 'die' : g === 'n' ? 'das' : null;
-}
-export function germanWithArticle(w: VocabWord): string {
-  const a = articleFor(w.gender);
-  return a ? `${a} ${w.de}` : w.de;
-}
 
 interface Step {
   word: VocabWord;
@@ -23,15 +22,20 @@ interface Step {
   deOptions: string[];
 }
 
+/** Pick 3 distractors that don't match `correct` even ignoring "the"/article. */
+function distractors(correct: string, forms: string[]): string[] {
+  const pool = [...new Set(forms)].filter((g) => !answerMatches(g, correct));
+  return shuffle(pool).slice(0, 3);
+}
+
 function makeStep(studyIds: string[]): Step | null {
   if (studyIds.length === 0) return null;
   const id = studyIds[Math.floor(Math.random() * studyIds.length)];
   const word = wordById(id)!;
-  const enPool = ALL_WORDS.map((w) => w.en);
-  const enOptions = shuffle([word.en, ...sampleExcluding(enPool, [word.en], 3)]);
-  const dePool = ALL_WORDS.map((w) => germanWithArticle(w));
+  const correctEn = englishWithArticle(word);
+  const enOptions = shuffle([correctEn, ...distractors(correctEn, ALL_WORDS.map(englishWithArticle))]);
   const correctDe = germanWithArticle(word);
-  const deOptions = shuffle([correctDe, ...sampleExcluding(dePool, [correctDe], 3)]);
+  const deOptions = shuffle([correctDe, ...distractors(correctDe, ALL_WORDS.map(germanWithArticle))]);
   return { word, enOptions, deOptions };
 }
 
@@ -65,7 +69,7 @@ export function Learn({ onExit, onMain }: GameProps) {
   function pick(option: string, answer: string) {
     if (picked) return;
     setPicked(option);
-    answerWord(step!.word.id, option === answer);
+    answerWord(step!.word.id, answerMatches(option, answer));
   }
   function advance() {
     if (round === 2) {
@@ -159,6 +163,7 @@ function Round123({
   onAdvance: () => void;
 }) {
   const de = germanWithArticle(step.word);
+  const en = englishWithArticle(step.word);
 
   if (round === 1) {
     return (
@@ -169,7 +174,7 @@ function Round123({
         <div className="flex flex-1 flex-col items-center justify-center text-center">
           <p className="eyebrow">New word</p>
           <p className="mt-4 font-serif text-4xl font-semibold text-espresso">{de}</p>
-          <p className="mt-3 text-xl text-taupe">{step.word.en}</p>
+          <p className="mt-3 text-xl text-taupe">{en}</p>
         </div>
         <Button className="mt-6 w-full" onClick={onIntroNext}>
           Next →
@@ -178,8 +183,8 @@ function Round123({
     );
   }
 
-  const prompt = round === 2 ? de : step.word.en;
-  const answer = round === 2 ? step.word.en : de;
+  const prompt = round === 2 ? de : en;
+  const answer = round === 2 ? en : de;
   const options = round === 2 ? step.enOptions : step.deOptions;
   const label = round === 2 ? 'What does this mean?' : 'Say it in German';
 
@@ -210,10 +215,10 @@ function Round123({
         <div className="mt-5 animate-fade-in">
           <p
             className={`mb-3 text-center font-semibold ${
-              picked === answer ? 'text-sage' : 'text-terracotta'
+              answerMatches(picked, answer) ? 'text-sage' : 'text-terracotta'
             }`}
           >
-            {picked === answer ? 'Correct! ✓' : `Answer: ${answer}`}
+            {answerMatches(picked, answer) ? 'Correct! ✓' : `Answer: ${answer}`}
           </p>
           <Button className="w-full" onClick={onAdvance}>
             Continue →
@@ -227,7 +232,7 @@ function Round123({
 type OptState = 'idle' | 'correct' | 'wrong' | 'muted';
 function optionState(option: string, picked: string | null, answer: string): OptState {
   if (picked === null) return 'idle';
-  if (option === answer) return 'correct';
+  if (answerMatches(option, answer)) return 'correct';
   if (option === picked) return 'wrong';
   return 'muted';
 }

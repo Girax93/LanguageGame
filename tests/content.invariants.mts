@@ -1,6 +1,14 @@
 // Content invariants. Run with:
 //   node --experimental-strip-types --import ./tests/loader.mjs tests/content.invariants.mts
-import { SETS, ALL_WORDS, FILLER_IDS } from '../src/content/vocab';
+import {
+  SETS,
+  ALL_WORDS,
+  FILLER_IDS,
+  articleFor,
+  germanWithArticle,
+  englishWithArticle,
+  answerMatches,
+} from '../src/content/vocab';
 import { CIPHER_ITEMS } from '../src/content/cipherItems';
 import { GRAMMAR_ITEMS } from '../src/content/grammarItems';
 import { CROSSWORDS } from '../src/content/crosswords';
@@ -118,6 +126,28 @@ if (availableSetCount(a2, SETS) !== 5 || pendingChallenge(a2, SETS) !== null) in
 const a3 = gState(8, 100, [0]);
 if (availableSetCount(a3, SETS) !== 8 || pendingChallenge(a3, SETS) !== 1) invG = false;
 
+// (h) ARTICLE TRANSLATIONS: a noun shown with its definite article composes to
+//     "the <noun>" in English; non-nouns stay bare; matching accepts the form
+//     with OR without a leading definite article (so "der Hund"/"the dog"/"dog"
+//     are all interchangeable for answers).
+let invH = true;
+const hgaps: string[] = [];
+for (const w of ALL_WORDS) {
+  if (w.gender) {
+    if (englishWithArticle(w) !== `the ${w.en}`) { invH = false; hgaps.push(w.id + ':en'); }
+    if (germanWithArticle(w) !== `${articleFor(w.gender)} ${w.de}`) { invH = false; hgaps.push(w.id + ':de'); }
+    if (!answerMatches(`the ${w.en}`, w.en) || !answerMatches(w.en, `the ${w.en}`)) { invH = false; hgaps.push(w.id + ':match'); }
+  } else if (englishWithArticle(w) !== w.en) {
+    invH = false; hgaps.push(w.id + ':bare');
+  }
+}
+// Every German definite article strips to the same as English "the".
+for (const art of ['der', 'die', 'das', 'den', 'dem', 'des']) {
+  if (!answerMatches(`${art} Mann`, 'the Mann') || !answerMatches(`${art} Mann`, 'Mann')) {
+    invH = false; hgaps.push('art:' + art);
+  }
+}
+
 console.log(`words=${ALL_WORDS.length} sets=${SETS.length} cipher=${CIPHER_ITEMS.length} grammar=${GRAMMAR_ITEMS.length} crosswords=${CROSSWORDS.length} fillers=${FILLER_IDS.size} blocks=${blocks}`);
 console.log('invariant_a (no unmastered word):', invA);
 console.log('invariant_b (per-set new-word coverage):', invB, 'gaps:', gaps);
@@ -128,5 +158,6 @@ console.log('invariant_e (curated crosswords):', invE, 'gaps:', xgaps);
 console.log('invariant_f (challenge crosswords use all words):', invF, 'gaps:', fgaps);
 console.log('  challenge sizes:', xinfo.join(' '));
 console.log('invariant_g (challenge gate blocks/opens):', invG);
-if (!invA || !invB || !invC || !invD || !invE || !invF || !invG) process.exit(1);
+console.log('invariant_h (article+noun -> the <noun>):', invH, 'gaps:', hgaps);
+if (!invA || !invB || !invC || !invD || !invE || !invF || !invG || !invH) process.exit(1);
 console.log('OK');
