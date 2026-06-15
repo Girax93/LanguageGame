@@ -1,36 +1,38 @@
 /**
  * Data-driven difficulty curve. Each level is a set of flags applied by the
- * cipher board, so the curve is easy to retune without touching UI logic.
- *
- *  L1: two footholds + all numbers shown (gentlest).
- *  L2: one foothold.
- *  L3: zero footholds.
- *  L4: a slot's number stays hidden until an adjacent slot is solved.
- *  L5: neighbor-locks — a slot won't accept input until a neighbor is found
- *      (word-initial slots are always open, so the puzzle stays solvable).
- *  L6: stop greying unused keyboard letters (keyboard hides which letters
- *      are in play).
+ * cipher board. By design the cipher number under EVERY letter is always
+ * shown, and every puzzle starts with a few given letters (footholds) — so a
+ * cipher is never "it could be anything". The curve only varies how many free
+ * letters you start with.
  */
 export interface DifficultyFlags {
-  /** How many of the most frequent letters start pre-revealed. */
+  /** How many of the most frequent letters start pre-revealed. Always >= 2. */
   footholds: number;
-  /** Hide a slot's number until it or a neighbor is solved. */
+  /** Hide a slot's number until it or a neighbor is solved. Always false. */
   hideNumbersUntilAdjacent: boolean;
-  /** Require a found neighbor before a slot accepts input. */
+  /** Require a found neighbor before a slot accepts input. Always false. */
   neighborLock: boolean;
-  /** Grey/disable keyboard letters that aren't (or are no longer) needed. */
+  /** Grey/disable keyboard letters that aren't needed (a helpful hint). */
   greyUnusedKeys: boolean;
 }
 
 export const MAX_LEVEL = 6;
 
+// Numbers always visible, neighbour-lock off, unused keys greyed (a help), and
+// always footholds. Higher levels simply hand out fewer free letters.
+const BASE = {
+  hideNumbersUntilAdjacent: false,
+  neighborLock: false,
+  greyUnusedKeys: true,
+} as const;
+
 export const DIFFICULTY: Record<number, DifficultyFlags> = {
-  1: { footholds: 2, hideNumbersUntilAdjacent: false, neighborLock: false, greyUnusedKeys: true },
-  2: { footholds: 1, hideNumbersUntilAdjacent: false, neighborLock: false, greyUnusedKeys: true },
-  3: { footholds: 0, hideNumbersUntilAdjacent: false, neighborLock: false, greyUnusedKeys: true },
-  4: { footholds: 0, hideNumbersUntilAdjacent: true, neighborLock: false, greyUnusedKeys: true },
-  5: { footholds: 0, hideNumbersUntilAdjacent: false, neighborLock: true, greyUnusedKeys: true },
-  6: { footholds: 0, hideNumbersUntilAdjacent: false, neighborLock: false, greyUnusedKeys: false },
+  1: { footholds: 3, ...BASE },
+  2: { footholds: 3, ...BASE },
+  3: { footholds: 2, ...BASE },
+  4: { footholds: 2, ...BASE },
+  5: { footholds: 2, ...BASE },
+  6: { footholds: 2, ...BASE },
 };
 
 /** Flags for a level, clamped to the defined range. */
