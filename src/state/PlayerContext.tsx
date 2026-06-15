@@ -17,7 +17,7 @@ import {
   buyFocusRefill,
   setSubscribed as setSubscribedPure,
 } from './focus';
-import { recordWordAnswer } from './progression';
+import { recordWordAnswer, recordChallengeDone } from './progression';
 
 interface PlayerContextValue {
   state: PlayerState;
@@ -30,6 +30,8 @@ interface PlayerContextValue {
    * never changes unlock progress.
    */
   recordLevel: (won: boolean, countsTowardGate?: boolean) => void;
+  /** Mark the given challenge block cleared. */
+  recordChallenge: (block: number) => void;
   buyFocus: () => void;
   setSubscribed: (value: boolean) => void;
   resetProgress: () => void;
@@ -69,6 +71,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         setState((s) =>
           (countsTowardGate ? recordLevelResult : recordLevelResultNoGate)(s, won, Date.now()),
         ),
+      recordChallenge: (block) => setState((s) => recordChallengeDone(s, block)),
       buyFocus: () => setState((s) => buyFocusRefill(s, Date.now())),
       setSubscribed: (v) => setState((s) => setSubscribedPure(s, v, Date.now())),
       resetProgress: () => {

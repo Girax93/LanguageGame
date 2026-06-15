@@ -6,12 +6,15 @@
  *    pool (learnedWords) that grows over time.
  *  - STRICT gating: a cipher/grammar item is eligible only when EVERY word-id
  *    it requires is mastered. A puzzle never contains an unmastered word.
- *  - Loop: learn the current set → clear `gamesToAdvance` levels → the next
- *    set unlocks to learn → repeat. The pool (and therefore puzzle
+ *  - Loop: learn the current set -> clear `gamesToAdvance` levels -> the next
+ *    set unlocks to learn -> repeat. The pool (and therefore puzzle
  *    length/difficulty) grows each cycle.
+ *  - CHALLENGE GATE: after every `setsPerChallenge` sets (a "block"), the player
+ *    must clear a challenge crossword built from ALL the block's words before
+ *    the next block opens to learn.
  *  - SCOPING (Practice vs Recap): Practice draws only from the current +
- *    previous set (plus always-available filler/scaffold words) to keep focus
- *    on freshly-learned material; Recap draws from the whole learned pool.
+ *    previous set (plus always-available filler/scaffold words); Recap draws
+ *    from the whole learned pool.
  */
 import { PROGRESSION } from './progressionConfig';
 import type { PlayerState } from './types';
@@ -56,17 +59,57 @@ export function masteredSetCount(s: PlayerState, sets: VocabSet[]): number {
   return n;
 }
 
+// ── Challenge blocks ────────────────────────────────────────────────────────
+
+/** The challenge block a set belongs to (sets are grouped in fours). */
+export function challengeBlockOf(setIndex: number): number {
+  return Math.floor(setIndex / PROGRESSION.setsPerChallenge);
+}
+
+/** How many FULL challenge blocks exist for the given set list. */
+export function challengeBlockCount(sets: VocabSet[]): number {
+  return Math.floor(sets.length / PROGRESSION.setsPerChallenge);
+}
+
+export function isChallengeDone(s: PlayerState, block: number): boolean {
+  return (s.challengesDone ?? []).includes(block);
+}
+
+/**
+ * The block whose sets are all mastered but whose challenge crossword has not
+ * yet been cleared — the challenge the player must complete now, or null.
+ */
+export function pendingChallenge(s: PlayerState, sets: VocabSet[]): number | null {
+  const blocks = challengeBlockCount(sets);
+  for (let b = 0; b < blocks; b++) {
+    const lo = b * PROGRESSION.setsPerChallenge;
+    const blockSets = sets.slice(lo, lo + PROGRESSION.setsPerChallenge);
+    const allMastered = blockSets.length > 0 && blockSets.every((st) => isSetMastered(s, st));
+    if (allMastered && !isChallengeDone(s, b)) return b;
+  }
+  return null;
+}
+
+/** Mark a challenge block cleared (idempotent). */
+export function recordChallengeDone(s: PlayerState, block: number): PlayerState {
+  if (isChallengeDone(s, block)) return s;
+  return { ...s, challengesDone: [...(s.challengesDone ?? []), block] };
+}
+
 /**
  * How many sets are available to learn. Set 0 is always available; set k+1
  * opens once set k is mastered AND the player has cleared enough levels
- * (gamesToAdvance * (k+1) total).
+ * (gamesToAdvance * (k+1) total) AND — when k+1 crosses into a new challenge
+ * block — that block's challenge crossword has been cleared.
  */
 export function availableSetCount(s: PlayerState, sets: VocabSet[]): number {
   if (sets.length === 0) return 0;
   let available = 1;
   for (let i = 0; i < sets.length; i++) {
     const enoughWins = s.levelsWon >= PROGRESSION.gamesToAdvance * (i + 1);
-    if (isSetMastered(s, sets[i]) && enoughWins) {
+    const crossesBlock = (i + 1) % PROGRESSION.setsPerChallenge === 0;
+    const challengeOk = !crossesBlock || isChallengeDone(s, challengeBlockOf(i));
+    if (isSetMastered(s, sets[i]) && enoughWins && challengeOk) {
       available = Math.min(sets.length, i + 2);
     } else {
       break;
@@ -139,8 +182,6 @@ export function practiceScopeIds(s: PlayerState, sets: VocabSet[]): Set<string> 
 /**
  * PRACTICE eligibility (narrow scope): every required word is mastered AND
  * every required NON-filler word belongs to the current or previous set.
- * Filler/scaffold words are always allowed once mastered. Keeps Practice on
- * freshly-learned material while still driving the games-to-advance gate.
  */
 export function isPracticeEligible(
   item: { requires: string[] },
@@ -153,8 +194,7 @@ export function isPracticeEligible(
 }
 
 /**
- * RECAP eligibility (broad scope): the original strict gate — any mastered word
- * may appear, mixing old and new for spaced review. Same rule as
+ * RECAP eligibility (broad scope): the original strict gate. Same rule as
  * isItemEligible; named for clarity at the call sites.
  */
 export function isRecapEligible(item: { requires: string[] }, s: PlayerState): boolean {

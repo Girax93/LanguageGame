@@ -10,4 +10,8 @@ export const PROGRESSION = {
 
   /** Cipher/grammar levels to clear before the next word set unlocks. */
   gamesToAdvance: 2,
+
+  /** A challenge crossword (using every word in the block) gates progress after
+   *  every this-many sets. 4 sets * 5 words = a 20-word challenge. */
+  setsPerChallenge: 4,
 } as const;

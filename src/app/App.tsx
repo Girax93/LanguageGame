@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import type { Route } from './routes';
 import { getGame } from '../games/registry';
+import { ChallengeCrossword } from '../games/crossword/ChallengeCrossword';
 import { MenuScreen, type MenuItem } from '../components/ui/MenuScreen';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { Statistics } from './Statistics';
@@ -17,6 +18,7 @@ import {
   gamesToNextSet,
   availableSetCount,
   masteredSetCount,
+  pendingChallenge,
 } from '../state/progression';
 
 /**
@@ -86,6 +88,13 @@ export function App() {
   const masteredSets = masteredSetCount(state, SETS);
   const recapUnlocked = masteredSets >= 2;
 
+  // A challenge crossword gates the next 4-set block until it's cleared.
+  const pending = pendingChallenge(state, SETS);
+  if (pending !== null && curIdx === null) {
+    learnStatus = 'Challenge required';
+    learnProgress = 1;
+  }
+
   const mainItems: MenuItem[] = [
     { icon: '📖', label: 'Learn', sublabel: 'Acquire words in a language', onClick: () => navigate('languages') },
     { icon: '📈', label: 'Statistics', sublabel: 'Words learned and level progress', onClick: () => navigate('statistics') },
@@ -126,6 +135,18 @@ export function App() {
     },
   ];
   const practiceItems: MenuItem[] = [
+    {
+      icon: '🏆',
+      label: 'Challenge',
+      sublabel:
+        pending !== null
+          ? `One crossword, every word from sets ${pending * 4 + 1}–${pending * 4 + 4}`
+          : 'Master 4 sets to unlock a challenge',
+      status: pending !== null ? '3 lives' : undefined,
+      badge: pending !== null ? 'Required' : undefined,
+      locked: pending === null,
+      onClick: pending !== null ? () => navigate('challenge') : undefined,
+    },
     { icon: '🧠', label: 'Grammar', sublabel: 'Articles: der / die / das …', onClick: () => navigate('grammar') },
     { icon: '🔡', label: 'Letter Cipher', sublabel: 'Decode the sentence', onClick: () => navigate('fill-in-the-blanks') },
   ];
@@ -213,6 +234,11 @@ export function App() {
       ) : null;
       break;
     }
+    case 'challenge':
+      screen = (
+        <ChallengeCrossword onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} />
+      );
+      break;
     default:
       screen = <MenuScreen items={mainItems} />;
   }
@@ -222,7 +248,8 @@ export function App() {
     route === 'grammar' ||
     route === 'recap-cipher' ||
     route === 'recap-grammar' ||
-    route === 'recap-crossword';
+    route === 'recap-crossword' ||
+    route === 'challenge';
 
   return (
     <div className="h-full bg-page text-espresso">

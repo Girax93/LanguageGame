@@ -16,4 +16,5 @@ export type Route =
   | 'grammar'
   | 'recap-cipher'
   | 'recap-grammar'
-  | 'recap-crossword';
+  | 'recap-crossword'
+  | 'challenge';

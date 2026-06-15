@@ -9,6 +9,8 @@ export interface PlayerState {
   wordProgress: Record<string, number>;
   /** Total cipher/grammar levels won (drives pack unlocks). */
   levelsWon: number;
+  /** Challenge-block indices the player has cleared (every 4 sets = one block). */
+  challengesDone: number[];
   /** Current focus (energy). */
   focus: number;
   /** Epoch ms anchor used to compute focus regen. */
@@ -25,6 +27,7 @@ export function defaultPlayerState(now: number, focusStart: number): PlayerState
     learnedWords: [],
     wordProgress: {},
     levelsWon: 0,
+    challengesDone: [],
     focus: focusStart,
     lastFocusRegenAt: now,
     subscribed: false,
