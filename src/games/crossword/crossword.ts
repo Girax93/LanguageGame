@@ -24,6 +24,8 @@ export interface XEntry {
   index: number;
   number: number;
   dir: CrosswordDir;
+  /** The vocab word-id (so the board can resolve a clue by language). */
+  wordId: string;
   clue: string;
   answer: string;
   /** Cell keys, in answer order. */
@@ -96,6 +98,7 @@ export function buildCrossword(item: CrosswordContentItem): BuiltCrossword {
     index: d.i,
     number: cells.get(d.keys[0])!.number ?? 0,
     dir: d.e.dir,
+    wordId: d.e.wordId,
     clue: d.clue,
     answer: d.answer,
     cells: d.keys,

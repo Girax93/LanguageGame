@@ -36,6 +36,7 @@ export function App() {
   const [stack, setStack] = useState<Route[]>(['main']);
   const [confirmMain, setConfirmMain] = useState(false);
   const [recapBlock, setRecapBlock] = useState<number | null>(null);
+  const [practiceDoneOpen, setPracticeDoneOpen] = useState(false);
   const route = stack[stack.length - 1];
 
   useEffect(() => {
@@ -70,6 +71,8 @@ export function App() {
   const gp = onBlock ? grammarProgress(state, SETS, block) : { done: 0, total: 0 };
   const challengeReadyNow = onBlock && challengeReady(state, SETS, block);
   const challengeDoneForBlock = onBlock && isChallengeDone(state, block);
+  const cipherComplete = onBlock ? cp.total > 0 && cp.done >= cp.total : true;
+  const grammarComplete = onBlock ? gp.total === 0 || gp.done >= gp.total : true;
 
   const curIdx = currentLearnSetIndex(state, SETS);
   let learnStatus: string;
@@ -137,35 +140,42 @@ export function App() {
     },
   ];
 
+  const challengeComplete = challengeDoneForBlock || !onBlock;
   const practiceItems: MenuItem[] = [
     {
       icon: '🔡',
       label: 'Letter Cipher',
       sublabel: 'Use every new word in a sentence',
-      status: onBlock ? `${cp.done}/${cp.total}` : '✓',
+      status: cipherComplete ? '✓' : `${cp.done}/${cp.total}`,
       progress: onBlock && cp.total ? cp.done / cp.total : 1,
-      onClick: () => navigate('fill-in-the-blanks'),
+      badge: cipherComplete ? 'Complete' : undefined,
+      onClick: cipherComplete ? () => setPracticeDoneOpen(true) : () => navigate('fill-in-the-blanks'),
     },
     {
       icon: '🧠',
       label: 'Grammar',
       sublabel: 'Drill der / die / das for the new nouns',
-      status: onBlock ? (gp.total ? `${gp.done}/${gp.total}` : 'none') : '✓',
+      status: !onBlock ? '✓' : gp.total ? (grammarComplete ? '✓' : `${gp.done}/${gp.total}`) : 'none',
       progress: onBlock && gp.total ? gp.done / gp.total : 1,
-      onClick: () => navigate('grammar'),
+      badge: grammarComplete && onBlock && gp.total ? 'Complete' : undefined,
+      onClick: grammarComplete ? () => setPracticeDoneOpen(true) : () => navigate('grammar'),
     },
     {
       icon: '🏆',
       label: 'Challenge',
       sublabel: challengeReadyNow
         ? 'One crossword with all 10 new words'
-        : challengeDoneForBlock || !onBlock
+        : challengeComplete
           ? 'Crossword complete'
           : 'Finish ciphers & grammar first',
-      status: challengeReadyNow ? '3 lives' : challengeDoneForBlock || !onBlock ? '✓' : undefined,
-      badge: challengeReadyNow ? 'Required' : undefined,
-      locked: !challengeReadyNow,
-      onClick: challengeReadyNow ? () => navigate('challenge') : undefined,
+      status: challengeReadyNow ? '3 lives' : challengeComplete ? '✓' : undefined,
+      badge: challengeReadyNow ? 'Required' : challengeComplete ? 'Complete' : undefined,
+      locked: !challengeReadyNow && !challengeComplete,
+      onClick: challengeReadyNow
+        ? () => navigate('challenge')
+        : challengeComplete
+          ? () => setPracticeDoneOpen(true)
+          : undefined,
     },
   ];
 
@@ -237,7 +247,12 @@ export function App() {
     case 'grammar': {
       const Game = getGame(route)?.component;
       screen = Game ? (
-        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} />
+        <Game
+          onExit={back}
+          onOpenSettings={() => navigate('settings')}
+          onMain={requestMain}
+          onPractice={() => navigate('practice')}
+        />
       ) : null;
       break;
     }
@@ -310,6 +325,19 @@ export function App() {
           cancelLabel="Stay here"
           onConfirm={goMain}
           onCancel={() => setConfirmMain(false)}
+        />
+      )}
+      {practiceDoneOpen && (
+        <ConfirmDialog
+          title="Practice complete"
+          body="You've covered everything for this set. To keep practising these words, head to Recap mode."
+          confirmLabel="Go to Recap"
+          cancelLabel="Stay"
+          onConfirm={() => {
+            setPracticeDoneOpen(false);
+            navigate('recap');
+          }}
+          onCancel={() => setPracticeDoneOpen(false)}
         />
       )}
     </div>

@@ -4,6 +4,7 @@ import type { BoardControls } from '../../_shared/LevelStage';
 import { toUpperDE, isLetterDE } from '../../fill-in-the-blanks/cipher';
 import { Keyboard } from '../../fill-in-the-blanks/components/Keyboard';
 import { buildCrossword, cellKey } from '../crossword';
+import { clueFor } from '../../../content/clues';
 
 interface Props {
   item: CrosswordContentItem;
@@ -30,6 +31,7 @@ export function CrosswordBoard({ item, controls }: Props) {
   const [active, setActive] = useState<string>(() => built.entries[0]?.cells[0] ?? '');
   const [wrong, setWrong] = useState<string | null>(null);
   const [showClues, setShowClues] = useState(false);
+  const [lang, setLang] = useState<'de' | 'en'>('de');
   const done = useRef(false);
 
   // ── zoom / pan ────────────────────────────────────────────────────────────
@@ -367,7 +369,7 @@ export function CrosswordBoard({ item, controls }: Props) {
             <>
               <span className="font-semibold tabular-nums">{selectedEntry.number}</span>
               <span className="text-taupe"> {selectedEntry.dir === 'across' ? 'Across' : 'Down'} · </span>
-              <span>{selectedEntry.clue}</span>
+              <span>{clueFor(selectedEntry.wordId, lang)}</span>
             </>
           )}
         </p>
@@ -447,38 +449,64 @@ export function CrosswordBoard({ item, controls }: Props) {
         <Keyboard onKey={pressLetter} stateFor={() => 'idle'} />
       </div>
 
-      {/* clues sheet */}
-      {showClues && (
-        <div className="absolute inset-0 z-10 flex flex-col bg-page/97 animate-fade-in">
-          <div className="flex shrink-0 items-center justify-between pb-3">
+      {/* clues — slide-out pane from the left with its own background */}
+      <div className={`absolute inset-0 z-20 ${showClues ? '' : 'pointer-events-none'}`}>
+        <div
+          className={`absolute inset-0 bg-espresso/25 transition-opacity duration-200 ${showClues ? 'opacity-100' : 'opacity-0'}`}
+          onClick={() => setShowClues(false)}
+        />
+        <div
+          className={`absolute bottom-0 left-0 top-0 flex w-[82%] max-w-xs flex-col rounded-r-2xl bg-card shadow-2xl transition-transform duration-200 ${showClues ? 'translate-x-0' : '-translate-x-full'}`}
+        >
+          <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-3">
             <h3 className="font-serif text-lg font-semibold text-espresso">Clues</h3>
-            <button
-              type="button"
-              onClick={() => setShowClues(false)}
-              className="rounded-full bg-sand px-3 py-1.5 text-xs font-semibold text-brown transition hover:bg-[#ddcdb2]"
-            >
-              Close
-            </button>
+            <div className="flex items-center gap-2">
+              <div className="flex overflow-hidden rounded-full bg-sand text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setLang('de')}
+                  className={`px-3 py-1.5 transition ${lang === 'de' ? 'bg-brown text-cream' : 'text-brown'}`}
+                >
+                  DE
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLang('en')}
+                  className={`px-3 py-1.5 transition ${lang === 'en' ? 'bg-brown text-cream' : 'text-brown'}`}
+                >
+                  EN
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowClues(false)}
+                aria-label="Close clues"
+                className="rounded-full p-1.5 text-taupe transition hover:bg-sand hover:text-espresso"
+              >
+                ✕
+              </button>
+            </div>
           </div>
-          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-2">
-            <ClueGroup title="Across" entries={across} selEntry={selEntry} onPick={selectClue} done={sageCells} />
-            <ClueGroup title="Down" entries={down} selEntry={selEntry} onPick={selectClue} done={sageCells} />
+          <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-4 py-3">
+            <ClueGroup title={lang === 'de' ? 'Waagerecht' : 'Across'} entries={across} selEntry={selEntry} onPick={selectClue} done={sageCells} lang={lang} />
+            <ClueGroup title={lang === 'de' ? 'Senkrecht' : 'Down'} entries={down} selEntry={selEntry} onPick={selectClue} done={sageCells} lang={lang} />
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
 
 interface GroupProps {
   title: string;
-  entries: { index: number; number: number; clue: string; cells: string[] }[];
+  entries: { index: number; number: number; wordId: string; cells: string[] }[];
   selEntry: number;
   onPick: (i: number) => void;
   done: Set<string>;
+  lang: 'de' | 'en';
 }
 
-function ClueGroup({ title, entries, selEntry, onPick, done }: GroupProps) {
+function ClueGroup({ title, entries, selEntry, onPick, done, lang }: GroupProps) {
   if (entries.length === 0) return null;
   return (
     <div>
@@ -498,7 +526,7 @@ function ClueGroup({ title, entries, selEntry, onPick, done }: GroupProps) {
                 ].join(' ')}
               >
                 <span className="w-5 shrink-0 font-semibold tabular-nums text-brown">{e.number}</span>
-                <span>{e.clue}</span>
+                <span>{clueFor(e.wordId, lang)}</span>
               </button>
             </li>
           );

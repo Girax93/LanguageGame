@@ -41,7 +41,7 @@ function makeStep(studyIds: string[]): Step | null {
 
 type Round = 1 | 2 | 3;
 
-export function Learn({ onExit, onMain }: GameProps) {
+export function Learn({ onExit, onMain, onPractice }: GameProps) {
   const { state, answerWord } = usePlayer();
   const study = wordsToStudy(state, SETS);
   const setIdx = currentLearnSetIndex(state, SETS);
@@ -114,10 +114,11 @@ export function Learn({ onExit, onMain }: GameProps) {
           <div className="text-4xl text-brown">✦</div>
           <h3 className="mt-5 font-serif text-2xl font-semibold text-espresso">Set complete!</h3>
           <p className="mt-2 max-w-xs text-taupe">
-            You’ve mastered every word in this set. Win games in Practice to unlock the next one.
+            You’ve learned these words. Now practise them — ciphers, grammar and the
+            crossword — to unlock the next set.
           </p>
-          <Button className="mt-8" onClick={onExit}>
-            Back
+          <Button className="mt-8" onClick={onPractice ?? onExit}>
+            Practice now!
           </Button>
         </div>
       ) : (

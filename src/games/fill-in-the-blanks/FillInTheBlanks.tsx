@@ -33,6 +33,12 @@ export function FillInTheBlanks({ onExit, onOpenSettings, onMain, scope = 'pract
       onMain={onMain}
       countsTowardGate={scope !== 'recap'}
       onWin={scope === 'recap' ? undefined : (item) => recordCipherWords(item.requires)}
+      renderWin={(item) => (
+        <div className="mt-3 w-full max-w-xs rounded-xl border border-line bg-sand/40 px-4 py-3 text-center">
+          <p className="font-serif text-lg font-semibold text-espresso">{item.sentence}</p>
+          <p className="mt-1 text-sm text-taupe">{item.translation}</p>
+        </div>
+      )}
       renderBoard={(item, controls) => (
         <CipherBoard item={item} flags={flagsForLevel(item.level)} controls={controls} />
       )}

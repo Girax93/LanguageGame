@@ -14,6 +14,8 @@ export interface GameProps {
   onOpenSettings?: () => void;
   /** Request returning to the main menu (host shows a confirm). */
   onMain?: () => void;
+  /** Jump to the Practice menu (Learn uses this when a set is complete). */
+  onPractice?: () => void;
   /** Word-pool scope. Defaults to 'practice'. */
   scope?: GameScope;
 }

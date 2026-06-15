@@ -6,6 +6,7 @@ import {
 import { CIPHER_ITEMS } from '../src/content/cipherItems';
 import { GRAMMAR_ITEMS } from '../src/content/grammarItems';
 import { CROSSWORDS } from '../src/content/crosswords';
+import { CLUES, clueFor } from '../src/content/clues';
 import { challengeCrossword, blockWordIds } from '../src/content/challenges';
 import { buildCrossword } from '../src/games/crossword/crossword';
 import {
@@ -126,6 +127,16 @@ for (const w of ALL_WORDS) {
   } else if (englishWithArticle(w) !== w.en) invH = false;
 }
 
+// (i) CLUES: every vocab word has a non-empty German + English clue, and the
+//     toggle returns the right language.
+let invI = true;
+const igaps: string[] = [];
+for (const w of ALL_WORDS) {
+  const c = CLUES[w.id];
+  if (!c || !c.de || !c.en) { invI = false; igaps.push(w.id); continue; }
+  if (clueFor(w.id, 'de') !== c.de || clueFor(w.id, 'en') !== c.en) { invI = false; igaps.push(w.id + ':lang'); }
+}
+
 console.log(`words=${ALL_WORDS.length} sets=${SETS.length} blocks=${blocks} cipher=${CIPHER_ITEMS.length} grammar=${GRAMMAR_ITEMS.length} crosswords=${CROSSWORDS.length}`);
 console.log('a no-unmastered-word:', invA);
 console.log('b cipher coverage/block:', invB, bgaps.slice(0, 6));
@@ -135,5 +146,6 @@ console.log('e block gating chain:', invE);
 console.log('f challenge crosswords (10 words):', invF, fgaps.slice(0, 6), 'sizes', xsizes.join(','));
 console.log('g curated crosswords:', invG);
 console.log('h article translations:', invH);
-if (!invA || !invB || !invC || !invD || !invE || !invF || !invG || !invH) process.exit(1);
+console.log('i crossword clues (de+en per word):', invI, igaps.slice(0,5));
+if (!invA || !invB || !invC || !invD || !invE || !invF || !invG || !invH || !invI) process.exit(1);
 console.log('OK');

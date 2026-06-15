@@ -24,6 +24,8 @@ interface Props<T> {
   countsTowardGate?: boolean;
   /** Extra callback fired with the solved item when a level is won. */
   onWin?: (item: T) => void;
+  /** Extra content shown on the win screen (e.g. the solved translation). */
+  renderWin?: (item: T) => ReactNode;
   renderBoard: (item: T, controls: BoardControls) => ReactNode;
 }
 
@@ -37,6 +39,7 @@ export function LevelStage<T extends { id: string }>({
   onMain,
   countsTowardGate = true,
   onWin,
+  renderWin,
   renderBoard,
 }: Props<T>) {
   const { state, now, recordLevel } = usePlayer();
@@ -99,6 +102,7 @@ export function LevelStage<T extends { id: string }>({
   if (phase === 'win') {
     return (
       <Centered onBack={onExit} icon="✓" title="Level won" body="Success is free — no focus spent."
+        extra={item ? renderWin?.(item) : undefined}
         primary={{ label: isLast ? 'Finish' : 'Next level', onClick: isLast ? onExit : goNext }} />
     );
   }
@@ -172,12 +176,14 @@ function Centered({
   icon,
   title,
   body,
+  extra,
   primary,
 }: {
   onBack: () => void;
   icon: string;
   title: string;
   body: string;
+  extra?: ReactNode;
   primary: { label: string; onClick: () => void };
 }) {
   return (
@@ -195,6 +201,7 @@ function Centered({
         <div className="text-4xl text-brown">{icon}</div>
         <h2 className="mt-5 font-serif text-2xl font-semibold text-espresso">{title}</h2>
         <p className="mt-2 max-w-xs text-taupe">{body}</p>
+        {extra}
         <Button className="mt-8 w-56" onClick={primary.onClick}>
           {primary.label}
         </Button>

@@ -38,6 +38,12 @@ export function Grammar({ onExit, onOpenSettings, onMain, scope = 'practice' }: 
       onMain={onMain}
       countsTowardGate={scope !== 'recap'}
       onWin={scope === 'recap' ? undefined : (item) => recordGrammarNoun(grammarNounId(item))}
+      renderWin={(item) => (
+        <div className="mt-3 w-full max-w-xs rounded-xl border border-line bg-sand/40 px-4 py-3 text-center">
+          <p className="font-serif text-lg font-semibold text-espresso">{`${item.before}${item.stem}${item.ending}${item.after}`}</p>
+          <p className="mt-1 text-sm text-taupe">{item.translation}</p>
+        </div>
+      )}
       renderBoard={(item, controls) => <GrammarBoard item={item} controls={controls} />}
     />
   );
