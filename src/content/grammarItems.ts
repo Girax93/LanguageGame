@@ -1,14 +1,6 @@
 import type { Gender } from './vocab';
 import { requiresFromText, levelForRequires } from './derive';
 
-/**
- * Grammar: article-ending drill. The article shows its STEM with the ENDING
- * blank and NO number, so it must be recalled. `before`/`after` are natural
- * case (uppercased for display by the board).
- *
- * `requires` = the article's base word + every word in before/after; `level`
- * derived from those. Eligible only when all required words are mastered.
- */
 export interface GrammarContentItem {
   id: string;
   before: string;
@@ -32,14 +24,29 @@ interface RawGrammar {
 }
 
 const RAW: RawGrammar[] = [
-  { id: 'g-01', before: '', stem: 'd', ending: 'er', after: ' Mann ist gut.', translation: 'The man is good.', gender: 'm' },
-  { id: 'g-02', before: '', stem: 'd', ending: 'er', after: ' Hund ist gut.', translation: 'The dog is good.', gender: 'm' },
-  { id: 'g-03', before: '', stem: 'd', ending: 'ie', after: ' Frau ist klein.', translation: 'The woman is small.', gender: 'f' },
-  { id: 'g-04', before: '', stem: 'd', ending: 'as', after: ' Kind ist klein.', translation: 'The child is small.', gender: 'n' },
-  { id: 'g-05', before: '', stem: 'd', ending: 'as', after: ' Haus ist groß.', translation: 'The house is big.', gender: 'n' },
-  { id: 'g-06', before: '', stem: 'd', ending: 'as', after: ' Auto ist neu.', translation: 'The car is new.', gender: 'n' },
-  { id: 'g-07', before: '', stem: 'd', ending: 'ie', after: ' Katze ist schön.', translation: 'The cat is beautiful.', gender: 'f' },
-  { id: 'g-08', before: 'Das ist ', stem: 'ein', ending: 'e', after: ' Katze.', translation: 'That is a cat.', gender: 'f' },
+  { id: 'g-001', before: "", stem: "d", ending: "er", after: " Mann ist gut.", translation: "The man is good.", gender: "m" },
+  { id: 'g-002', before: "", stem: "d", ending: "ie", after: " Frau ist schön.", translation: "The woman is beautiful.", gender: "f" },
+  { id: 'g-003', before: "", stem: "d", ending: "as", after: " Kind ist klein.", translation: "The child is small.", gender: "n" },
+  { id: 'g-004', before: "", stem: "d", ending: "er", after: " Hund ist groß.", translation: "The dog is big.", gender: "m" },
+  { id: 'g-005', before: "", stem: "d", ending: "er", after: " Garten ist schön.", translation: "The garden is beautiful.", gender: "m" },
+  { id: 'g-006', before: "", stem: "d", ending: "as", after: " Haus ist neu.", translation: "The house is new.", gender: "n" },
+  { id: 'g-007', before: "", stem: "d", ending: "ie", after: " Katze ist schnell.", translation: "The cat is fast.", gender: "f" },
+  { id: 'g-008', before: "", stem: "d", ending: "as", after: " Auto ist schnell.", translation: "The car is fast.", gender: "n" },
+  { id: 'g-009', before: "", stem: "d", ending: "er", after: " Kaffee ist gut.", translation: "The coffee is good.", gender: "m" },
+  { id: 'g-010', before: "", stem: "d", ending: "er", after: " Tee ist gut.", translation: "The tea is good.", gender: "m" },
+  { id: 'g-011', before: "", stem: "d", ending: "as", after: " Buch ist interessant.", translation: "The book is interesting.", gender: "n" },
+  { id: 'g-012', before: "", stem: "d", ending: "er", after: " Apfel ist gut.", translation: "The apple is good.", gender: "m" },
+  { id: 'g-013', before: "", stem: "d", ending: "as", after: " Brot ist gut.", translation: "The bread is good.", gender: "n" },
+  { id: 'g-014', before: "", stem: "d", ending: "ie", after: " Stadt ist groß.", translation: "The city is big.", gender: "f" },
+  { id: 'g-015', before: "", stem: "d", ending: "ie", after: " Schule ist neu.", translation: "The school is new.", gender: "f" },
+  { id: 'g-016', before: "", stem: "d", ending: "er", after: " Lehrer ist gut.", translation: "The teacher is good.", gender: "m" },
+  { id: 'g-017', before: "", stem: "d", ending: "er", after: " Freund ist gut.", translation: "The friend is good.", gender: "m" },
+  { id: 'g-018', before: "", stem: "d", ending: "er", after: " Tisch ist neu.", translation: "The table is new.", gender: "m" },
+  { id: 'g-019', before: "", stem: "d", ending: "er", after: " Stuhl ist alt.", translation: "The chair is old.", gender: "m" },
+  { id: 'g-020', before: "", stem: "d", ending: "as", after: " Wetter ist schön.", translation: "The weather is beautiful.", gender: "n" },
+  { id: 'g-021', before: "", stem: "d", ending: "ie", after: " Sonne ist warm.", translation: "The sun is warm.", gender: "f" },
+  { id: 'g-022', before: "", stem: "d", ending: "er", after: " Park ist groß.", translation: "The park is big.", gender: "m" },
+  { id: 'g-023', before: "", stem: "d", ending: "er", after: " Ball ist klein.", translation: "The ball is small.", gender: "m" },
 ];
 
 function articleBaseId(stem: string, gender: Gender): string {
