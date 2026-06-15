@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import type { CrosswordContentItem } from '../../../content/crosswords';
 import type { BoardControls } from '../../_shared/LevelStage';
 import { toUpperDE, isLetterDE } from '../../fill-in-the-blanks/cipher';
@@ -8,6 +8,18 @@ import { buildCrossword, cellKey } from '../crossword';
 interface Props {
   item: CrosswordContentItem;
   controls: BoardControls;
+}
+
+// Natural (zoom = 1) cell pitch in CSS px. The grid is rendered at this fixed
+// size and a CSS transform handles fit / zoom / pan.
+const CELL = 40;
+const GAP = 4;
+const PITCH = CELL + GAP;
+
+interface View {
+  zoom: number;
+  x: number;
+  y: number;
 }
 
 export function CrosswordBoard({ item, controls }: Props) {
@@ -20,7 +32,234 @@ export function CrosswordBoard({ item, controls }: Props) {
   const [showClues, setShowClues] = useState(false);
   const done = useRef(false);
 
-  // Cells belonging to a fully-correct entry (shown in the sage "done" style).
+  // ── zoom / pan ────────────────────────────────────────────────────────────
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [view, setView] = useState<View>({ zoom: 1, x: 0, y: 0 });
+  const viewRef = useRef(view);
+  viewRef.current = view;
+  const bounds = useRef({ min: 0.4, max: 3 });
+
+  const naturalW = built.cols * CELL + (built.cols - 1) * GAP;
+  const naturalH = built.rows * CELL + (built.rows - 1) * GAP;
+
+  const clampPan = useCallback(
+    (x: number, y: number, zoom: number): { x: number; y: number } => {
+      const vp = viewportRef.current;
+      if (!vp) return { x, y };
+      const vw = vp.clientWidth;
+      const vh = vp.clientHeight;
+      const gx = naturalW * zoom;
+      const gy = naturalH * zoom;
+      const loX = Math.min(0, vw - gx);
+      const hiX = Math.max(0, vw - gx);
+      const loY = Math.min(0, vh - gy);
+      const hiY = Math.max(0, vh - gy);
+      return { x: Math.min(hiX, Math.max(loX, x)), y: Math.min(hiY, Math.max(loY, y)) };
+    },
+    [naturalW, naturalH],
+  );
+
+  const fitView = useCallback(() => {
+    const vp = viewportRef.current;
+    if (!vp || vp.clientWidth === 0) return;
+    const vw = vp.clientWidth;
+    const vh = vp.clientHeight;
+    const fit = Math.min(vw / naturalW, vh / naturalH);
+    const zoom = Math.min(fit, 1.3);
+    bounds.current = { min: Math.min(fit, 0.5), max: 3 };
+    setView({ zoom, x: (vw - naturalW * zoom) / 2, y: (vh - naturalH * zoom) / 2 });
+  }, [naturalW, naturalH]);
+
+  // Fit the whole puzzle on first layout (and when the puzzle changes).
+  useLayoutEffect(() => {
+    let raf = 0;
+    const tryFit = () => {
+      const vp = viewportRef.current;
+      if (vp && vp.clientWidth > 0 && vp.clientHeight > 0) fitView();
+      else raf = requestAnimationFrame(tryFit);
+    };
+    tryFit();
+    return () => cancelAnimationFrame(raf);
+  }, [fitView]);
+
+  // Keep the active cell on screen while typing (minimal nudge).
+  const ensureVisible = useCallback(
+    (key: string) => {
+      const cell = built.cells.get(key);
+      const vp = viewportRef.current;
+      if (!cell || !vp) return;
+      const v = viewRef.current;
+      const x0 = v.x + cell.c * PITCH * v.zoom;
+      const y0 = v.y + cell.r * PITCH * v.zoom;
+      const size = CELL * v.zoom;
+      const vw = vp.clientWidth;
+      const vh = vp.clientHeight;
+      const M = 8;
+      let nx = v.x;
+      let ny = v.y;
+      if (x0 < M) nx += M - x0;
+      else if (x0 + size > vw - M) nx -= x0 + size - (vw - M);
+      if (y0 < M) ny += M - y0;
+      else if (y0 + size > vh - M) ny -= y0 + size - (vh - M);
+      if (nx !== v.x || ny !== v.y) {
+        const p = clampPan(nx, ny, v.zoom);
+        setView({ zoom: v.zoom, x: p.x, y: p.y });
+      }
+    },
+    [built, clampPan],
+  );
+  useEffect(() => {
+    if (active) ensureVisible(active);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active]);
+
+  const centerOnEntry = useCallback(
+    (i: number) => {
+      const e = built.entries[i];
+      const vp = viewportRef.current;
+      if (!e || !vp) return;
+      const v = viewRef.current;
+      let minc = Infinity;
+      let maxc = -Infinity;
+      let minr = Infinity;
+      let maxr = -Infinity;
+      for (const k of e.cells) {
+        const c = built.cells.get(k)!;
+        if (c.c < minc) minc = c.c;
+        if (c.c > maxc) maxc = c.c;
+        if (c.r < minr) minr = c.r;
+        if (c.r > maxr) maxr = c.r;
+      }
+      const cx = ((minc + maxc + 1) / 2) * PITCH - GAP / 2;
+      const cy = ((minr + maxr + 1) / 2) * PITCH - GAP / 2;
+      const p = clampPan(vp.clientWidth / 2 - cx * v.zoom, vp.clientHeight / 2 - cy * v.zoom, v.zoom);
+      setView({ zoom: v.zoom, x: p.x, y: p.y });
+    },
+    [built, clampPan],
+  );
+
+  // Pointer-driven pan (1 finger) + pinch zoom (2 fingers). Mouse wheel zooms.
+  const G = useRef({
+    pts: new Map<number, { x: number; y: number }>(),
+    mode: 'none' as 'none' | 'pan' | 'pinch',
+    moved: false,
+    startPan: { x: 0, y: 0 },
+    startZoom: 1,
+    startDist: 0,
+    startMid: { x: 0, y: 0 },
+    startClient: { x: 0, y: 0 },
+  });
+
+  function cellAtClient(clientX: number, clientY: number): string | null {
+    const vp = viewportRef.current;
+    if (!vp) return null;
+    const r = vp.getBoundingClientRect();
+    const v = viewRef.current;
+    const nx = (clientX - r.left - v.x) / v.zoom;
+    const ny = (clientY - r.top - v.y) / v.zoom;
+    const col = Math.floor(nx / PITCH);
+    const row = Math.floor(ny / PITCH);
+    if (col < 0 || row < 0 || col >= built.cols || row >= built.rows) return null;
+    if (nx - col * PITCH > CELL || ny - row * PITCH > CELL) return null; // gap
+    const key = cellKey(row, col);
+    return built.cells.has(key) ? key : null;
+  }
+
+  function onPointerDown(e: ReactPointerEvent<HTMLDivElement>) {
+    const vp = viewportRef.current;
+    if (!vp) return;
+    vp.setPointerCapture(e.pointerId);
+    const g = G.current;
+    g.pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const v = viewRef.current;
+    if (g.pts.size === 1) {
+      g.mode = 'pan';
+      g.moved = false;
+      g.startPan = { x: v.x, y: v.y };
+      g.startClient = { x: e.clientX, y: e.clientY };
+    } else if (g.pts.size === 2) {
+      const [a, b] = [...g.pts.values()];
+      const r = vp.getBoundingClientRect();
+      g.mode = 'pinch';
+      g.moved = true;
+      g.startDist = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+      g.startMid = { x: (a.x + b.x) / 2 - r.left, y: (a.y + b.y) / 2 - r.top };
+      g.startZoom = v.zoom;
+      g.startPan = { x: v.x, y: v.y };
+    }
+  }
+
+  function onPointerMove(e: ReactPointerEvent<HTMLDivElement>) {
+    const g = G.current;
+    if (!g.pts.has(e.pointerId)) return;
+    g.pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const vp = viewportRef.current;
+    if (!vp) return;
+    const v = viewRef.current;
+    if (g.mode === 'pan' && g.pts.size === 1) {
+      const dx = e.clientX - g.startClient.x;
+      const dy = e.clientY - g.startClient.y;
+      if (Math.abs(dx) + Math.abs(dy) > 6) g.moved = true;
+      const p = clampPan(g.startPan.x + dx, g.startPan.y + dy, v.zoom);
+      setView({ zoom: v.zoom, x: p.x, y: p.y });
+    } else if (g.mode === 'pinch' && g.pts.size >= 2) {
+      const [a, b] = [...g.pts.values()];
+      const dist = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+      const r = vp.getBoundingClientRect();
+      const mid = { x: (a.x + b.x) / 2 - r.left, y: (a.y + b.y) / 2 - r.top };
+      let zoom = g.startZoom * (dist / g.startDist);
+      zoom = Math.min(bounds.current.max, Math.max(bounds.current.min, zoom));
+      const nat = { x: (g.startMid.x - g.startPan.x) / g.startZoom, y: (g.startMid.y - g.startPan.y) / g.startZoom };
+      const p = clampPan(mid.x - nat.x * zoom, mid.y - nat.y * zoom, zoom);
+      setView({ zoom, x: p.x, y: p.y });
+    }
+  }
+
+  function onPointerUp(e: ReactPointerEvent<HTMLDivElement>) {
+    const g = G.current;
+    const wasTap = g.mode === 'pan' && !g.moved && g.pts.size === 1;
+    g.pts.delete(e.pointerId);
+    try {
+      viewportRef.current?.releasePointerCapture(e.pointerId);
+    } catch {
+      /* ignore */
+    }
+    if (wasTap) {
+      const key = cellAtClient(e.clientX, e.clientY);
+      if (key) onCellTap(key);
+    }
+    if (g.pts.size === 1) {
+      const pt = [...g.pts.values()][0];
+      g.mode = 'pan';
+      g.moved = true; // continuing from a pinch — don't treat as a tap
+      g.startPan = { x: viewRef.current.x, y: viewRef.current.y };
+      g.startClient = { x: pt.x, y: pt.y };
+    } else if (g.pts.size === 0) {
+      g.mode = 'none';
+    }
+  }
+
+  // Native non-passive wheel listener so we can zoom without scrolling the page.
+  useEffect(() => {
+    const vp = viewportRef.current;
+    if (!vp) return;
+    function onWheel(e: WheelEvent) {
+      e.preventDefault();
+      const r = vp!.getBoundingClientRect();
+      const px = e.clientX - r.left;
+      const py = e.clientY - r.top;
+      const v = viewRef.current;
+      let zoom = v.zoom * Math.exp(-e.deltaY * 0.0015);
+      zoom = Math.min(bounds.current.max, Math.max(bounds.current.min, zoom));
+      const nat = { x: (px - v.x) / v.zoom, y: (py - v.y) / v.zoom };
+      const p = clampPan(px - nat.x * zoom, py - nat.y * zoom, zoom);
+      setView({ zoom, x: p.x, y: p.y });
+    }
+    vp.addEventListener('wheel', onWheel, { passive: false });
+    return () => vp.removeEventListener('wheel', onWheel);
+  }, [clampPan]);
+
+  // ── puzzle logic ──────────────────────────────────────────────────────────
   const sageCells = useMemo(() => {
     const s = new Set<string>();
     for (const e of built.entries) {
@@ -113,6 +352,7 @@ export function CrosswordBoard({ item, controls }: Props) {
     setSelEntry(i);
     setActive(e.cells.find((k) => !entered[k]) ?? e.cells[0]);
     setShowClues(false);
+    centerOnEntry(i);
   }
 
   const across = built.entries.filter((e) => e.dir === 'across');
@@ -120,8 +360,8 @@ export function CrosswordBoard({ item, controls }: Props) {
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
-      {/* selected clue + clues toggle */}
-      <div className="mb-3 flex shrink-0 items-center gap-3">
+      {/* selected clue + controls */}
+      <div className="mb-3 flex shrink-0 items-center gap-2">
         <p className="min-w-0 flex-1 text-sm text-espresso">
           {selectedEntry && (
             <>
@@ -133,6 +373,14 @@ export function CrosswordBoard({ item, controls }: Props) {
         </p>
         <button
           type="button"
+          onClick={fitView}
+          aria-label="Fit puzzle to screen"
+          className="shrink-0 rounded-full bg-sand px-3 py-1.5 text-xs font-semibold text-brown transition hover:bg-[#ddcdb2]"
+        >
+          Fit
+        </button>
+        <button
+          type="button"
           onClick={() => setShowClues((s) => !s)}
           className="shrink-0 rounded-full bg-sand px-3 py-1.5 text-xs font-semibold text-brown transition hover:bg-[#ddcdb2]"
         >
@@ -140,21 +388,30 @@ export function CrosswordBoard({ item, controls }: Props) {
         </button>
       </div>
 
-      {/* grid */}
-      <div className="flex min-h-0 flex-1 items-center justify-center overflow-y-auto">
+      {/* zoom/pan viewport — only the grid transforms; chrome stays put */}
+      <div
+        ref={viewportRef}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        className="relative min-h-0 flex-1 touch-none select-none overflow-hidden rounded-xl bg-page"
+        style={{ touchAction: 'none' }}
+      >
         <div
-          className="grid gap-1"
+          className="absolute left-0 top-0 grid will-change-transform"
           style={{
-            gridTemplateColumns: `repeat(${built.cols}, minmax(0, 1fr))`,
-            width: '100%',
-            maxWidth: `${built.cols * 50}px`,
+            gridTemplateColumns: `repeat(${built.cols}, ${CELL}px)`,
+            gap: `${GAP}px`,
+            transform: `translate(${view.x}px, ${view.y}px) scale(${view.zoom})`,
+            transformOrigin: '0 0',
           }}
         >
           {Array.from({ length: built.rows }).flatMap((_, r) =>
             Array.from({ length: built.cols }).map((__, c) => {
               const key = cellKey(r, c);
               const cell = built.cells.get(key);
-              if (!cell) return <div key={key} className="aspect-square" />;
+              if (!cell) return <div key={key} style={{ width: CELL, height: CELL }} />;
               const isWrong = wrong === key;
               const isActive = active === key;
               const box = isWrong
@@ -165,25 +422,20 @@ export function CrosswordBoard({ item, controls }: Props) {
                     ? 'border-brown bg-sand text-espresso ring-2 ring-brown/40'
                     : selCells.has(key)
                       ? 'border-brown/40 bg-sand/50 text-espresso'
-                      : 'border-line bg-card text-espresso hover:border-brown/50';
+                      : 'border-line bg-card text-espresso';
               return (
-                <button
+                <div
                   key={key}
-                  type="button"
-                  onClick={() => onCellTap(key)}
-                  className={[
-                    'relative flex aspect-square items-center justify-center rounded-md border-2',
-                    'font-serif text-base font-semibold uppercase transition sm:text-lg',
-                    box,
-                  ].join(' ')}
+                  style={{ width: CELL, height: CELL }}
+                  className={['relative flex items-center justify-center rounded-md border-2 font-serif text-lg font-semibold uppercase', box].join(' ')}
                 >
                   {cell.number && (
-                    <span className="absolute left-0.5 top-0 text-[8px] font-medium leading-tight text-taupe sm:text-[9px]">
+                    <span className="absolute left-0.5 top-0 text-[9px] font-medium leading-tight text-taupe">
                       {cell.number}
                     </span>
                   )}
                   {entered[key] ?? ''}
-                </button>
+                </div>
               );
             }),
           )}
@@ -209,8 +461,8 @@ export function CrosswordBoard({ item, controls }: Props) {
             </button>
           </div>
           <div className="min-h-0 flex-1 space-y-5 overflow-y-auto pb-2">
-            <ClueGroup title="Across" entries={across} selEntry={selEntry} onPick={selectClue} done={sageCells} built={built} />
-            <ClueGroup title="Down" entries={down} selEntry={selEntry} onPick={selectClue} done={sageCells} built={built} />
+            <ClueGroup title="Across" entries={across} selEntry={selEntry} onPick={selectClue} done={sageCells} />
+            <ClueGroup title="Down" entries={down} selEntry={selEntry} onPick={selectClue} done={sageCells} />
           </div>
         </div>
       )}
@@ -224,7 +476,6 @@ interface GroupProps {
   selEntry: number;
   onPick: (i: number) => void;
   done: Set<string>;
-  built: { cells: Map<string, { answer: string }> };
 }
 
 function ClueGroup({ title, entries, selEntry, onPick, done }: GroupProps) {
