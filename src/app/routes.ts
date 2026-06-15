@@ -4,6 +4,7 @@ export type Route =
   | 'languages'
   | 'lang-menu'
   | 'practice'
+  | 'recap'
   | 'statistics'
   | 'store'
   | 'settings'
@@ -12,4 +13,6 @@ export type Route =
   | 'reset'
   | 'learn'
   | 'fill-in-the-blanks'
-  | 'grammar';
+  | 'grammar'
+  | 'recap-cipher'
+  | 'recap-grammar';

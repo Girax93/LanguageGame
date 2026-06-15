@@ -53,6 +53,27 @@ export function recordLevelResult(
   return { ...s, focus, lastFocusRegenAt: wasFull ? now : s.lastFocusRegenAt };
 }
 
+/**
+ * Like recordLevelResult, but a WIN does NOT advance levelsWon. Used by Recap
+ * review, which is optional spaced practice and must not drive the
+ * games-to-advance gate (only Practice unlocks new word sets). A loss still
+ * costs focus exactly like a normal level.
+ */
+export function recordLevelResultNoGate(
+  s: PlayerState,
+  won: boolean,
+  now: number,
+): PlayerState {
+  if (won) {
+    const focus = Math.max(0, s.focus - ECONOMY.focusCostOnWin);
+    return { ...s, focus };
+  }
+  if (s.subscribed) return s;
+  const wasFull = s.focus >= ECONOMY.focusMax;
+  const focus = Math.max(0, s.focus - ECONOMY.focusCostOnFail);
+  return { ...s, focus, lastFocusRegenAt: wasFull ? now : s.lastFocusRegenAt };
+}
+
 /** STUB monetization: instant refill to full. (Wrap with real IAP later.) */
 export function buyFocusRefill(s: PlayerState, now: number): PlayerState {
   return { ...s, focus: ECONOMY.focusMax, lastFocusRegenAt: now };

@@ -1,5 +1,9 @@
 import type { ComponentType } from 'react';
 
+/** How a game scopes its puzzle pool. Practice = recent words only; Recap =
+ *  everything learned (and does not count toward the unlock gate). */
+export type GameScope = 'practice' | 'recap';
+
 /**
  * Props passed to every game's root component. Games read/update player
  * state via the usePlayer() hook, so this stays minimal.
@@ -10,6 +14,8 @@ export interface GameProps {
   onOpenSettings?: () => void;
   /** Request returning to the main menu (host shows a confirm). */
   onMain?: () => void;
+  /** Word-pool scope. Defaults to 'practice'. */
+  scope?: GameScope;
 }
 
 export type GameStatus = 'available' | 'coming-soon';

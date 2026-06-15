@@ -20,6 +20,8 @@ interface Props<T> {
   onExit: () => void;
   onOpenSettings?: () => void;
   onMain?: () => void;
+  /** When false, a win does not advance the unlock gate (used by Recap). */
+  countsTowardGate?: boolean;
   renderBoard: (item: T, controls: BoardControls) => ReactNode;
 }
 
@@ -31,6 +33,7 @@ export function LevelStage<T extends { id: string }>({
   onExit,
   onOpenSettings,
   onMain,
+  countsTowardGate = true,
   renderBoard,
 }: Props<T>) {
   const { state, now, recordLevel } = usePlayer();
@@ -45,7 +48,7 @@ export function LevelStage<T extends { id: string }>({
   const isLast = index === total - 1;
 
   function handleResult(won: boolean) {
-    recordLevel(won);
+    recordLevel(won, countsTowardGate);
     setPhase(won ? 'win' : 'lose');
   }
   const controls: BoardControls = {

@@ -12,7 +12,12 @@ import { ResetProgress } from './ResetProgress';
 import { usePlayer } from '../state/PlayerContext';
 import { SETS } from '../content/vocab';
 import { PROGRESSION } from '../state/progressionConfig';
-import { currentLearnSetIndex, gamesToNextSet, availableSetCount } from '../state/progression';
+import {
+  currentLearnSetIndex,
+  gamesToNextSet,
+  availableSetCount,
+  masteredSetCount,
+} from '../state/progression';
 
 /**
  * App shell + screen router with a real navigation stack wired to browser
@@ -77,6 +82,10 @@ export function App() {
   const practiceProgress = moreSets ? cleared / needed : 1;
   const practiceStatus = moreSets ? `${cleared}/${needed}${practiceMet ? ' ✓' : ''}` : `${needed}/${needed} ✓`;
 
+  // Recap unlocks once there's enough learned material to make review worthwhile.
+  const masteredSets = masteredSetCount(state, SETS);
+  const recapUnlocked = masteredSets >= 2;
+
   const mainItems: MenuItem[] = [
     { icon: '📖', label: 'Learn', sublabel: 'Acquire words in a language', onClick: () => navigate('languages') },
     { icon: '📈', label: 'Statistics', sublabel: 'Words learned and level progress', onClick: () => navigate('statistics') },
@@ -99,16 +108,31 @@ export function App() {
     {
       icon: '🎯',
       label: 'Practice',
-      sublabel: 'Play with the words you know',
+      sublabel: 'Play with your newest words',
       status: practiceStatus,
       progress: practiceProgress,
       onClick: () => navigate('practice'),
+    },
+    {
+      icon: '🔁',
+      label: 'Recap',
+      sublabel: recapUnlocked
+        ? 'Mixed review of everything you know'
+        : 'Learn 2 sets to unlock spaced review',
+      status: recapUnlocked ? `${state.learnedWords.length} words` : undefined,
+      badge: recapUnlocked ? undefined : 'Locked',
+      locked: !recapUnlocked,
+      onClick: recapUnlocked ? () => navigate('recap') : undefined,
     },
   ];
   const practiceItems: MenuItem[] = [
     { icon: '🧠', label: 'Grammar', sublabel: 'Articles: der / die / das …', onClick: () => navigate('grammar') },
     { icon: '🔡', label: 'Letter Cipher', sublabel: 'Decode the sentence', onClick: () => navigate('fill-in-the-blanks') },
     { icon: '🧩', label: 'Crosswords', sublabel: 'Interlocking vocabulary', badge: 'Coming', locked: true },
+  ];
+  const recapItems: MenuItem[] = [
+    { icon: '🧠', label: 'Grammar', sublabel: 'Articles across everything you know', onClick: () => navigate('recap-grammar') },
+    { icon: '🔡', label: 'Letter Cipher', sublabel: 'Sentences from your whole vocabulary', onClick: () => navigate('recap-cipher') },
   ];
 
   let screen: ReactNode;
@@ -123,8 +147,19 @@ export function App() {
       screen = (
         <MenuScreen
           title="Practice"
-          intro="Built only from the words you've learned."
+          intro="Your two newest word sets — plus the little glue words."
           items={practiceItems}
+          onBack={back}
+          onMain={requestMain}
+        />
+      );
+      break;
+    case 'recap':
+      screen = (
+        <MenuScreen
+          title="Recap"
+          intro="Mixed review from every word you've learned. Optional — it won't change your unlock progress."
+          items={recapItems}
           onBack={back}
           onMain={requestMain}
         />
@@ -157,11 +192,29 @@ export function App() {
       ) : null;
       break;
     }
+    case 'recap-cipher': {
+      const Game = getGame('fill-in-the-blanks')?.component;
+      screen = Game ? (
+        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
+      ) : null;
+      break;
+    }
+    case 'recap-grammar': {
+      const Game = getGame('grammar')?.component;
+      screen = Game ? (
+        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
+      ) : null;
+      break;
+    }
     default:
       screen = <MenuScreen items={mainItems} />;
   }
 
-  const pinned = route === 'fill-in-the-blanks' || route === 'grammar';
+  const pinned =
+    route === 'fill-in-the-blanks' ||
+    route === 'grammar' ||
+    route === 'recap-cipher' ||
+    route === 'recap-grammar';
 
   return (
     <div className="h-full bg-page text-espresso">

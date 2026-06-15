@@ -13,6 +13,7 @@ import { loadPlayerState, savePlayerState, clearPlayerState } from './storage';
 import {
   applyRegen,
   recordLevelResult,
+  recordLevelResultNoGate,
   buyFocusRefill,
   setSubscribed as setSubscribedPure,
 } from './focus';
@@ -23,7 +24,12 @@ interface PlayerContextValue {
   /** A ticking clock (ms) so focus countdowns re-render. */
   now: number;
   answerWord: (wordId: string, correct: boolean) => void;
-  recordLevel: (won: boolean) => void;
+  /**
+   * Record a level result. `countsTowardGate` (default true) advances the
+   * games-to-advance unlock counter on a win; Recap passes false so review
+   * never changes unlock progress.
+   */
+  recordLevel: (won: boolean, countsTowardGate?: boolean) => void;
   buyFocus: () => void;
   setSubscribed: (value: boolean) => void;
   resetProgress: () => void;
@@ -59,8 +65,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       now,
       answerWord: (wordId, correct) =>
         setState((s) => recordWordAnswer(s, wordId, correct)),
-      recordLevel: (won) =>
-        setState((s) => recordLevelResult(s, won, Date.now())),
+      recordLevel: (won, countsTowardGate = true) =>
+        setState((s) =>
+          (countsTowardGate ? recordLevelResult : recordLevelResultNoGate)(s, won, Date.now()),
+        ),
       buyFocus: () => setState((s) => buyFocusRefill(s, Date.now())),
       setSubscribed: (v) => setState((s) => setSubscribedPure(s, v, Date.now())),
       resetProgress: () => {
