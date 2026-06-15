@@ -9,6 +9,10 @@ import { Settings } from './Settings';
 import { Account } from './Account';
 import { Subscription } from './Subscription';
 import { ResetProgress } from './ResetProgress';
+import { usePlayer } from '../state/PlayerContext';
+import { SETS } from '../content/vocab';
+import { PROGRESSION } from '../state/progressionConfig';
+import { currentLearnSetIndex, gamesToNextSet, availableSetCount } from '../state/progression';
 
 /**
  * App shell + screen router with a real navigation stack wired to browser
@@ -16,6 +20,7 @@ import { ResetProgress } from './ResetProgress';
  * quitting. A "Main menu" button (with a confirm) jumps home from anywhere.
  */
 export function App() {
+  const { state } = usePlayer();
   const [stack, setStack] = useState<Route[]>(['main']);
   const [confirmMain, setConfirmMain] = useState(false);
   const route = stack[stack.length - 1];
@@ -44,6 +49,34 @@ export function App() {
   }
   const requestMain = () => setConfirmMain(true);
 
+  // ── Learn/Practice hub progress (reads the existing gate; no logic change) ──
+  const curIdx = currentLearnSetIndex(state, SETS);
+  let learnStatus: string;
+  let learnProgress: number;
+  if (curIdx !== null) {
+    const set = SETS[curIdx];
+    const masteredN = set.words.filter((w) => state.learnedWords.includes(w.id)).length;
+    learnStatus = 'Available';
+    learnProgress = masteredN === 0 && curIdx > 0 ? 1 : set.words.length ? masteredN / set.words.length : 0;
+  } else {
+    const gp = gamesToNextSet(state, SETS);
+    if (gp) {
+      learnStatus = 'Keep practicing';
+      learnProgress = gp.needed ? gp.cleared / gp.needed : 1;
+    } else {
+      learnStatus = 'All learned';
+      learnProgress = 1;
+    }
+  }
+
+  const needed = PROGRESSION.gamesToAdvance;
+  const available = availableSetCount(state, SETS);
+  const moreSets = available < SETS.length;
+  const cleared = Math.min(needed, Math.max(0, state.levelsWon - needed * (available - 1)));
+  const practiceMet = !moreSets || cleared >= needed;
+  const practiceProgress = moreSets ? cleared / needed : 1;
+  const practiceStatus = moreSets ? `${cleared}/${needed}${practiceMet ? ' ✓' : ''}` : `${needed}/${needed} ✓`;
+
   const mainItems: MenuItem[] = [
     { icon: '📖', label: 'Learn', sublabel: 'Acquire words in a language', onClick: () => navigate('languages') },
     { icon: '📈', label: 'Statistics', sublabel: 'Words learned and level progress', onClick: () => navigate('statistics') },
@@ -55,8 +88,22 @@ export function App() {
     { icon: '🇳🇴', label: 'Norwegian', sublabel: 'Bokmål', badge: 'Coming', locked: true },
   ];
   const langMenuItems: MenuItem[] = [
-    { icon: '📖', label: 'Learn', sublabel: 'Pick up new words', onClick: () => navigate('learn') },
-    { icon: '🎯', label: 'Practice', sublabel: 'Play with the words you know', onClick: () => navigate('practice') },
+    {
+      icon: '📖',
+      label: 'Learn',
+      sublabel: 'Pick up new words',
+      status: learnStatus,
+      progress: learnProgress,
+      onClick: () => navigate('learn'),
+    },
+    {
+      icon: '🎯',
+      label: 'Practice',
+      sublabel: 'Play with the words you know',
+      status: practiceStatus,
+      progress: practiceProgress,
+      onClick: () => navigate('practice'),
+    },
   ];
   const practiceItems: MenuItem[] = [
     { icon: '🧠', label: 'Grammar', sublabel: 'Articles: der / die / das …', onClick: () => navigate('grammar') },

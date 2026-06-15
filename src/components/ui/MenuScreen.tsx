@@ -7,6 +7,10 @@ export interface MenuItem {
   badge?: string;
   locked?: boolean;
   onClick?: () => void;
+  /** Optional progress bar (0..1) shown under the sublabel. */
+  progress?: number;
+  /** Optional low-emphasis status line next to the progress bar. */
+  status?: string;
 }
 
 interface Props {
@@ -34,6 +38,7 @@ export function MenuScreen({ title, intro, items, onBack, onMain }: Props) {
 
 function Card({ item }: { item: MenuItem }) {
   const disabled = item.locked || !item.onClick;
+  const hasProgress = item.progress !== undefined || item.status !== undefined;
   return (
     <button
       type="button"
@@ -59,8 +64,23 @@ function Card({ item }: { item: MenuItem }) {
           )}
         </div>
         {item.sublabel && <p className="mt-0.5 text-sm text-taupe">{item.sublabel}</p>}
+        {hasProgress && (
+          <div className="mt-2 flex items-center gap-2">
+            {item.progress !== undefined && (
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-sand">
+                <div
+                  className="h-full rounded-full bg-brown"
+                  style={{ width: `${Math.min(1, Math.max(0, item.progress)) * 100}%` }}
+                />
+              </div>
+            )}
+            {item.status && (
+              <span className="shrink-0 text-xs font-medium tabular-nums text-taupe">{item.status}</span>
+            )}
+          </div>
+        )}
       </div>
-      {!disabled && <span className="text-brown/50">→</span>}
+      {!disabled && <span className="self-start text-brown/50">→</span>}
     </button>
   );
 }
