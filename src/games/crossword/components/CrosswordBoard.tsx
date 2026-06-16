@@ -446,27 +446,24 @@ export function CrosswordBoard({ item, controls }: Props) {
         </div>
       </div>
 
-      {/* peek handle — a sliver of the clues pane stays on the left edge; tap to open */}
+      {/* peek handle — a tiny nub on the screen edge; tap to open the drawer */}
       {!showClues && (
         <button
           type="button"
           onClick={() => setShowClues(true)}
           aria-label="Open clues"
-          className="absolute left-0 top-1/2 z-30 flex -translate-y-1/2 items-center gap-1 rounded-r-xl border border-l-0 border-line bg-card py-5 pl-1.5 pr-2 text-taupe shadow-lg transition hover:bg-sand"
+          className="absolute -left-5 top-1/2 z-30 -translate-y-1/2 rounded-r-md bg-card/95 py-2.5 pl-1 pr-1.5 text-taupe shadow-sm ring-1 ring-line transition hover:bg-sand hover:text-espresso"
         >
-          <span className="text-[10px] font-semibold uppercase tracking-[0.15em] [writing-mode:vertical-rl] rotate-180">Clues</span>
-          <span aria-hidden>❯</span>
+          <span aria-hidden className="text-[11px] leading-none">›</span>
         </button>
       )}
 
-      {/* clues — slide-out pane from the left with its own background */}
-      <div className={`absolute inset-0 z-20 overflow-hidden ${showClues ? '' : 'pointer-events-none'}`}>
+      {/* clues — a floating drawer that slides out from the left screen edge */}
+      <div className={`absolute inset-y-0 -left-5 right-0 z-20 ${showClues ? '' : 'pointer-events-none'}`}>
+        {/* transparent tap-catcher: tap outside the drawer to close (no dim) */}
+        <div className="absolute inset-0" onClick={() => setShowClues(false)} />
         <div
-          className={`absolute inset-0 bg-espresso/25 transition-opacity duration-200 ${showClues ? 'opacity-100' : 'opacity-0'}`}
-          onClick={() => setShowClues(false)}
-        />
-        <div
-          className={`absolute bottom-0 left-0 top-0 flex w-[82%] max-w-xs flex-col rounded-r-2xl bg-card shadow-2xl transition-transform duration-200 ${showClues ? 'translate-x-0' : '-translate-x-full'}`}
+          className={`absolute left-0 top-4 bottom-4 flex w-[76%] max-w-[15rem] flex-col rounded-2xl bg-card shadow-xl transition duration-200 ${showClues ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}
         >
           <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-3">
             <h3 className="font-serif text-lg font-semibold text-espresso">Clues</h3>
