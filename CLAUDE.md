@@ -152,6 +152,44 @@ are in `learnedWords`. This is how puzzles are kept to words the player actually
   `clues.ts`; the content tests will flag gaps.
 - Match the existing visual language (tokens, serif display, calm spacing, solid fills).
 
+## Curriculum: 2000‑lemma frequency vocabulary (migration in progress)
+
+The vocabulary has moved from the old ~100 hand‑curated surface words to **~2000
+German lemmas ordered by conversational (OpenSubtitles) frequency**, in
+`src/content/lemmas.ts` (compact tab‑separated rows parsed at load; fields: id,
+de, en, pos, order, rank, gender, plural, forms, tags, register). `vocab.ts` is
+lemma‑backed (`VocabWord = Lemma`, Map lookups). It is **lemma‑based**: `sein`,
+`gehen`, `Hund` are single units; conjugation/declension is taught by grammar,
+not stored as separate words. (This supersedes the "three game modes" / per‑word
+clue rules described above where they conflict.)
+
+- **Grammar drills are GENERATED** from the noun lemmas (`grammarItems.ts`) — one
+  der/die/das drill per noun. No hand‑authored grammar list.
+- **Letter ciphers and recap crosswords are temporarily empty** (`cipherItems.ts`,
+  `crosswords.ts`) while their generators are rebuilt. The live block gate is
+  **mastery + grammar coverage** (`isBlockComplete`); cipher coverage + the
+  crossword challenge rejoin the gate when their generators ship.
+- Articles `der/die/das` are their own early entries glossed "the (masc./fem./neut.)".
+- `STATE_VERSION` bumped (old saves reset). `tests/content.invariants.mts` now
+  asserts lemma‑dataset + gating invariants.
+
+## Planned: in‑game glossary & wiki (TODO — not built yet)
+
+Designer idea to build later:
+
+- A small **side menu/drawer on the RIGHT edge** of game screens (mirroring the
+  crossword game's left clue drawer) that opens to show what abbreviations/terms
+  mean, e.g. "masc. = masculine".
+- Each term is **clickable** and opens an in‑game **wiki** page explaining the
+  concept, with cross‑links to related pages.
+- Example: tapping **masc.** opens an *Articles* page:
+  > Every noun has a gender — **der** = masculine, **die** = feminine, **das** =
+  > neuter. These are core building blocks for the biggest German grammar rules;
+  > many words change their ending because of gender, such as **nouns** (link) and
+  > **articles** (ein/eine) (link).
+- Goal: learners look up grammar terms without leaving the game. Once it exists,
+  glosses can safely use short abbreviations because the glossary explains them.
+
 ## Repo state notes
 
 - The stale orphan / scratch files previously listed here have all been deleted — nothing left to clean.

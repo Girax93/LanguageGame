@@ -15,7 +15,13 @@ import { Subscription } from './Subscription';
 import { ResetProgress } from './ResetProgress';
 import { usePlayer } from '../state/PlayerContext';
 import { SETS } from '../content/vocab';
-import { currentLearnSetIndex, masteredSetCount } from '../state/progression';
+import {
+  currentLearnSetIndex,
+  masteredSetCount,
+  currentBlock,
+  blockCount,
+  grammarProgress,
+} from '../state/progression';
 
 /**
  * App shell + screen router with a real navigation stack wired to browser
@@ -53,10 +59,17 @@ export function App() {
   }
   const requestMain = () => setConfirmMain(true);
 
-  // ── Learn progress ─────────────────────────────────────────────────────────
-  // Progression is mastery-only while the generated cipher / crossword practice
-  // is being rebuilt: master a set, the next one unlocks. Practice (grammar)
-  // and Recap are optional reinforcement drawn from mastered words.
+  // ── Learn → Practice → Advance cycle ───────────────────────────────────────
+  // A block (2 sets / 10 words) blocks further learning until its grammar
+  // practice is covered. Cipher + the crossword challenge rejoin this gate when
+  // their generators ship (next phases).
+  const blocks = blockCount(SETS);
+  const block = currentBlock(state, SETS);
+  const onBlock = block < blocks;
+  const gp = onBlock ? grammarProgress(state, SETS, block) : { done: 0, total: 0 };
+  const grammarComplete = onBlock ? gp.total === 0 || gp.done >= gp.total : true;
+  const grammarToDo = onBlock && gp.total > 0 && gp.done < gp.total;
+
   const curIdx = currentLearnSetIndex(state, SETS);
   let learnStatus: string;
   let learnProgress: number;
@@ -65,6 +78,9 @@ export function App() {
     const masteredN = set.words.filter((w) => state.learnedWords.includes(w.id)).length;
     learnStatus = 'Available';
     learnProgress = set.words.length ? masteredN / set.words.length : 1;
+  } else if (grammarToDo) {
+    learnStatus = 'Practice to advance';
+    learnProgress = 1;
   } else {
     learnStatus = 'All learned';
     learnProgress = 1;
@@ -89,18 +105,21 @@ export function App() {
     {
       icon: '📖',
       label: 'Learn',
-      sublabel: 'Pick up the next words',
+      sublabel: grammarToDo ? 'Finish Practice to unlock the next words' : 'Pick up the next words',
       status: learnStatus,
       progress: learnProgress,
-      onClick: () => navigate('learn'),
+      locked: grammarToDo,
+      onClick: grammarToDo ? () => navigate('practice') : () => navigate('learn'),
     },
     {
       icon: '🎯',
       label: 'Practice',
       sublabel: practiceUnlocked
-        ? 'Reinforce der / die / das for the words you know'
+        ? 'Drill der / die / das for the new words'
         : 'Learn a set to unlock practice',
-      badge: practiceUnlocked ? undefined : 'Locked',
+      status: !practiceUnlocked ? undefined : grammarComplete ? '✓' : gp.total ? `${gp.done}/${gp.total}` : '✓',
+      progress: onBlock && gp.total ? gp.done / gp.total : 1,
+      badge: practiceUnlocked ? (grammarToDo ? 'Required' : undefined) : 'Locked',
       locked: !practiceUnlocked,
       onClick: practiceUnlocked ? () => navigate('practice') : undefined,
     },
@@ -109,7 +128,7 @@ export function App() {
       label: 'Recap',
       sublabel: recapUnlocked
         ? 'Mixed review of everything you know'
-        : 'Learn 2 sets to unlock spaced review',
+        : `Master 2 sets to unlock · ${masteredSets}/2`,
       status: recapUnlocked ? `${state.learnedWords.length} words` : undefined,
       badge: recapUnlocked ? undefined : 'Locked',
       locked: !recapUnlocked,
@@ -117,33 +136,22 @@ export function App() {
     },
   ];
 
+  // Practice = Grammar for now. Letter Cipher and the Crossword Challenge are
+  // built in the next phases and appear here when they ship (no fake locks).
   const practiceItems: MenuItem[] = [
     {
       icon: '🧠',
       label: 'Grammar',
-      sublabel: 'Drill der / die / das for the nouns you’ve learned',
+      sublabel: "Drill der / die / das for this block's new nouns",
+      status: !onBlock ? '✓' : gp.total ? (grammarComplete ? 'Complete ✓' : `${gp.done}/${gp.total}`) : 'No nouns yet',
+      progress: onBlock && gp.total ? gp.done / gp.total : 1,
+      badge: grammarToDo ? 'Required' : undefined,
       onClick: () => navigate('grammar'),
-    },
-    {
-      icon: '🔡',
-      label: 'Letter Cipher',
-      sublabel: 'Decode sentences built from your words',
-      badge: 'Coming soon',
-      locked: true,
-    },
-    {
-      icon: '🏆',
-      label: 'Challenge',
-      sublabel: 'A crossword capstone for each block',
-      badge: 'Coming soon',
-      locked: true,
     },
   ];
 
   const recapItems: MenuItem[] = [
     { icon: '🧠', label: 'Grammar', sublabel: 'Articles across everything you know', onClick: () => navigate('recap-grammar') },
-    { icon: '🔡', label: 'Letter Cipher', sublabel: 'Coming soon', badge: 'Coming soon', locked: true },
-    { icon: '🧩', label: 'Crossword', sublabel: 'Coming soon', badge: 'Coming soon', locked: true },
     ...completedChallenges.map((b) => ({
       icon: '🏆',
       label: `Challenge — sets ${b * 2 + 1}–${b * 2 + 2}`,
@@ -167,7 +175,11 @@ export function App() {
       screen = (
         <MenuScreen
           title="Practice"
-          intro="Reinforce the words you’ve learned. Optional — it won’t change your unlock progress."
+          intro={
+            grammarToDo
+              ? 'Drill the new words to unlock the next set. (Letter Cipher & the Crossword Challenge arrive in upcoming updates.)'
+              : 'Reinforce what you’ve learned. (Letter Cipher & the Crossword Challenge arrive in upcoming updates.)'
+          }
           items={practiceItems}
           onBack={back}
           onMain={requestMain}
@@ -178,7 +190,7 @@ export function App() {
       screen = (
         <MenuScreen
           title="Recap"
-          intro="Mixed review from everything you've learned, plus your past challenges. Optional — it won't change your unlock progress."
+          intro="Mixed review from everything you've learned. Optional — it won't change your unlock progress."
           items={recapItems}
           onBack={back}
           onMain={requestMain}
@@ -217,22 +229,8 @@ export function App() {
       ) : null;
       break;
     }
-    case 'recap-cipher': {
-      const Game = getGame('fill-in-the-blanks')?.component;
-      screen = Game ? (
-        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
-      ) : null;
-      break;
-    }
     case 'recap-grammar': {
       const Game = getGame('grammar')?.component;
-      screen = Game ? (
-        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
-      ) : null;
-      break;
-    }
-    case 'recap-crossword': {
-      const Game = getGame('crossword')?.component;
       screen = Game ? (
         <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
       ) : null;
@@ -263,9 +261,7 @@ export function App() {
   const pinned =
     route === 'fill-in-the-blanks' ||
     route === 'grammar' ||
-    route === 'recap-cipher' ||
     route === 'recap-grammar' ||
-    route === 'recap-crossword' ||
     route === 'recap-challenge' ||
     route === 'challenge';
 
