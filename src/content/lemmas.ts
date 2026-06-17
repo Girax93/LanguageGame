@@ -34,310 +34,310 @@ l-sie	sie	she / they	pron	2	2				function	neutral
 l-der	der	the	art	3	3				function	neutral
 l-sein-verb	sein	to be	verb	4	4			ist, war, ist gewesen	function	neutral
 l-du	du	you (sg)	pron	5	5				function	neutral
-l-nicht	nicht	not	adv	6	6				function	neutral
-l-es	es	it	pron	7	8				function	neutral
-l-und	und	and	conj	8	9				function	neutral
-l-wir	wir	we	pron	9	11				function	neutral
-l-was	was	what	pron	10	12				question,function	neutral
-l-zu	zu	to / too	prep	11	13				function	neutral
-l-er	er	he	pron	12	14				function	neutral
-l-ein	ein	a / an	art	13	15				function	neutral
-l-in	in	in	prep	14	16				function	neutral
-l-ja	ja	yes	particle	15	17				communication	neutral
-l-mit	mit	with	prep	16	19				function	neutral
-l-wie	wie	how / as	adv	17	20				question,function	neutral
-l-auf	auf	on / onto	prep	18	23				function	neutral
-l-dass	dass	that	conj	19	24				function	neutral
-l-aber	aber	but	conj	20	25				function	neutral
-l-so	so	so / thus	adv	21	27				function	neutral
-l-hier	hier	here	adv	22	29				function	neutral
-l-haben	haben	to have	verb	23	30			hat, hatte, hat gehabt	function	neutral
-l-fuer	für	for	prep	24	31				function	neutral
-l-von	von	from / of	prep	25	34				function	neutral
-l-wenn	wenn	if / when	conj	26	35				function	neutral
-l-ihr	ihr	her / their / you (pl)	pron	27	37				function	neutral
-l-nein	nein	no	particle	28	38				communication	neutral
-l-an	an	at / on	prep	29	40				function	neutral
-l-noch	noch	still / yet	adv	30	42				function	neutral
-l-nur	nur	only	adv	31	43				function	neutral
-l-da	da	there	adv	32	44				function	neutral
-l-sich	sich	oneself	pron	33	46				function	neutral
-l-koennen	können	to be able to / can	verb	34	51			kann, konnte, hat gekonnt	function	neutral
-l-gut	gut	good	adj	35	52				feelings	neutral
-l-auch	auch	also / too	adv	36	53				function	neutral
-l-schon	schon	already	particle	37	54				time,function	neutral
-l-als	als	when / as / than	conj	38	55				function	neutral
-l-sein-pron	sein	his / its	pron	39	56				function	neutral
-l-mal	mal	just / once	particle	40	57				function	colloquial
-l-jetzt	jetzt	now	adv	41	58				time	neutral
-l-dann	dann	then	adv	42	60				time,function	neutral
-l-aus	aus	out / from	prep	43	61				function	neutral
-l-mein	mein	my	pron	44	62				function	neutral
-l-um	um	around / at	prep	45	63				function	neutral
-l-in-dem	in dem	in the (im)	prep	46	64				function	neutral
-l-werden	werden	to become / will	verb	47	65			wird, wurde, ist geworden	function	neutral
-l-doch	doch	yet / after all	particle	48	68				function	neutral
-l-alles	alles	everything	pron	49	69				function	neutral
-l-wissen	wissen	to know	verb	50	70			weiß, wusste, hat gewusst	communication	neutral
-l-kein	kein	no / not any	pron	51	71				function	neutral
-l-oder	oder	or	conj	52	72				function	neutral
-l-nach	nach	after / to	prep	53	73				function	neutral
-l-nichts	nichts	nothing	pron	54	74				function	neutral
-l-man	man	one / you (impersonal)	pron	55	75				function	neutral
-l-muessen	müssen	to have to / must	verb	56	76			muss, musste, hat gemusst	function	neutral
-l-wollen	wollen	to want	verb	57	78			will, wollte, hat gewollt	feelings	neutral
-l-gehen	gehen	to go	verb	58	80			geht, ging, ist gegangen	travel	neutral
-l-wo	wo	where	adv	59	81				question,function	neutral
-l-etwas	etwas	something	pron	60	82				function	neutral
-l-oh	oh	oh	interj	61	83				communication	colloquial
-l-mehr	mehr	more	adv	62	84				function	neutral
-l-bei	bei	at / near / with	prep	63	85				function	neutral
-l-also	also	so / well	particle	64	86				function	neutral
-l-bitte	bitte	please	particle	65	87				communication	neutral
-l-immer	immer	always	adv	66	88				time	neutral
-l-warum	warum	why	adv	67	90				question	neutral
-l-vor	vor	before / in front of	prep	68	91				function	neutral
-l-los	los	go on / loose	particle	69	92				function	colloquial
-l-wieder	wieder	again	adv	70	94				time,function	neutral
-l-sagen	sagen	to say	verb	71	95			sagt, sagte, hat gesagt	communication	neutral
-l-machen	machen	to do / make	verb	72	96				function	neutral
-l-danke	danke	thanks	interj	73	97				communication	neutral
-l-sehr	sehr	very	adv	74	98				function	neutral
-l-alle	alle	all	pron	75	99				function	neutral
-l-denn	denn	because / then	conj	76	100				function	neutral
-l-mann	Mann	man / husband	noun	77	101	m	Männer		people,family	neutral
-l-tun	tun	to do	verb	78	102			tut, tat, hat getan	function	neutral
-l-zu-dem	zu dem	to the (zum)	prep	79	104				function	neutral
-l-sehen	sehen	to see	verb	80	106			sieht, sah, hat gesehen	body	neutral
-l-vielleicht	vielleicht	maybe / perhaps	adv	81	107				function	neutral
-l-wer	wer	who	pron	82	109				question,function	neutral
-l-dieser	dieser	this	pron	83	111				function	neutral
-l-kommen	kommen	to come	verb	84	114			kommt, kam, ist gekommen	travel	neutral
-l-ueber	über	over / about	prep	85	115				function	neutral
-l-geben	geben	to give	verb	86	116			gibt, gab, hat gegeben	function	neutral
-l-okay	okay	okay	interj	87	117				communication	colloquial
-l-dein	dein	your (sg)	pron	88	119				function	neutral
-l-soll	soll	should / ought to	verb	89	120			soll, sollte, hat gesollt	function	neutral
-l-nie	nie	never	adv	90	123				time	neutral
-l-wirklich	wirklich	really	adv	91	124				function	neutral
-l-hey	hey	hey	interj	92	125				communication	colloquial
-l-viel	viel	much / a lot	adv	93	127				function	neutral
-l-weg-adv	weg	away / gone	adv	94	128				function	neutral
-l-wuerde	würde	would	verb	95	129				function	neutral
-l-an-dem	an dem	at the (am)	prep	96	131				function	neutral
-l-leben-noun	Leben	life	noun	97	134	n	Leben		feelings	neutral
-l-zeit	Zeit	time	noun	98	136	f	Zeiten		time	neutral
-l-weil	weil	because	conj	99	137				function	neutral
-l-heute	heute	today	adv	100	141				time	neutral
-l-damit	damit	so that / with it	conj	101	144				function	neutral
-l-waere	wäre	would be	verb	102	146				function	neutral
-l-ok	ok	ok	interj	103	149				communication	colloquial
-l-sicher	sicher	sure / safe	adj	104	150				feelings	neutral
-l-frau	Frau	woman / wife	noun	105	152	f	Frauen		people,family	neutral
-l-nun	nun	now / well	adv	106	153				time,function	neutral
-l-bis	bis	until	prep	107	154				time,function	neutral
-l-leid	Leid	sorrow (tut mir leid: sorry)	noun	108	156	n			feelings	neutral
-l-na	na	well	interj	109	157				communication	colloquial
-l-zurueck	zurück	back	adv	110	161				travel	neutral
-l-lassen	lassen	to let / leave	verb	111	162			lässt, ließ, hat gelassen	function	neutral
-l-hallo	hallo	hello	interj	112	163				communication	neutral
-l-gott	Gott	god	noun	113	165	m	Götter		feelings	neutral
-l-zwei	zwei	two	num	114	168				numbers	neutral
-l-genau	genau	exactly	adv	115	170				function	neutral
-l-zu-der	zu der	to the (zur)	prep	116	172				function	neutral
-l-klar	klar	clear / sure	adj	117	174				function	neutral
-l-morgen	morgen	tomorrow	adv	118	175				time	neutral
-l-leute	Leute	people	noun	119	176		Leute		people	neutral
-l-vater	Vater	father	noun	120	177	m	Väter		family,people	neutral
-l-schoen	schön	beautiful / nice	adj	121	178				feelings	neutral
-l-glauben	glauben	to believe	verb	122	179				feelings	neutral
-l-ab	ab	off / from	prep	123	180				function	neutral
-l-gerade	gerade	just / straight	adv	124	181				time,function	neutral
-l-tag	Tag	day	noun	125	182	m	Tage		time	neutral
-l-reden	reden	to talk	verb	126	184				communication	neutral
-l-wohl	wohl	probably / well	particle	127	185				function	neutral
-l-liebe	Liebe	love	noun	128	186	f			feelings	neutral
-l-sollen	sollen	should / to be supposed to	verb	129	187			soll, sollte, hat gesollt	function	neutral
-l-jemand	jemand	someone	pron	130	190				people,function	neutral
-l-geld	Geld	money	noun	131	191	n			money	neutral
-l-durch	durch	through	prep	132	192				function	neutral
-l-ob	ob	whether / if	conj	133	193				function	neutral
-l-mutter	Mutter	mother	noun	134	195	f	Mütter		family,people	neutral
-l-raus	raus	out	adv	135	196				function	colloquial
-l-paar	Paar	couple / pair	noun	136	198	n	Paare		people	neutral
-l-passieren	passieren	to happen	verb	137	200				function	neutral
-l-denken	denken	to think	verb	138	201			denkt, dachte, hat gedacht	feelings	neutral
-l-besser	besser	better	adj	139	202				function	neutral
-l-wieso	wieso	why	adv	140	204				question	neutral
-l-selbst	selbst	self / even	pron	141	207				function	neutral
-l-hoeren	hören	to hear	verb	142	208				body	neutral
-l-moechten	möchten	would like	verb	143	209				feelings	neutral
-l-ohne	ohne	without	prep	144	210				function	neutral
-l-her	her	here / hither	adv	145	212				function	neutral
-l-andere	andere	other	adj	146	215				function	neutral
-l-helfen	helfen	to help	verb	147	216			hilft, half, hat geholfen	function	neutral
-l-nacht	Nacht	night	noun	148	217	f	Nächte		time	neutral
-l-finden	finden	to find	verb	149	218			findet, fand, hat gefunden	function	neutral
-l-lange	lange	long / for a long time	adv	150	222				time	neutral
-l-natuerlich	natürlich	of course / natural	adv	151	223				function	neutral
-l-ach	ach	oh / ah	interj	152	224				communication	colloquial
-l-gar	gar	at all	adv	153	226				function	neutral
-l-in-das	in das	into the (ins)	prep	154	227				function	neutral
-l-sei	sei	be (imperative)	verb	155	228				function	neutral
-l-dort	dort	there	adv	156	229				function	neutral
-l-weiter	weiter	further / on	adv	157	230				function	neutral
-l-seit	seit	since	prep	158	232				time,function	neutral
-l-recht-noun	Recht	right / law	noun	159	235	n	Rechte		function	neutral
-l-richtig	richtig	right / correct	adj	160	237				function	neutral
-l-ordnung	Ordnung	order (in Ordnung: okay)	noun	161	238	f	Ordnungen		function	neutral
-l-von-dem	von dem	from the (vom)	prep	162	239				function	neutral
-l-davon	davon	of it / from it	adv	163	242				function	neutral
-l-dafuer	dafür	for it / in favor	adv	164	243				function	neutral
-l-wegen	wegen	because of	prep	165	246				function	neutral
-l-haus	Haus	house	noun	166	247	n	Häuser		home	neutral
-l-maedchen	Mädchen	girl	noun	167	249	n	Mädchen		people,family	neutral
-l-hin	hin	there / thither	adv	168	250				function	neutral
-l-abend	Abend	evening	noun	169	252	m	Abende		time	neutral
-l-viele	viele	many	pron	170	255				function	neutral
-l-drei	drei	three	num	171	256				numbers	neutral
-l-freund	Freund	friend	noun	172	258	m	Freunde		people	neutral
-l-warten	warten	to wait	verb	173	261				function	neutral
-l-mensch	Mensch	human / person	noun	174	263	m	Menschen		people	neutral
-l-essen	essen	to eat	verb	175	264			isst, aß, hat gegessen	food	neutral
-l-angst	Angst	fear	noun	176	265	f	Ängste		feelings	neutral
-l-bleiben	bleiben	to stay	verb	177	266			bleibt, blieb, ist geblieben	function	neutral
-l-zusammen	zusammen	together	adv	178	267				function	neutral
-l-welt	Welt	world	noun	179	268	f	Welten		nature	neutral
-l-unter	unter	under / among	prep	180	269				function	neutral
-l-schnell	schnell	fast / quick	adj	181	271				function	neutral
-l-tot	tot	dead	adj	182	273				health	neutral
-l-duerfen	dürfen	to be allowed to / may	verb	183	275			darf, durfte, hat gedurft	function	neutral
-l-erst	erst	only / not until	adv	184	276				time,function	neutral
-l-rein-adv	rein	in / inside	adv	185	277				function	colloquial
-l-stimmen	stimmen	to be right / vote	verb	186	278				function	neutral
-l-nehmen	nehmen	to take	verb	187	279			nimmt, nahm, hat genommen	function	neutral
-l-kind	Kind	child	noun	188	280	n	Kinder		family,people	neutral
-l-bringen	bringen	to bring	verb	189	283			bringt, brachte, hat gebracht	function	neutral
-l-ganze	ganze	whole / entire	adj	190	284				function	neutral
-l-genug	genug	enough	adv	191	285				function	neutral
-l-scheisse	Scheiße	shit / crap	noun	192	286	f			feelings	colloquial
-l-brauchen	brauchen	to need	verb	193	287				function	neutral
-l-gegen	gegen	against	prep	194	288				function	neutral
-l-moment	Moment	moment	noun	195	289	m	Momente		time	neutral
-l-junge	Junge	boy	noun	196	290	m	Jungen		people,family	neutral
-l-stehen	stehen	to stand	verb	197	291			steht, stand, hat gestanden	body	neutral
-l-sonst	sonst	otherwise / else	adv	198	292				function	neutral
-l-musik	Musik	music	noun	199	293	f			communication	neutral
-l-arbeit	Arbeit	work	noun	200	294	f	Arbeiten		work	neutral
-l-fragen	fragen	to ask	verb	201	297				communication	neutral
-l-herr	Herr	gentleman / Mr.	noun	202	298	m	Herren		people	neutral
-l-dabei	dabei	with it / present	adv	203	299				function	neutral
-l-heissen	heißen	to be called / mean	verb	204	300			heißt, hieß, hat geheißen	communication	neutral
-l-familie	Familie	family	noun	205	301	f	Familien		family,people	neutral
-l-niemand	niemand	nobody	pron	206	303				people,function	neutral
-l-sofort	sofort	immediately	adv	207	304				time	neutral
-l-bevor	bevor	before	conj	208	305				time,function	neutral
-l-jahr	Jahr	year	noun	209	306	n	Jahre		time	neutral
-l-einmal	einmal	once	adv	210	307				time	neutral
-l-problem	Problem	problem	noun	211	308	n	Probleme		function	neutral
-l-sohn	Sohn	son	noun	212	309	m	Söhne		family,people	neutral
-l-wann	wann	when	adv	213	310				question,time	neutral
-l-fertig	fertig	ready / finished	adj	214	312				function	neutral
-l-halt	halt	just / simply	particle	215	313				function	colloquial
-l-allein	allein	alone	adv	216	314				feelings	neutral
-l-bei-dem	bei dem	at the (beim)	prep	217	315				function	neutral
-l-sprechen	sprechen	to speak	verb	218	316			spricht, sprach, hat gesprochen	communication	neutral
-l-beide	beide	both	pron	219	317				function	neutral
-l-sache	Sache	thing / matter	noun	220	320	f	Sachen		function	neutral
-l-hilfe	Hilfe	help	noun	221	321	f	Hilfen		function	neutral
-l-ne	ne	right? / no (casual)	particle	222	323				communication	colloquial
-l-jeder	jeder	every / everyone	pron	223	324				function	neutral
-l-gern	gern	gladly / with pleasure	adv	224	326				feelings	neutral
-l-darueber	darüber	about it / over it	adv	225	328				function	neutral
-l-halten	halten	to hold / stop	verb	226	329			hält, hielt, hat gehalten	function	neutral
-l-verstehen	verstehen	to understand	verb	227	331			versteht, verstand, hat verstanden	communication	neutral
-l-wahr	wahr	true	adj	228	336				function	neutral
-l-dazu	dazu	to it / in addition	adv	229	338				function	neutral
-l-bruder	Bruder	brother	noun	230	339	m	Brüder		family,people	neutral
-l-daran	daran	on it / about it	adv	231	340				function	neutral
-l-dank	Dank	thanks / gratitude	noun	232	344	m			communication	neutral
-l-lieber	lieber	rather / preferably	adv	233	346				feelings	neutral
-l-fall	Fall	case / fall	noun	234	347	m	Fälle		function	neutral
-l-egal	egal	no matter / whatever	adj	235	350				function	neutral
-l-kennen	kennen	to know	verb	236	351			kennt, kannte, hat gekannt	communication	neutral
-l-vergessen	vergessen	to forget	verb	237	353			vergisst, vergaß, hat vergessen		neutral
-l-frage	Frage	question	noun	238	354	f	Fragen		question,communication	neutral
-l-moegen	mögen	to like	verb	239	358			mag, mochte, hat gemocht	feelings	neutral
-l-echt	echt	real / really	adj	240	360					colloquial
-l-eigentlich	eigentlich	actually	adv	241	362					colloquial
-l-uhr	Uhr	clock / o'clock	noun	242	366	f	Uhren		time	neutral
-l-stadt	Stadt	city / town	noun	243	367	f	Städte		city	neutral
-l-baby	Baby	baby	noun	244	369	n	Babys		family,people	neutral
-l-fahren	fahren	to drive / to go	verb	245	370			fährt, fuhr, ist gefahren	travel	neutral
-l-name	Name	name	noun	246	371	m	Namen		communication	neutral
-l-bekommen	bekommen	to get / receive	verb	247	372			bekommt, bekam, hat bekommen		neutral
-l-kopf	Kopf	head	noun	248	373	m	Köpfe		body	neutral
-l-klein	klein	small / little	adj	249	376					neutral
-l-spaeter	später	later	adv	250	377				time	neutral
-l-glueck	Glück	luck / happiness	noun	251	378	n			feelings	neutral
-l-letzte	letzte	last	adj	252	379				time	neutral
-l-all	all	all	pron	253	381				function	neutral
-l-darauf	darauf	on it / thereupon	adv	254	382				function	neutral
-l-ende	Ende	end	noun	255	383	n	Enden		time	neutral
-l-bald	bald	soon	adv	256	384				time	neutral
-l-toeten	töten	to kill	verb	257	385					neutral
-l-ding	Ding	thing	noun	258	386	n	Dinge		function	neutral
-l-meinen	meinen	to mean / think	verb	259	387				communication	neutral
-l-toll	toll	great / cool	adj	260	388				feelings	colloquial
-l-eins	eins	one	num	261	389				numbers	neutral
-l-minute	Minute	minute	noun	262	390	f	Minuten		time	neutral
-l-bereit	bereit	ready	adj	263	392					neutral
-l-weit	weit	far / wide	adj	264	393					neutral
-l-ahnung	Ahnung	idea / clue	noun	265	394	f	Ahnungen		communication	neutral
-l-bisschen	bisschen	a little bit	adv	266	396				function	neutral
-l-tuer	Tür	door	noun	267	397	f	Türen		home	neutral
-l-auto	Auto	car	noun	268	398	n	Autos		travel	neutral
-l-auge	Auge	eye	noun	269	401	n	Augen		body	neutral
-l-polizei	Polizei	police	noun	270	402	f			city,work	neutral
-l-sterben	sterben	to die	verb	271	404			stirbt, starb, ist gestorben	health	neutral
-l-draussen	draußen	outside	adv	272	406				function	neutral
-l-fast	fast	almost	adv	273	408				function	neutral
-l-runter	runter	down	adv	274	409				function	colloquial
-l-vorbei	vorbei	past / over	adv	275	410				function	neutral
-l-treffen	treffen	to meet / hit	verb	276	411			trifft, traf, hat getroffen	communication	neutral
-l-gerne	gerne	gladly	adv	277	412				feelings	neutral
-l-dran	dran	on it / one's turn	adv	278	413				function	colloquial
-l-arbeiten	arbeiten	to work	verb	279	415				work	neutral
-l-verrueckt	verrückt	crazy	adj	280	417				feelings,health	neutral
-l-neu	neu	new	adj	281	418					neutral
-l-hinter	hinter	behind	prep	282	420				function	neutral
-l-sorge	Sorge	worry / concern	noun	283	421	f	Sorgen		feelings	neutral
-l-einzige	einzige	only / sole	adj	284	422				function	neutral
-l-darum	darum	therefore / about it	adv	285	424				function	neutral
-l-tochter	Tochter	daughter	noun	286	425	f	Töchter		family	neutral
-l-idee	Idee	idea	noun	287	427	f	Ideen		communication	neutral
-l-schwester	Schwester	sister	noun	288	428	f	Schwestern		family	neutral
-l-drin	drin	inside / in it	adv	289	429				function	colloquial
-l-ruhig	ruhig	calm / quiet	adj	290	430				feelings	neutral
-l-ganz	ganz	whole / entirely	adj	291	432				function	neutral
-l-spaet	spät	late	adj	292	433				time	neutral
-l-ziemlich	ziemlich	quite / fairly	adv	293	434				function	neutral
-l-sogar	sogar	even	adv	294	437				function	neutral
-l-kurz	kurz	short / briefly	adj	295	438				time	neutral
-l-kerl	Kerl	guy / fellow	noun	296	439	m	Kerle		people	colloquial
-l-liegen	liegen	to lie / be located	verb	297	441			liegt, lag, hat gelegen		neutral
-l-suchen	suchen	to search / look for	verb	298	442					neutral
-l-je	je	ever	adv	299	444				time,function	neutral
-l-woher	woher	from where	adv	300	445				question	neutral
-l-lang	lang	long	adj	301	446				time	neutral
-l-job	Job	job	noun	302	447	m	Jobs		work	neutral
-l-keiner	keiner	no one / none	pron	303	448				function	neutral
-l-spielen	spielen	to play	verb	304	452					neutral
-l-ueberhaupt	überhaupt	at all	adv	305	453				function	neutral
-l-teufel	Teufel	devil	noun	306	454	m	Teufel			neutral
-l-verlieren	verlieren	to lose	verb	307	456			verliert, verlor, hat verloren		neutral
-l-gross	groß	big / tall	adj	308	457					neutral
-l-hand	Hand	hand	noun	309	458	f	Hände		body	neutral
+l-mann	Mann	man / husband	noun	6	101	m	Männer		people,family	neutral
+l-frau	Frau	woman / wife	noun	7	152	f	Frauen		people,family	neutral
+l-kind	Kind	child	noun	8	280	n	Kinder		family,people	neutral
+l-nicht	nicht	not	adv	9	6				function	neutral
+l-es	es	it	pron	10	8				function	neutral
+l-und	und	and	conj	11	9				function	neutral
+l-haus	Haus	house	noun	12	247	n	Häuser		home	neutral
+l-tag	Tag	day	noun	13	182	m	Tage		time	neutral
+l-wir	wir	we	pron	14	11				function	neutral
+l-was	was	what	pron	15	12				question,function	neutral
+l-zu	zu	to / too	prep	16	13				function	neutral
+l-er	er	he	pron	17	14				function	neutral
+l-hand	Hand	hand	noun	18	458	f	Hände		body	neutral
+l-auto	Auto	car	noun	19	398	n	Autos		travel	neutral
+l-ein	ein	a / an	art	20	15				function	neutral
+l-in	in	in	prep	21	16				function	neutral
+l-ja	ja	yes	particle	22	17				communication	neutral
+l-mit	mit	with	prep	23	19				function	neutral
+l-jahr	Jahr	year	noun	24	306	n	Jahre		time	neutral
+l-wie	wie	how / as	adv	25	20				question,function	neutral
+l-auf	auf	on / onto	prep	26	23				function	neutral
+l-dass	dass	that	conj	27	24				function	neutral
+l-aber	aber	but	conj	28	25				function	neutral
+l-so	so	so / thus	adv	29	27				function	neutral
+l-hier	hier	here	adv	30	29				function	neutral
+l-haben	haben	to have	verb	31	30			hat, hatte, hat gehabt	function	neutral
+l-fuer	für	for	prep	32	31				function	neutral
+l-von	von	from / of	prep	33	34				function	neutral
+l-wenn	wenn	if / when	conj	34	35				function	neutral
+l-ihr	ihr	her / their / you (pl)	pron	35	37				function	neutral
+l-nein	nein	no	particle	36	38				communication	neutral
+l-an	an	at / on	prep	37	40				function	neutral
+l-noch	noch	still / yet	adv	38	42				function	neutral
+l-nur	nur	only	adv	39	43				function	neutral
+l-da	da	there	adv	40	44				function	neutral
+l-sich	sich	oneself	pron	41	46				function	neutral
+l-koennen	können	to be able to / can	verb	42	51			kann, konnte, hat gekonnt	function	neutral
+l-gut	gut	good	adj	43	52				feelings	neutral
+l-auch	auch	also / too	adv	44	53				function	neutral
+l-schon	schon	already	particle	45	54				time,function	neutral
+l-als	als	when / as / than	conj	46	55				function	neutral
+l-sein-pron	sein	his / its	pron	47	56				function	neutral
+l-mal	mal	just / once	particle	48	57				function	colloquial
+l-jetzt	jetzt	now	adv	49	58				time	neutral
+l-dann	dann	then	adv	50	60				time,function	neutral
+l-aus	aus	out / from	prep	51	61				function	neutral
+l-mein	mein	my	pron	52	62				function	neutral
+l-um	um	around / at	prep	53	63				function	neutral
+l-in-dem	in dem	in the (im)	prep	54	64				function	neutral
+l-werden	werden	to become / will	verb	55	65			wird, wurde, ist geworden	function	neutral
+l-doch	doch	yet / after all	particle	56	68				function	neutral
+l-alles	alles	everything	pron	57	69				function	neutral
+l-wissen	wissen	to know	verb	58	70			weiß, wusste, hat gewusst	communication	neutral
+l-kein	kein	no / not any	pron	59	71				function	neutral
+l-oder	oder	or	conj	60	72				function	neutral
+l-nach	nach	after / to	prep	61	73				function	neutral
+l-nichts	nichts	nothing	pron	62	74				function	neutral
+l-man	man	one / you (impersonal)	pron	63	75				function	neutral
+l-muessen	müssen	to have to / must	verb	64	76			muss, musste, hat gemusst	function	neutral
+l-wollen	wollen	to want	verb	65	78			will, wollte, hat gewollt	feelings	neutral
+l-gehen	gehen	to go	verb	66	80			geht, ging, ist gegangen	travel	neutral
+l-wo	wo	where	adv	67	81				question,function	neutral
+l-etwas	etwas	something	pron	68	82				function	neutral
+l-oh	oh	oh	interj	69	83				communication	colloquial
+l-mehr	mehr	more	adv	70	84				function	neutral
+l-bei	bei	at / near / with	prep	71	85				function	neutral
+l-also	also	so / well	particle	72	86				function	neutral
+l-bitte	bitte	please	particle	73	87				communication	neutral
+l-immer	immer	always	adv	74	88				time	neutral
+l-warum	warum	why	adv	75	90				question	neutral
+l-vor	vor	before / in front of	prep	76	91				function	neutral
+l-los	los	go on / loose	particle	77	92				function	colloquial
+l-wieder	wieder	again	adv	78	94				time,function	neutral
+l-sagen	sagen	to say	verb	79	95			sagt, sagte, hat gesagt	communication	neutral
+l-machen	machen	to do / make	verb	80	96				function	neutral
+l-danke	danke	thanks	interj	81	97				communication	neutral
+l-sehr	sehr	very	adv	82	98				function	neutral
+l-alle	alle	all	pron	83	99				function	neutral
+l-denn	denn	because / then	conj	84	100				function	neutral
+l-tun	tun	to do	verb	85	102			tut, tat, hat getan	function	neutral
+l-zu-dem	zu dem	to the (zum)	prep	86	104				function	neutral
+l-sehen	sehen	to see	verb	87	106			sieht, sah, hat gesehen	body	neutral
+l-vielleicht	vielleicht	maybe / perhaps	adv	88	107				function	neutral
+l-wer	wer	who	pron	89	109				question,function	neutral
+l-dieser	dieser	this	pron	90	111				function	neutral
+l-kommen	kommen	to come	verb	91	114			kommt, kam, ist gekommen	travel	neutral
+l-ueber	über	over / about	prep	92	115				function	neutral
+l-geben	geben	to give	verb	93	116			gibt, gab, hat gegeben	function	neutral
+l-okay	okay	okay	interj	94	117				communication	colloquial
+l-dein	dein	your (sg)	pron	95	119				function	neutral
+l-soll	soll	should / ought to	verb	96	120			soll, sollte, hat gesollt	function	neutral
+l-nie	nie	never	adv	97	123				time	neutral
+l-wirklich	wirklich	really	adv	98	124				function	neutral
+l-hey	hey	hey	interj	99	125				communication	colloquial
+l-viel	viel	much / a lot	adv	100	127				function	neutral
+l-weg-adv	weg	away / gone	adv	101	128				function	neutral
+l-wuerde	würde	would	verb	102	129				function	neutral
+l-an-dem	an dem	at the (am)	prep	103	131				function	neutral
+l-leben-noun	Leben	life	noun	104	134	n	Leben		feelings	neutral
+l-zeit	Zeit	time	noun	105	136	f	Zeiten		time	neutral
+l-weil	weil	because	conj	106	137				function	neutral
+l-heute	heute	today	adv	107	141				time	neutral
+l-damit	damit	so that / with it	conj	108	144				function	neutral
+l-waere	wäre	would be	verb	109	146				function	neutral
+l-ok	ok	ok	interj	110	149				communication	colloquial
+l-sicher	sicher	sure / safe	adj	111	150				feelings	neutral
+l-nun	nun	now / well	adv	112	153				time,function	neutral
+l-bis	bis	until	prep	113	154				time,function	neutral
+l-leid	Leid	sorrow (tut mir leid: sorry)	noun	114	156	n			feelings	neutral
+l-na	na	well	interj	115	157				communication	colloquial
+l-zurueck	zurück	back	adv	116	161				travel	neutral
+l-lassen	lassen	to let / leave	verb	117	162			lässt, ließ, hat gelassen	function	neutral
+l-hallo	hallo	hello	interj	118	163				communication	neutral
+l-gott	Gott	god	noun	119	165	m	Götter		feelings	neutral
+l-zwei	zwei	two	num	120	168				numbers	neutral
+l-genau	genau	exactly	adv	121	170				function	neutral
+l-zu-der	zu der	to the (zur)	prep	122	172				function	neutral
+l-klar	klar	clear / sure	adj	123	174				function	neutral
+l-morgen	morgen	tomorrow	adv	124	175				time	neutral
+l-leute	Leute	people	noun	125	176		Leute		people	neutral
+l-vater	Vater	father	noun	126	177	m	Väter		family,people	neutral
+l-schoen	schön	beautiful / nice	adj	127	178				feelings	neutral
+l-glauben	glauben	to believe	verb	128	179				feelings	neutral
+l-ab	ab	off / from	prep	129	180				function	neutral
+l-gerade	gerade	just / straight	adv	130	181				time,function	neutral
+l-reden	reden	to talk	verb	131	184				communication	neutral
+l-wohl	wohl	probably / well	particle	132	185				function	neutral
+l-liebe	Liebe	love	noun	133	186	f			feelings	neutral
+l-sollen	sollen	should / to be supposed to	verb	134	187			soll, sollte, hat gesollt	function	neutral
+l-jemand	jemand	someone	pron	135	190				people,function	neutral
+l-geld	Geld	money	noun	136	191	n			money	neutral
+l-durch	durch	through	prep	137	192				function	neutral
+l-ob	ob	whether / if	conj	138	193				function	neutral
+l-mutter	Mutter	mother	noun	139	195	f	Mütter		family,people	neutral
+l-raus	raus	out	adv	140	196				function	colloquial
+l-paar	Paar	couple / pair	noun	141	198	n	Paare		people	neutral
+l-passieren	passieren	to happen	verb	142	200				function	neutral
+l-denken	denken	to think	verb	143	201			denkt, dachte, hat gedacht	feelings	neutral
+l-besser	besser	better	adj	144	202				function	neutral
+l-wieso	wieso	why	adv	145	204				question	neutral
+l-selbst	selbst	self / even	pron	146	207				function	neutral
+l-hoeren	hören	to hear	verb	147	208				body	neutral
+l-moechten	möchten	would like	verb	148	209				feelings	neutral
+l-ohne	ohne	without	prep	149	210				function	neutral
+l-her	her	here / hither	adv	150	212				function	neutral
+l-andere	andere	other	adj	151	215				function	neutral
+l-helfen	helfen	to help	verb	152	216			hilft, half, hat geholfen	function	neutral
+l-nacht	Nacht	night	noun	153	217	f	Nächte		time	neutral
+l-finden	finden	to find	verb	154	218			findet, fand, hat gefunden	function	neutral
+l-lange	lange	long / for a long time	adv	155	222				time	neutral
+l-natuerlich	natürlich	of course / natural	adv	156	223				function	neutral
+l-ach	ach	oh / ah	interj	157	224				communication	colloquial
+l-gar	gar	at all	adv	158	226				function	neutral
+l-in-das	in das	into the (ins)	prep	159	227				function	neutral
+l-sei	sei	be (imperative)	verb	160	228				function	neutral
+l-dort	dort	there	adv	161	229				function	neutral
+l-weiter	weiter	further / on	adv	162	230				function	neutral
+l-seit	seit	since	prep	163	232				time,function	neutral
+l-recht-noun	Recht	right / law	noun	164	235	n	Rechte		function	neutral
+l-richtig	richtig	right / correct	adj	165	237				function	neutral
+l-ordnung	Ordnung	order (in Ordnung: okay)	noun	166	238	f	Ordnungen		function	neutral
+l-von-dem	von dem	from the (vom)	prep	167	239				function	neutral
+l-davon	davon	of it / from it	adv	168	242				function	neutral
+l-dafuer	dafür	for it / in favor	adv	169	243				function	neutral
+l-wegen	wegen	because of	prep	170	246				function	neutral
+l-maedchen	Mädchen	girl	noun	171	249	n	Mädchen		people,family	neutral
+l-hin	hin	there / thither	adv	172	250				function	neutral
+l-abend	Abend	evening	noun	173	252	m	Abende		time	neutral
+l-viele	viele	many	pron	174	255				function	neutral
+l-drei	drei	three	num	175	256				numbers	neutral
+l-freund	Freund	friend	noun	176	258	m	Freunde		people	neutral
+l-warten	warten	to wait	verb	177	261				function	neutral
+l-mensch	Mensch	human / person	noun	178	263	m	Menschen		people	neutral
+l-essen	essen	to eat	verb	179	264			isst, aß, hat gegessen	food	neutral
+l-angst	Angst	fear	noun	180	265	f	Ängste		feelings	neutral
+l-bleiben	bleiben	to stay	verb	181	266			bleibt, blieb, ist geblieben	function	neutral
+l-zusammen	zusammen	together	adv	182	267				function	neutral
+l-welt	Welt	world	noun	183	268	f	Welten		nature	neutral
+l-unter	unter	under / among	prep	184	269				function	neutral
+l-schnell	schnell	fast / quick	adj	185	271				function	neutral
+l-tot	tot	dead	adj	186	273				health	neutral
+l-duerfen	dürfen	to be allowed to / may	verb	187	275			darf, durfte, hat gedurft	function	neutral
+l-erst	erst	only / not until	adv	188	276				time,function	neutral
+l-rein-adv	rein	in / inside	adv	189	277				function	colloquial
+l-stimmen	stimmen	to be right / vote	verb	190	278				function	neutral
+l-nehmen	nehmen	to take	verb	191	279			nimmt, nahm, hat genommen	function	neutral
+l-bringen	bringen	to bring	verb	192	283			bringt, brachte, hat gebracht	function	neutral
+l-ganze	ganze	whole / entire	adj	193	284				function	neutral
+l-genug	genug	enough	adv	194	285				function	neutral
+l-scheisse	Scheiße	shit / crap	noun	195	286	f			feelings	colloquial
+l-brauchen	brauchen	to need	verb	196	287				function	neutral
+l-gegen	gegen	against	prep	197	288				function	neutral
+l-moment	Moment	moment	noun	198	289	m	Momente		time	neutral
+l-junge	Junge	boy	noun	199	290	m	Jungen		people,family	neutral
+l-stehen	stehen	to stand	verb	200	291			steht, stand, hat gestanden	body	neutral
+l-sonst	sonst	otherwise / else	adv	201	292				function	neutral
+l-musik	Musik	music	noun	202	293	f			communication	neutral
+l-arbeit	Arbeit	work	noun	203	294	f	Arbeiten		work	neutral
+l-fragen	fragen	to ask	verb	204	297				communication	neutral
+l-herr	Herr	gentleman / Mr.	noun	205	298	m	Herren		people	neutral
+l-dabei	dabei	with it / present	adv	206	299				function	neutral
+l-heissen	heißen	to be called / mean	verb	207	300			heißt, hieß, hat geheißen	communication	neutral
+l-familie	Familie	family	noun	208	301	f	Familien		family,people	neutral
+l-niemand	niemand	nobody	pron	209	303				people,function	neutral
+l-sofort	sofort	immediately	adv	210	304				time	neutral
+l-bevor	bevor	before	conj	211	305				time,function	neutral
+l-einmal	einmal	once	adv	212	307				time	neutral
+l-problem	Problem	problem	noun	213	308	n	Probleme		function	neutral
+l-sohn	Sohn	son	noun	214	309	m	Söhne		family,people	neutral
+l-wann	wann	when	adv	215	310				question,time	neutral
+l-fertig	fertig	ready / finished	adj	216	312				function	neutral
+l-halt	halt	just / simply	particle	217	313				function	colloquial
+l-allein	allein	alone	adv	218	314				feelings	neutral
+l-bei-dem	bei dem	at the (beim)	prep	219	315				function	neutral
+l-sprechen	sprechen	to speak	verb	220	316			spricht, sprach, hat gesprochen	communication	neutral
+l-beide	beide	both	pron	221	317				function	neutral
+l-sache	Sache	thing / matter	noun	222	320	f	Sachen		function	neutral
+l-hilfe	Hilfe	help	noun	223	321	f	Hilfen		function	neutral
+l-ne	ne	right? / no (casual)	particle	224	323				communication	colloquial
+l-jeder	jeder	every / everyone	pron	225	324				function	neutral
+l-gern	gern	gladly / with pleasure	adv	226	326				feelings	neutral
+l-darueber	darüber	about it / over it	adv	227	328				function	neutral
+l-halten	halten	to hold / stop	verb	228	329			hält, hielt, hat gehalten	function	neutral
+l-verstehen	verstehen	to understand	verb	229	331			versteht, verstand, hat verstanden	communication	neutral
+l-wahr	wahr	true	adj	230	336				function	neutral
+l-dazu	dazu	to it / in addition	adv	231	338				function	neutral
+l-bruder	Bruder	brother	noun	232	339	m	Brüder		family,people	neutral
+l-daran	daran	on it / about it	adv	233	340				function	neutral
+l-dank	Dank	thanks / gratitude	noun	234	344	m			communication	neutral
+l-lieber	lieber	rather / preferably	adv	235	346				feelings	neutral
+l-fall	Fall	case / fall	noun	236	347	m	Fälle		function	neutral
+l-egal	egal	no matter / whatever	adj	237	350				function	neutral
+l-kennen	kennen	to know	verb	238	351			kennt, kannte, hat gekannt	communication	neutral
+l-vergessen	vergessen	to forget	verb	239	353			vergisst, vergaß, hat vergessen		neutral
+l-frage	Frage	question	noun	240	354	f	Fragen		question,communication	neutral
+l-moegen	mögen	to like	verb	241	358			mag, mochte, hat gemocht	feelings	neutral
+l-echt	echt	real / really	adj	242	360					colloquial
+l-eigentlich	eigentlich	actually	adv	243	362					colloquial
+l-uhr	Uhr	clock / o'clock	noun	244	366	f	Uhren		time	neutral
+l-stadt	Stadt	city / town	noun	245	367	f	Städte		city	neutral
+l-baby	Baby	baby	noun	246	369	n	Babys		family,people	neutral
+l-fahren	fahren	to drive / to go	verb	247	370			fährt, fuhr, ist gefahren	travel	neutral
+l-name	Name	name	noun	248	371	m	Namen		communication	neutral
+l-bekommen	bekommen	to get / receive	verb	249	372			bekommt, bekam, hat bekommen		neutral
+l-kopf	Kopf	head	noun	250	373	m	Köpfe		body	neutral
+l-klein	klein	small / little	adj	251	376					neutral
+l-spaeter	später	later	adv	252	377				time	neutral
+l-glueck	Glück	luck / happiness	noun	253	378	n			feelings	neutral
+l-letzte	letzte	last	adj	254	379				time	neutral
+l-all	all	all	pron	255	381				function	neutral
+l-darauf	darauf	on it / thereupon	adv	256	382				function	neutral
+l-ende	Ende	end	noun	257	383	n	Enden		time	neutral
+l-bald	bald	soon	adv	258	384				time	neutral
+l-toeten	töten	to kill	verb	259	385					neutral
+l-ding	Ding	thing	noun	260	386	n	Dinge		function	neutral
+l-meinen	meinen	to mean / think	verb	261	387				communication	neutral
+l-toll	toll	great / cool	adj	262	388				feelings	colloquial
+l-eins	eins	one	num	263	389				numbers	neutral
+l-minute	Minute	minute	noun	264	390	f	Minuten		time	neutral
+l-bereit	bereit	ready	adj	265	392					neutral
+l-weit	weit	far / wide	adj	266	393					neutral
+l-ahnung	Ahnung	idea / clue	noun	267	394	f	Ahnungen		communication	neutral
+l-bisschen	bisschen	a little bit	adv	268	396				function	neutral
+l-tuer	Tür	door	noun	269	397	f	Türen		home	neutral
+l-auge	Auge	eye	noun	270	401	n	Augen		body	neutral
+l-polizei	Polizei	police	noun	271	402	f			city,work	neutral
+l-sterben	sterben	to die	verb	272	404			stirbt, starb, ist gestorben	health	neutral
+l-draussen	draußen	outside	adv	273	406				function	neutral
+l-fast	fast	almost	adv	274	408				function	neutral
+l-runter	runter	down	adv	275	409				function	colloquial
+l-vorbei	vorbei	past / over	adv	276	410				function	neutral
+l-treffen	treffen	to meet / hit	verb	277	411			trifft, traf, hat getroffen	communication	neutral
+l-gerne	gerne	gladly	adv	278	412				feelings	neutral
+l-dran	dran	on it / one's turn	adv	279	413				function	colloquial
+l-arbeiten	arbeiten	to work	verb	280	415				work	neutral
+l-verrueckt	verrückt	crazy	adj	281	417				feelings,health	neutral
+l-neu	neu	new	adj	282	418					neutral
+l-hinter	hinter	behind	prep	283	420				function	neutral
+l-sorge	Sorge	worry / concern	noun	284	421	f	Sorgen		feelings	neutral
+l-einzige	einzige	only / sole	adj	285	422				function	neutral
+l-darum	darum	therefore / about it	adv	286	424				function	neutral
+l-tochter	Tochter	daughter	noun	287	425	f	Töchter		family	neutral
+l-idee	Idee	idea	noun	288	427	f	Ideen		communication	neutral
+l-schwester	Schwester	sister	noun	289	428	f	Schwestern		family	neutral
+l-drin	drin	inside / in it	adv	290	429				function	colloquial
+l-ruhig	ruhig	calm / quiet	adj	291	430				feelings	neutral
+l-ganz	ganz	whole / entirely	adj	292	432				function	neutral
+l-spaet	spät	late	adj	293	433				time	neutral
+l-ziemlich	ziemlich	quite / fairly	adv	294	434				function	neutral
+l-sogar	sogar	even	adv	295	437				function	neutral
+l-kurz	kurz	short / briefly	adj	296	438				time	neutral
+l-kerl	Kerl	guy / fellow	noun	297	439	m	Kerle		people	colloquial
+l-liegen	liegen	to lie / be located	verb	298	441			liegt, lag, hat gelegen		neutral
+l-suchen	suchen	to search / look for	verb	299	442					neutral
+l-je	je	ever	adv	300	444				time,function	neutral
+l-woher	woher	from where	adv	301	445				question	neutral
+l-lang	lang	long	adj	302	446				time	neutral
+l-job	Job	job	noun	303	447	m	Jobs		work	neutral
+l-keiner	keiner	no one / none	pron	304	448				function	neutral
+l-spielen	spielen	to play	verb	305	452					neutral
+l-ueberhaupt	überhaupt	at all	adv	306	453				function	neutral
+l-teufel	Teufel	devil	noun	307	454	m	Teufel			neutral
+l-verlieren	verlieren	to lose	verb	308	456			verliert, verlor, hat verloren		neutral
+l-gross	groß	big / tall	adj	309	457					neutral
 l-grund	Grund	reason / ground	noun	310	459	m	Gründe		communication	neutral
 l-ruhe	Ruhe	quiet / calm	noun	311	463	f			feelings	neutral
 l-tod	Tod	death	noun	312	465	m	Tode		health	neutral
