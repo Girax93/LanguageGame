@@ -57,8 +57,11 @@ mounted. So a fresh chat is set up correctly:
 - **Only commit files you changed.** The local working tree shows ~70 files as "modified", but it
   is pure CRLF / file‑mode noise (`core.autocrlf=true` on the Windows mount) with 0 real diff —
   never commit that.
-- **After a Composio push the local checkout is behind** — on the dev machine run `git pull` (or
-  `git fetch && git reset --hard origin/main`) to sync.
+- **Local file *contents* stay current automatically; only the git *ref* lags.** File-tool edits in
+  a chat write straight to the Windows disk, so the working tree already matches what was pushed — a
+  fresh chat reads correct, current files with no sync. Syncing is therefore **optional/cosmetic**:
+  run `git fetch && git reset --hard origin/main` on the dev machine only for a clean `git
+  status`/history or before running `npm run dev`/`build` locally.
 - **Tests run in the sandbox** with no `node_modules` (Node type‑stripping), so content/logic is
   verified before pushing — see the test command under Commands above.
 - `npm install` / `npm run dev` / `npm run build` are run on the **dev machine** (Windows), not the sandbox.
