@@ -1,17 +1,13 @@
 /**
  * Pure word-gating / progression math.
  *
- * BLOCK model: vocabulary is delivered in ordered SETS, grouped into BLOCKS of
- * `setsPerBlock` sets (2 sets = 10 words). To unlock the next block the player
- * must, for the current block:
- *   1. learn (master) both sets,
- *   2. use every block word in a solved Practice letter cipher,
- *   3. drill every block noun's article in a solved Practice grammar item,
- *   4. complete the block's crossword challenge (the capstone, unlocked once
- *      ciphers + grammar are done).
- * STRICT gating still holds everywhere: a puzzle never contains an unmastered
- * word. Practice draws from the whole learned pool but every Practice puzzle
- * features at least one current-block word, so the new words get used.
+ * Vocabulary is delivered in ordered SETS, grouped into BLOCKS of
+ * `setsPerBlock` sets. Advancement is currently MASTERY-ONLY: master a block's
+ * sets and the next block unlocks. The cipher/grammar coverage helpers and the
+ * crossword challenge remain (for display, practice scope and recap) but no
+ * longer gate advancement while the generated practice content is rebuilt.
+ * STRICT eligibility still holds everywhere: a puzzle never contains an
+ * unmastered word.
  */
 import { PROGRESSION } from './progressionConfig';
 import type { PlayerState } from './types';
@@ -73,7 +69,7 @@ export function isBlockLearned(s: PlayerState, sets: VocabSet[], block: number):
   return bs.length === B && bs.every((set) => isSetMastered(s, set));
 }
 
-// ── Coverage (cipher / grammar / challenge) ─────────────────────────────────
+// ── Coverage (cipher / grammar / challenge) — display + recap only ──────────
 export function cipherProgress(s: PlayerState, sets: VocabSet[], block: number): { done: number; total: number } {
   const cov = new Set(s.cipherWords ?? []);
   const w = blockWords(sets, block);
@@ -95,8 +91,7 @@ export function grammarComplete(s: PlayerState, sets: VocabSet[], block: number)
   const p = grammarProgress(s, sets, block);
   return p.done >= p.total;
 }
-/** The crossword challenge is the capstone: available once both sets are learned
- *  and ciphers + grammar are fully covered, and it isn't already done. */
+/** The crossword challenge (capstone) — kept for recap; not a gate for now. */
 export function challengeReady(s: PlayerState, sets: VocabSet[], block: number): boolean {
   return (
     isBlockLearned(s, sets, block) &&
@@ -106,12 +101,11 @@ export function challengeReady(s: PlayerState, sets: VocabSet[], block: number):
   );
 }
 export function isBlockComplete(s: PlayerState, sets: VocabSet[], block: number): boolean {
-  return (
-    isBlockLearned(s, sets, block) &&
-    cipherComplete(s, sets, block) &&
-    grammarComplete(s, sets, block) &&
-    isChallengeDone(s, block)
-  );
+  // TRANSITIONAL: progression is mastery-only while the generated cipher /
+  // crossword practice is being built. Cipher/grammar coverage and the
+  // crossword challenge are optional reinforcement and no longer gate the next
+  // block. (Coverage helpers above are still used for display + recap.)
+  return isBlockLearned(s, sets, block);
 }
 
 /** The block the player is working on now (lowest incomplete full block), or
@@ -173,8 +167,7 @@ export function practiceBlock(s: PlayerState, sets: VocabSet[]): number {
 
 /**
  * PRACTICE cipher eligibility: every required word mastered AND the sentence
- * features at least one current-block word, so practice exercises the new
- * vocabulary (older words may scaffold the rest).
+ * features at least one current-block word.
  */
 export function isPracticeEligible(item: { requires: string[] }, s: PlayerState, sets: VocabSet[]): boolean {
   if (!isItemEligible(item, s)) return false;

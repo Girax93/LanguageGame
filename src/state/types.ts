@@ -23,8 +23,8 @@ export interface PlayerState {
   subscribed: boolean;
 }
 
-// Bumped to 2 for the block-coverage progression rework (old saves reset).
-export const STATE_VERSION = 2;
+// Bumped to 3 for the 2000-lemma curriculum (new word ids; old saves reset).
+export const STATE_VERSION = 3;
 
 export function defaultPlayerState(now: number, focusStart: number): PlayerState {
   return {
