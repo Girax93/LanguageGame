@@ -59,18 +59,22 @@ export function App() {
   }
   const requestMain = () => setConfirmMain(true);
 
-  // ── Learn → Practice → Advance cycle ───────────────────────────────────────
-  // A block (2 sets / 10 words) blocks further learning until its grammar
-  // practice is covered. Cipher + the crossword challenge rejoin this gate when
-  // their generators ship (next phases).
+  // ── Learn → Practice → Advance cycle ────────────────────────────────────
+  // You can always LEARN the current block's sets. Once they're all mastered,
+  // learning is held until the block's grammar is drilled (`mustPractice`), then
+  // the next block unlocks. Cipher + the crossword challenge rejoin this gate
+  // when their generators ship (next phases).
   const blocks = blockCount(SETS);
   const block = currentBlock(state, SETS);
   const onBlock = block < blocks;
   const gp = onBlock ? grammarProgress(state, SETS, block) : { done: 0, total: 0 };
   const grammarComplete = onBlock ? gp.total === 0 || gp.done >= gp.total : true;
-  const grammarToDo = onBlock && gp.total > 0 && gp.done < gp.total;
 
   const curIdx = currentLearnSetIndex(state, SETS);
+  // The gate only bites when there's nothing left to learn in the available
+  // sets AND the block still owes grammar practice.
+  const mustPractice = curIdx === null && onBlock && gp.total > 0 && gp.done < gp.total;
+
   let learnStatus: string;
   let learnProgress: number;
   if (curIdx !== null) {
@@ -78,7 +82,7 @@ export function App() {
     const masteredN = set.words.filter((w) => state.learnedWords.includes(w.id)).length;
     learnStatus = 'Available';
     learnProgress = set.words.length ? masteredN / set.words.length : 1;
-  } else if (grammarToDo) {
+  } else if (mustPractice) {
     learnStatus = 'Practice to advance';
     learnProgress = 1;
   } else {
@@ -105,11 +109,11 @@ export function App() {
     {
       icon: '📖',
       label: 'Learn',
-      sublabel: grammarToDo ? 'Finish Practice to unlock the next words' : 'Pick up the next words',
+      sublabel: mustPractice ? 'Finish Practice to unlock the next words' : 'Pick up the next words',
       status: learnStatus,
       progress: learnProgress,
-      locked: grammarToDo,
-      onClick: grammarToDo ? () => navigate('practice') : () => navigate('learn'),
+      locked: mustPractice,
+      onClick: mustPractice ? () => navigate('practice') : () => navigate('learn'),
     },
     {
       icon: '🎯',
@@ -119,7 +123,7 @@ export function App() {
         : 'Learn a set to unlock practice',
       status: !practiceUnlocked ? undefined : grammarComplete ? '✓' : gp.total ? `${gp.done}/${gp.total}` : '✓',
       progress: onBlock && gp.total ? gp.done / gp.total : 1,
-      badge: practiceUnlocked ? (grammarToDo ? 'Required' : undefined) : 'Locked',
+      badge: !practiceUnlocked ? 'Locked' : mustPractice ? 'Required' : undefined,
       locked: !practiceUnlocked,
       onClick: practiceUnlocked ? () => navigate('practice') : undefined,
     },
@@ -145,7 +149,7 @@ export function App() {
       sublabel: "Drill der / die / das for this block's new nouns",
       status: !onBlock ? '✓' : gp.total ? (grammarComplete ? 'Complete ✓' : `${gp.done}/${gp.total}`) : 'No nouns yet',
       progress: onBlock && gp.total ? gp.done / gp.total : 1,
-      badge: grammarToDo ? 'Required' : undefined,
+      badge: mustPractice ? 'Required' : undefined,
       onClick: () => navigate('grammar'),
     },
   ];
@@ -176,7 +180,7 @@ export function App() {
         <MenuScreen
           title="Practice"
           intro={
-            grammarToDo
+            mustPractice
               ? 'Drill the new words to unlock the next set. (Letter Cipher & the Crossword Challenge arrive in upcoming updates.)'
               : 'Reinforce what you’ve learned. (Letter Cipher & the Crossword Challenge arrive in upcoming updates.)'
           }
