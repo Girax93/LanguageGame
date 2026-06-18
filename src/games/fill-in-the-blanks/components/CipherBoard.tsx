@@ -129,7 +129,7 @@ export function CipherBoard({ item, flags, controls }: Props) {
                     number={puzzle.numberForLetter[cell.char]}
                     showNumber={numberVisible(cell.slot)}
                     filled={filled.has(cell.slot)}
-                    given={puzzle.givens.has(cell.char)}
+                    given={puzzle.givenSlots.has(cell.slot)}
                     selected={selected === cell.slot}
                     wrong={wrongSlot === cell.slot}
                     locked={!filled.has(cell.slot) && !isUnlocked(cell.slot, filled)}

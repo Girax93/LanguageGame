@@ -48,8 +48,9 @@ export interface Puzzle {
   slotLetters: string[];
   /** Cipher number assigned to each letter (full alphabet). */
   numberForLetter: Record<string, number>;
-  /** Letters pre-revealed as footholds (the most frequent letters). */
-  givens: Set<string>;
+  /** Slots pre-revealed as footholds: ONE occurrence of each of the most
+   *  frequent letters. The player fills the remaining occurrences themselves. */
+  givenSlots: Set<number>;
 }
 
 /** Shuffle the integers 1..n (inclusive) using the given RNG. */
@@ -100,28 +101,34 @@ export function buildPuzzle(rawSentence: string, options: BuildOptions = {}): Pu
     if (cells.length > 0) words.push(cells);
   }
 
-  // Givens: the most frequent letters in this sentence.
+  // Footholds: reveal ONE occurrence of each of the most-frequent letters (not
+  // every occurrence). The player infers the rest from the numbers — the
+  // keyboard shows those letters as placeable — for a better puzzle overview.
   const freq: Record<string, number> = {};
   for (const letter of slotLetters) {
     freq[letter] = (freq[letter] ?? 0) + 1;
   }
-  const givens = new Set(
+  const givenLetters = new Set(
     Object.entries(freq)
       .sort((a, b) => b[1] - a[1])
       .slice(0, givenCount)
       .map(([letter]) => letter),
   );
+  const givenSlots = new Set<number>();
+  const revealed = new Set<string>();
+  slotLetters.forEach((letter, i) => {
+    if (givenLetters.has(letter) && !revealed.has(letter)) {
+      givenSlots.add(i);
+      revealed.add(letter);
+    }
+  });
 
-  return { words, slotLetters, numberForLetter, givens };
+  return { words, slotLetters, numberForLetter, givenSlots };
 }
 
-/** Slots that start filled because their letter is a given. */
+/** Slots that start filled (the revealed footholds — one per given letter). */
 export function initialFilled(puzzle: Puzzle): Set<number> {
-  const filled = new Set<number>();
-  puzzle.slotLetters.forEach((letter, i) => {
-    if (puzzle.givens.has(letter)) filled.add(i);
-  });
-  return filled;
+  return new Set(puzzle.givenSlots);
 }
 
 /** First empty (unfilled) slot index, or null if none remain. */
