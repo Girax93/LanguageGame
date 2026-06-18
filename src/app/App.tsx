@@ -110,11 +110,9 @@ export function App() {
     learnProgress = 1;
   }
 
-  const masteredSets2 = masteredSets;
   const practiceUnlocked = masteredSets >= 1;
   const recapUnlocked = masteredSets >= 2;
   const completedChallenges = [...(state.challengesDone ?? [])].sort((a, b) => a - b);
-  void masteredSets2;
 
   const mainItems: MenuItem[] = [
     { icon: '📖', label: 'Learn', sublabel: 'Acquire words in a language', onClick: () => navigate('languages') },
