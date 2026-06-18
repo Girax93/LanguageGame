@@ -37,8 +37,6 @@ const BLOCK_SIZE = PROGRESSION.wordsPerSet * PROGRESSION.setsPerBlock; // 10
 
 // --- morphology tables (only what is provably safe) ---------------------------
 const ART_NOM: Record<Gender, string> = { m: 'der', f: 'die', n: 'das' };
-const ART_DAT: Record<Gender, string> = { m: 'dem', f: 'der', n: 'dem' };
-const ART_ACC: Record<Gender, string> = { m: 'den', f: 'die', n: 'das' };
 const ART_ID: Record<Gender, string> = { m: 'l-der', f: 'l-die', n: 'l-das' };
 
 /** Subject pronoun -> (sein form, English subject, English copula). */
@@ -51,7 +49,6 @@ const SEIN: Record<string, [string, string, string]> = {
   'l-wir': ['sind', 'we', 'are'],
   'l-ihr': ['seid', 'you', 'are'],
 };
-const SG_SUBJ = new Set(['l-ich', 'l-du', 'l-er', 'l-sie', 'l-es']);
 
 // Function words matched by exact surface + part of speech (so the noun "Weg"
 // never sneaks into the adverb "weg" slot, etc.).
@@ -74,11 +71,6 @@ const FRONT: Record<string, string> = {
   manchmal: 'Sometimes', oft: 'Often',
 };
 const QNP: Record<string, string> = { wo: 'Where', wie: 'How' };
-const DAT_PREP: Record<string, string> = {
-  mit: 'with', bei: 'near', in: 'in', an: 'at', auf: 'on', über: 'above',
-  unter: 'under', vor: 'in front of', hinter: 'behind', neben: 'next to',
-};
-const ACC_PREP: Record<string, string> = { für: 'for', gegen: 'against', ohne: 'without' };
 const SUB_CONJ: Record<string, string> = { dass: 'that', ob: 'whether', weil: 'because', wenn: 'if' };
 // Verbs of saying/thinking that can take a "dass" clause.
 const SAY: Record<string, string> = {
@@ -158,6 +150,11 @@ function predicateAdj(a: Lemma): boolean {
 }
 // Verb lemmas (by surface) we never conjugate — auxiliaries / special forms.
 const VERB_EXCLUDE = new Set(['sein', 'werden', 'würde', 'wäre', 'sei', 'möchten', 'möchte', 'soll', 'lassen', 'tät']);
+// A noun is animate (a sensible verb subject) if tagged people/family/animals.
+const ANIMATE_TAGS = ['people', 'family', 'animals'];
+function isAnimate(n: Lemma): boolean {
+  return !!n.tags && n.tags.some((t) => ANIMATE_TAGS.includes(t));
+}
 
 // --- small utilities ----------------------------------------------------------
 function mulberry32(seed: number): () => number {
@@ -393,10 +390,6 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
         } else if (adjs.length) {
           const a = pickAdj(false)!;
           push([cap(byId.get(p)!.de), form, a.de + '.'], `${cap(es)} ${ev} ${en1(a)}.`, [p, 'l-sein-verb', a.id], 'padj');
-        } else if (SG_SUBJ.has(p) && nouns.length) {
-          const n = pickNoun(false)!;
-          push([cap(byId.get(p)!.de), form, ART_NOM[n.gender!], n.de + '.'], `${cap(es)} ${ev} the ${en1(n)}.`,
-            [p, 'l-sein-verb', ART_ID[n.gender!], n.id], 'pident', n.de);
         }
       }
     }
@@ -416,14 +409,17 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
     if (verbs.length) {
       const v = choice(verbs.filter((x) => unc.has(x.id)).length ? verbs.filter((x) => unc.has(x.id)) : verbs)!;
       const f3 = verb3sg(v)!;
-      const usePron = rng() < 0.45 && ['l-er', 'l-sie', 'l-es'].some(has);
+      const animNouns = nouns.filter(isAnimate);
+      const pronChoices = ['l-er', 'l-sie'].filter(has);
+      const usePron = (rng() < 0.5 || !animNouns.length) && pronChoices.length > 0;
       let subT: string[] | null = null, subE = '', subI: string[] = [], head: string | undefined;
       if (usePron) {
-        const p = choice(['l-er', 'l-sie', 'l-es'].filter(has))!;
-        subT = [cap(byId.get(p)!.de)]; subE = { 'l-er': 'He', 'l-sie': 'She', 'l-es': 'It' }[p]!; subI = [p];
-      } else {
-        const n = pickNoun();
-        if (n) { subT = [cap(ART_NOM[n.gender!]), n.de]; subE = `The ${en1(n)}`; subI = [ART_ID[n.gender!], n.id]; head = n.de; }
+        const p = choice(pronChoices)!;
+        subT = [cap(byId.get(p)!.de)]; subE = { 'l-er': 'He', 'l-sie': 'She' }[p]!; subI = [p];
+      } else if (animNouns.length) {
+        const u = animNouns.filter((n) => unc.has(n.id));
+        const n = choice(u.length ? u : animNouns)!;
+        subT = [cap(ART_NOM[n.gender!]), n.de]; subE = `The ${en1(n)}`; subI = [ART_ID[n.gender!], n.id]; head = n.de;
       }
       if (subT) {
         const [eng, frame] = VERB[v.de];
@@ -432,26 +428,6 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
         } else {
           push([...subT, f3 + '.'], `${subE} ${eng}.`, [...subI, v.id], 'verb', head);
         }
-      }
-    }
-    // PREPOSITIONAL predicate: dative "Der Mann ist in dem Haus." / acc "Das ist für das Kind."
-    if (hasS && nouns.length) {
-      const dps = pool.filter((x) => x.pos === 'prep' && x.de in DAT_PREP && unc.has(x.id));
-      const p = choice(dps);
-      if (p) {
-        const sub = pickNoun();
-        const obj = pickNoun(false, new Set(sub ? [sub.id] : []));
-        if (sub && obj) push([cap(ART_NOM[sub.gender!]), sub.de, 'ist', p.de, ART_DAT[obj.gender!], obj.de + '.'],
-          `The ${en1(sub)} is ${DAT_PREP[p.de]} the ${en1(obj)}.`,
-          ['l-sein-verb', ART_ID[sub.gender!], sub.id, p.id, ART_ID[obj.gender!], obj.id], 'pp', sub.de);
-      }
-      const aps = pool.filter((x) => x.pos === 'prep' && x.de in ACC_PREP && unc.has(x.id));
-      const ap = choice(aps);
-      if (ap && hasDas) {
-        const obj = pickNoun(false);
-        if (obj) push(['Das', 'ist', ap.de, ART_ACC[obj.gender!], obj.de + '.'],
-          `That is ${ACC_PREP[ap.de]} the ${en1(obj)}.`,
-          ['l-das', 'l-sein-verb', ap.id, ART_ID[obj.gender!], obj.id], 'pp');
       }
     }
     // QUESTIONS
@@ -509,7 +485,7 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
   };
 
   // Clauses that are valid stand-alone main clauses and so can be coordinated.
-  const CHAINABLE = new Set(['adj', 'ident', 'det', 'indef', 'ipron', 'ploc', 'padj', 'pident', 'loc', 'verb', 'pp', 'front']);
+  const CHAINABLE = new Set(['adj', 'ident', 'det', 'indef', 'ipron', 'ploc', 'padj', 'pident', 'loc', 'verb', 'front']);
   const CONJ: [string, string, string][] = [['l-und', 'und', 'and'], ['l-aber', 'aber', 'but'], ['l-oder', 'oder', 'or']];
   const hasConj = CONJ.some(([id]) => has(id));
   const lowerFirst = (str: string) => str.charAt(0).toLowerCase() + str.slice(1);
@@ -524,14 +500,7 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
     guard++;
     if (out.length >= MAX_SENTENCES) break;
     const ranked = buildCands().slice().sort((x, y) => y.score - x.score);
-    if (!ranked.length) {
-      // Fallback: a single-word puzzle for the first remaining (unplaceable) word.
-      const i = [...unc].sort((p, q) => (byId.get(p)?.order ?? 0) - (byId.get(q)?.order ?? 0))[0];
-      const x = byId.get(i)!;
-      out.push({ sentence: x.de + '.', translation: cap(en1(x)) + '.', requires: [i] });
-      unc.delete(i);
-      continue;
-    }
+    if (!ranked.length) break; // nothing placeable left — stop (no degenerate single-word puzzles)
     // Pack up to 3 safe clauses into ONE sentence, joined by a coordinating
     // conjunction, so a block needs ~3 sentences instead of one per clause.
     const first = ranked[0];

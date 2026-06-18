@@ -122,6 +122,10 @@ export function buildPuzzle(rawSentence: string, options: BuildOptions = {}): Pu
       revealed.add(letter);
     }
   });
+  // Never reveal the whole puzzle — always leave at least one slot to solve.
+  while (givenSlots.size >= slotLetters.length && givenSlots.size > 0) {
+    givenSlots.delete([...givenSlots][givenSlots.size - 1]);
+  }
 
   return { words, slotLetters, numberForLetter, givenSlots };
 }
