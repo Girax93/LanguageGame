@@ -119,18 +119,33 @@ player loses all 3 lives, the "Out of lives" screen plays a short **`focus-drop`
 focus pip popping and fading, so the focus cost is felt without a permanent meter. `FocusPips` is
 still used outside games (Home/Settings).
 
-### Progression: block‑coverage gating (`progressionConfig.ts`, `progression.ts`)
-`PROGRESSION = { wordsPerSet: 5, masteryThreshold: 2, setsPerBlock: 2 }`. A **block = 2 sets = 10
-words**. The unlock flow per block:
-1. Learn the 2 sets (10 words).
-2. Complete **letter ciphers** until every block word has been covered, AND complete **grammar**
-   drills until every new article rule is covered (either order). Each practice shows an X/Y
-   progress indicator and locks when complete.
-3. Complete the **crossword challenge** (the capstone — one generated puzzle using all the block's words, 3 lives).
-4. The next sets unlock; repeat.
+### Progression: learn → practice → advance gating (`progressionConfig.ts`, `progression.ts`)
+`PROGRESSION = { wordsPerSet: 5, masteryThreshold: 2, setsPerBlock: 2, practiceRounds: 3,
+recapIntervalMs: 24*60*60*1000 }`. A **block = 2 sets = 10 words**. The cycle is **LEARN →
+PRACTICE → ADVANCE**, one block at a time:
+1. **Learn** the 2 sets (10 words) — each word masters at `masteryThreshold` (2) correct in a row.
+2. **Practice** the block: complete `practiceRounds` (3) grammar drills. Progress is a per‑block
+   count in `state.practiceCounts`, shown as **X/3**; partial progress persists. The session is
+   `practiceNounsForBlock`, which pads with the most‑recently‑learned nouns so even noun‑sparse
+   blocks still gate. The gate is `isBlockComplete = isBlockLearned && blockPracticeDone`.
+3. **Advance:** the next sets unlock. Finishing a block's practice shows a **"Block complete!"**
+   screen with two buttons — **Learn more words** (→ next set) and **Recap** (→ recap mode).
 
-A completed practice locks with a "Practice is complete — go to Recap" message + button. Recap mode
-replays learned material full‑pool without driving the gate.
+Letter‑cipher rounds and the crossword challenge **rejoin this same Practice session** once their
+generators ship — the per‑block session is forward‑compatible, you just add rounds. Until then the
+gate is mastery + the grammar Practice session only. Recap mode replays learned material full‑pool
+without driving the gate.
+
+**Forced daily recap.** Every `recapIntervalMs` (24h), once ≥2 sets are mastered, `recapDue` fires
+and **locks Learn / Practice / Recap** until the player finishes a recap (`recordRecapDone` stamps
+`state.lastRecapAt`). The Daily Recap screen runs a bounded **grammar** review (game `scope:
+'daily'`) today, with Letter Cipher + Crossword shown as **"Soon"** placeholders. A dev button
+**"🔧 Dev: trigger daily recap"** on the German menu (`forceRecapDue`) forces it without waiting.
+
+**Dev Skip.** Every learn/exercise card shows a small **Skip ⏭** button (`SkipButton`, exported from
+`_shared/LevelStage.tsx`) that clears the round as a success. Boards render it directly above their
+keyboard so it never overlaps a key; Learn puts it in its header. Testing aid only — leave it in
+until the content pipeline is complete.
 
 ### Strict word‑id gating
 Content items carry `requires: string[]`. An item is eligible only when **all** of its `requires`
@@ -165,13 +180,15 @@ clue rules described above where they conflict.)
 
 - **Grammar drills are GENERATED** from the noun lemmas (`grammarItems.ts`) — one
   der/die/das drill per noun. No hand‑authored grammar list.
-- **Letter ciphers and recap crosswords are temporarily empty** (`cipherItems.ts`,
-  `crosswords.ts`) while their generators are rebuilt. The live block gate is
-  **mastery + grammar coverage** (`isBlockComplete`); cipher coverage + the
-  crossword challenge rejoin the gate when their generators ship.
+- **Letter ciphers and recap crosswords are temporarily empty** — `cipherItems.ts` and
+  `crosswords.ts` export their types but ship `[]` data while their generators are rebuilt. The
+  live block gate is **mastery + the grammar Practice session** (`isBlockComplete`, see the
+  Progression section above); cipher rounds + the crossword challenge rejoin that same session when
+  their generators ship.
 - Articles `der/die/das` are their own early entries glossed "the (masc./fem./neut.)".
-- `STATE_VERSION` bumped (old saves reset). `tests/content.invariants.mts` now
-  asserts lemma‑dataset + gating invariants.
+- `STATE_VERSION = 6` (old saves reset). `tests/content.invariants.mts` asserts the lemma‑dataset
+  + gating invariants — sets/lookups, generated grammar drills, empty cipher/crossword, the
+  per‑block Practice gate (`practiceCounts`), and the daily recap (`recapDue`/`lastRecapAt`).
 
 ## Planned: in‑game glossary & wiki (TODO — not built yet)
 
