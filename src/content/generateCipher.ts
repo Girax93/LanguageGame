@@ -38,6 +38,7 @@ const BLOCK_SIZE = PROGRESSION.wordsPerSet * PROGRESSION.setsPerBlock; // 10
 // --- morphology tables (only what is provably safe) ---------------------------
 const ART_NOM: Record<Gender, string> = { m: 'der', f: 'die', n: 'das' };
 const ART_ID: Record<Gender, string> = { m: 'l-der', f: 'l-die', n: 'l-das' };
+const ART_DAT: Record<Gender, string> = { m: 'dem', f: 'der', n: 'dem' };
 
 /** Subject pronoun -> (sein form, English subject, English copula). */
 const SEIN: Record<string, [string, string, string]> = {
@@ -154,6 +155,14 @@ const VERB_EXCLUDE = new Set(['sein', 'werden', 'würde', 'wäre', 'sei', 'möch
 const ANIMATE_TAGS = ['people', 'family', 'animals'];
 function isAnimate(n: Lemma): boolean {
   return !!n.tags && n.tags.some((t) => ANIMATE_TAGS.includes(t));
+}
+// Locative prepositions that read sensibly as "[someone] ist <prep> [a place]".
+const LOC_PREP: Record<string, string> = {
+  in: 'in', an: 'at', bei: 'near', vor: 'in front of', hinter: 'behind', neben: 'next to',
+};
+const PLACE_TAGS = ['home', 'travel', 'city', 'nature', 'school'];
+function isPlace(n: Lemma): boolean {
+  return !!n.tags && n.tags.some((t) => PLACE_TAGS.includes(t));
 }
 
 // --- small utilities ----------------------------------------------------------
@@ -430,6 +439,22 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
         }
       }
     }
+    // PREPOSITIONAL location: "Der Mann ist in dem Haus." (a person, at a place)
+    if (hasS) {
+      const prep = choice(pool.filter((x) => x.pos === 'prep' && x.de in LOC_PREP && unc.has(x.id)));
+      const subs = nouns.filter(isAnimate);
+      const places = nouns.filter(isPlace);
+      if (prep && subs.length && places.length) {
+        const subU = subs.filter((n) => unc.has(n.id));
+        const sub = choice(subU.length ? subU : subs)!;
+        const placePool = places.filter((n) => n.id !== sub.id);
+        const placeU = placePool.filter((n) => unc.has(n.id));
+        const obj = choice(placeU.length ? placeU : placePool);
+        if (obj) push([cap(ART_NOM[sub.gender!]), sub.de, 'ist', prep.de, ART_DAT[obj.gender!], obj.de + '.'],
+          `The ${en1(sub)} is ${LOC_PREP[prep.de]} the ${en1(obj)}.`,
+          ['l-sein-verb', ART_ID[sub.gender!], sub.id, prep.id, ART_ID[obj.gender!], obj.id], 'pp', sub.de);
+      }
+    }
     // QUESTIONS
     if (hasS && hasDas && has('l-was') && unc.has('l-was')) push(['Was', 'ist', 'das?'], 'What is that?', ['l-was', 'l-sein-verb', 'l-das'], 'q');
     if (hasS && hasDas && has('l-wer') && unc.has('l-wer')) push(['Wer', 'ist', 'das?'], 'Who is that?', ['l-wer', 'l-sein-verb', 'l-das'], 'q');
@@ -485,7 +510,7 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
   };
 
   // Clauses that are valid stand-alone main clauses and so can be coordinated.
-  const CHAINABLE = new Set(['adj', 'ident', 'det', 'indef', 'ipron', 'ploc', 'padj', 'pident', 'loc', 'verb', 'front']);
+  const CHAINABLE = new Set(['adj', 'ident', 'det', 'indef', 'ipron', 'ploc', 'padj', 'pident', 'loc', 'verb', 'pp', 'front']);
   const CONJ: [string, string, string][] = [['l-und', 'und', 'and'], ['l-aber', 'aber', 'but'], ['l-oder', 'oder', 'or']];
   const hasConj = CONJ.some(([id]) => has(id));
   const lowerFirst = (str: string) => str.charAt(0).toLowerCase() + str.slice(1);
