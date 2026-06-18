@@ -3,15 +3,15 @@
  *
  * Vocabulary is delivered in ordered SETS, grouped into BLOCKS of
  * `setsPerBlock` sets. The cycle is LEARN -> PRACTICE -> ADVANCE: a block
- * unlocks the next only when its sets are mastered AND its grammar practice is
- * covered (every new noun's article drilled). Cipher coverage and the crossword
- * challenge rejoin this gate once their generators ship. STRICT eligibility
- * holds everywhere: a puzzle never contains an unmastered word.
+ * unlocks the next only when its sets are mastered AND its Practice session is
+ * done. Cipher rounds + the crossword challenge join this gate once their
+ * generators ship. STRICT eligibility holds everywhere: a puzzle never contains
+ * an unmastered word.
  */
 import { PROGRESSION } from './progressionConfig';
 import type { PlayerState } from './types';
 import type { VocabSet, VocabWord } from '../content/vocab';
-import { wordById } from '../content/vocab';
+import { wordById, ALL_WORDS } from '../content/vocab';
 
 const B = PROGRESSION.setsPerBlock;
 
@@ -46,7 +46,7 @@ export function masteredSetCount(s: PlayerState, sets: VocabSet[]): number {
   return n;
 }
 
-// ── Blocks ──────────────────────────────────────────────────────────────────
+// Blocks
 export function blockOf(setIndex: number): number {
   return Math.floor(setIndex / B);
 }
@@ -67,7 +67,7 @@ export function isBlockLearned(s: PlayerState, sets: VocabSet[], block: number):
   return bs.length === B && bs.every((set) => isSetMastered(s, set));
 }
 
-// ── Coverage (cipher / grammar / challenge) ─────────────────────────────────
+// Coverage (cipher / grammar / challenge)
 export function cipherProgress(s: PlayerState, sets: VocabSet[], block: number): { done: number; total: number } {
   const cov = new Set(s.cipherWords ?? []);
   const w = blockWords(sets, block);
@@ -99,11 +99,11 @@ export function challengeReady(s: PlayerState, sets: VocabSet[], block: number):
   );
 }
 export function isBlockComplete(s: PlayerState, sets: VocabSet[], block: number): boolean {
-  // LEARN -> PRACTICE -> ADVANCE: master the block's sets, then cover its
-  // grammar (drill every new noun's article) to unlock the next block. Cipher
-  // coverage + the crossword challenge will be added to this gate when their
-  // generators ship.
-  return isBlockLearned(s, sets, block) && grammarComplete(s, sets, block);
+  // LEARN -> PRACTICE -> ADVANCE: a block unlocks the next only when its sets
+  // are mastered AND its required Practice session is done. The session always
+  // has content (it pads with recently-learned nouns when a block has none), so
+  // every block gates. Cipher rounds join the same session when that ships.
+  return isBlockLearned(s, sets, block) && blockPracticeDone(s, block);
 }
 
 export function currentBlock(s: PlayerState, sets: VocabSet[]): number {
@@ -117,7 +117,7 @@ export function pendingChallenge(s: PlayerState, sets: VocabSet[]): number | nul
   return null;
 }
 
-// ── Availability / learning ─────────────────────────────────────────────────
+// Availability / learning
 export function availableSetCount(s: PlayerState, sets: VocabSet[]): number {
   if (sets.length === 0) return 0;
   let completed = 0;
@@ -142,7 +142,7 @@ export function wordsToStudy(s: PlayerState, sets: VocabSet[]): string[] {
   return sets[idx].words.filter((w) => !s.learnedWords.includes(w.id)).map((w) => w.id);
 }
 
-// ── Eligibility ─────────────────────────────────────────────────────────────
+// Eligibility
 export function isItemEligible(item: { requires: string[] }, s: PlayerState): boolean {
   return item.requires.every((id) => s.learnedWords.includes(id));
 }
@@ -175,7 +175,30 @@ export function isRecapEligible(item: { requires: string[] }, s: PlayerState): b
   return isItemEligible(item, s);
 }
 
-// ── Recording coverage ──────────────────────────────────────────────────────
+// Per-block Practice gate
+/** The nouns a block's grammar session drills: the block's own (learned) nouns,
+ *  padded with the most-recently-learned nouns when the block has fewer than
+ *  `n` (so noun-sparse blocks still get a real session). */
+export function practiceNounsForBlock(s: PlayerState, sets: VocabSet[], block: number, n = 3): string[] {
+  const learned = new Set(s.learnedWords);
+  const target = blockNouns(sets, block).map((w) => w.id).filter((id) => learned.has(id));
+  if (target.length >= n) return target;
+  const have = new Set(target);
+  const recent = ALL_WORDS
+    .filter((w) => w.gender && learned.has(w.id) && !have.has(w.id))
+    .sort((a, b) => b.order - a.order);
+  for (const w of recent) {
+    if (target.length >= n) break;
+    target.push(w.id);
+    have.add(w.id);
+  }
+  return target;
+}
+export function blockPracticeDone(s: PlayerState, block: number): boolean {
+  return (s.practiceBlocksDone ?? []).includes(block);
+}
+
+// Recording coverage
 export function addCipherWords(s: PlayerState, ids: string[]): PlayerState {
   const cur = new Set(s.cipherWords ?? []);
   let changed = false;
@@ -185,6 +208,10 @@ export function addCipherWords(s: PlayerState, ids: string[]): PlayerState {
 export function addGrammarNoun(s: PlayerState, id: string | undefined): PlayerState {
   if (!id || (s.grammarWords ?? []).includes(id)) return s;
   return { ...s, grammarWords: [...(s.grammarWords ?? []), id] };
+}
+export function recordPracticeBlockDone(s: PlayerState, block: number): PlayerState {
+  if (blockPracticeDone(s, block)) return s;
+  return { ...s, practiceBlocksDone: [...(s.practiceBlocksDone ?? []), block] };
 }
 export function recordChallengeDone(s: PlayerState, block: number): PlayerState {
   if (isChallengeDone(s, block)) return s;

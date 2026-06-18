@@ -20,14 +20,9 @@ import {
   masteredSetCount,
   currentBlock,
   blockCount,
-  grammarProgress,
+  blockPracticeDone,
 } from '../state/progression';
 
-/**
- * App shell + screen router with a real navigation stack wired to browser
- * history, so the device/back gesture steps back one screen instead of
- * quitting. A "Main menu" button (with a confirm) jumps home from anywhere.
- */
 export function App() {
   const { state } = usePlayer();
   const [stack, setStack] = useState<Route[]>(['main']);
@@ -59,21 +54,16 @@ export function App() {
   }
   const requestMain = () => setConfirmMain(true);
 
-  // ── Learn → Practice → Advance cycle ────────────────────────────────────
-  // You can always LEARN the current block's sets. Once they're all mastered,
-  // learning is held until the block's grammar is drilled (`mustPractice`), then
-  // the next block unlocks. Cipher + the crossword challenge rejoin this gate
-  // when their generators ship (next phases).
+  // Learn -> Practice -> Advance cycle. You can always LEARN the current block's
+  // sets; once mastered, learning is held until the block's Practice session is
+  // done (mustPractice), then the next block unlocks.
   const blocks = blockCount(SETS);
   const block = currentBlock(state, SETS);
   const onBlock = block < blocks;
-  const gp = onBlock ? grammarProgress(state, SETS, block) : { done: 0, total: 0 };
-  const grammarComplete = onBlock ? gp.total === 0 || gp.done >= gp.total : true;
+  const practiceDone = onBlock ? blockPracticeDone(state, block) : true;
 
   const curIdx = currentLearnSetIndex(state, SETS);
-  // The gate only bites when there's nothing left to learn in the available
-  // sets AND the block still owes grammar practice.
-  const mustPractice = curIdx === null && onBlock && gp.total > 0 && gp.done < gp.total;
+  const mustPractice = curIdx === null && onBlock && !practiceDone;
 
   let learnStatus: string;
   let learnProgress: number;
@@ -119,10 +109,10 @@ export function App() {
       icon: '🎯',
       label: 'Practice',
       sublabel: practiceUnlocked
-        ? 'Drill der / die / das for the new words'
+        ? 'Drill the new words to advance'
         : 'Learn a set to unlock practice',
-      status: !practiceUnlocked ? undefined : grammarComplete ? '✓' : gp.total ? `${gp.done}/${gp.total}` : '✓',
-      progress: onBlock && gp.total ? gp.done / gp.total : 1,
+      status: !practiceUnlocked ? undefined : practiceDone ? '✓' : 'Required',
+      progress: practiceDone ? 1 : 0,
       badge: !practiceUnlocked ? 'Locked' : mustPractice ? 'Required' : undefined,
       locked: !practiceUnlocked,
       onClick: practiceUnlocked ? () => navigate('practice') : undefined,
@@ -140,15 +130,13 @@ export function App() {
     },
   ];
 
-  // Practice = Grammar for now. Letter Cipher and the Crossword Challenge are
-  // built in the next phases and appear here when they ship (no fake locks).
   const practiceItems: MenuItem[] = [
     {
       icon: '🧠',
       label: 'Grammar',
-      sublabel: "Drill der / die / das for this block's new nouns",
-      status: !onBlock ? '✓' : gp.total ? (grammarComplete ? 'Complete ✓' : `${gp.done}/${gp.total}`) : 'No nouns yet',
-      progress: onBlock && gp.total ? gp.done / gp.total : 1,
+      sublabel: 'A few der / die / das drills to clear this block',
+      status: !onBlock ? '✓' : practiceDone ? 'Done ✓' : 'Required',
+      progress: practiceDone ? 1 : 0,
       badge: mustPractice ? 'Required' : undefined,
       onClick: () => navigate('grammar'),
     },
@@ -181,8 +169,8 @@ export function App() {
           title="Practice"
           intro={
             mustPractice
-              ? 'Drill the new words to unlock the next set. (Letter Cipher & the Crossword Challenge arrive in upcoming updates.)'
-              : 'Reinforce what you’ve learned. (Letter Cipher & the Crossword Challenge arrive in upcoming updates.)'
+              ? 'Clear this block’s Grammar to unlock the next words. (Letter Cipher arrives in an upcoming update.)'
+              : 'Reinforce what you’ve learned. (Letter Cipher arrives in an upcoming update.)'
           }
           items={practiceItems}
           onBack={back}

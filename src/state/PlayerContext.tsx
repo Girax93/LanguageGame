@@ -20,6 +20,7 @@ import {
 import {
   recordWordAnswer,
   recordChallengeDone,
+  recordPracticeBlockDone,
   addCipherWords,
   addGrammarNoun,
 } from './progression';
@@ -29,14 +30,11 @@ interface PlayerContextValue {
   /** A ticking clock (ms) so focus countdowns re-render. */
   now: number;
   answerWord: (wordId: string, correct: boolean) => void;
-  /**
-   * Record a level result. `countsTowardGate` (default true) advances the
-   * games-to-advance unlock counter on a win; Recap passes false so review
-   * never changes unlock progress.
-   */
   recordLevel: (won: boolean, countsTowardGate?: boolean) => void;
   /** Mark the given challenge block cleared. */
   recordChallenge: (block: number) => void;
+  /** Mark a block's required Practice session complete (gates advancement). */
+  recordPracticeBlock: (block: number) => void;
   /** Mark words used in a solved Practice cipher (block cipher-coverage). */
   recordCipherWords: (ids: string[]) => void;
   /** Mark a noun's article drilled in a solved Practice grammar (coverage). */
@@ -59,8 +57,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     savePlayerState(state);
   }, [state]);
 
-  // Tick: advance the clock and apply focus regen. applyRegen returns the
-  // same object when nothing changes, so React bails out of needless updates.
+  // Tick: advance the clock and apply focus regen.
   useEffect(() => {
     const id = window.setInterval(() => {
       const t = Date.now();
@@ -81,6 +78,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
           (countsTowardGate ? recordLevelResult : recordLevelResultNoGate)(s, won, Date.now()),
         ),
       recordChallenge: (block) => setState((s) => recordChallengeDone(s, block)),
+      recordPracticeBlock: (block) => setState((s) => recordPracticeBlockDone(s, block)),
       recordCipherWords: (ids) => setState((s) => addCipherWords(s, ids)),
       recordGrammarNoun: (id) => setState((s) => addGrammarNoun(s, id)),
       buyFocus: () => setState((s) => buyFocusRefill(s, Date.now())),

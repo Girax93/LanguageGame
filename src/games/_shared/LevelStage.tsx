@@ -8,9 +8,7 @@ import { ChevronLeft, HomeIcon } from '../../components/ui/icons';
 
 /** A board reports outcomes through these; LevelStage owns lives + flow. */
 export interface BoardControls {
-  /** A wrong guess: costs a life (LevelStage decides when lives run out). */
   onWrong: () => void;
-  /** The puzzle was solved. */
   onSolved: () => void;
 }
 
@@ -19,11 +17,10 @@ interface Props<T> {
   onExit: () => void;
   onOpenSettings?: () => void;
   onMain?: () => void;
-  /** When false, a win does not advance the unlock gate (used by Recap). */
   countsTowardGate?: boolean;
-  /** Extra callback fired with the solved item when a level is won. */
   onWin?: (item: T) => void;
-  /** Extra content shown on the win screen (e.g. the solved translation). */
+  /** Fired once when the LAST item in the set is solved (the session is done). */
+  onComplete?: () => void;
   renderWin?: (item: T) => ReactNode;
   renderBoard: (item: T, controls: BoardControls) => ReactNode;
 }
@@ -38,6 +35,7 @@ export function LevelStage<T extends { id: string }>({
   onMain,
   countsTowardGate = true,
   onWin,
+  onComplete,
   renderWin,
   renderBoard,
 }: Props<T>) {
@@ -55,6 +53,7 @@ export function LevelStage<T extends { id: string }>({
   function handleResult(won: boolean) {
     recordLevel(won, countsTowardGate);
     if (won && item) onWin?.(item);
+    if (won && isLast) onComplete?.();
     setPhase(won ? 'win' : 'lose');
   }
   const controls: BoardControls = {
@@ -83,7 +82,6 @@ export function LevelStage<T extends { id: string }>({
     setPhase('play');
   }
 
-  // Non-play screens: a single back chevron + a centered card.
   if (total === 0) {
     return (
       <Centered onBack={onExit} icon="❦" title="Nothing here yet"
@@ -133,7 +131,6 @@ export function LevelStage<T extends { id: string }>({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      {/* slim HUD: back · hearts */}
       <div className="mb-6 flex shrink-0 items-center justify-between">
         <button
           onClick={onExit}
@@ -209,12 +206,6 @@ function Centered({
   );
 }
 
-/**
- * One-shot animation for the "Out of lives" screen: the focus pip the player
- * just spent pops and fades out, so the focus economy is still felt without a
- * persistent in-game meter. `focus` is the value AFTER the loss, so the pip at
- * that index is the one that just dropped.
- */
 function FocusDrop({ focus, max }: { focus: number; max: number }) {
   return (
     <div className="mt-6 flex items-center gap-2" aria-label={`Focus dropped to ${focus} of ${max}`}>

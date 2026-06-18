@@ -11,6 +11,8 @@ export interface PlayerState {
   cipherWords: string[];
   /** Nouns whose article was drilled in a solved Practice grammar (coverage). */
   grammarWords: string[];
+  /** Block indices whose required Practice session has been completed. */
+  practiceBlocksDone: number[];
   /** Challenge-block indices whose crossword has been completed. */
   challengesDone: number[];
   /** Total games won (a statistic only — no longer gates anything). */
@@ -23,8 +25,9 @@ export interface PlayerState {
   subscribed: boolean;
 }
 
-// Bumped to 3 for the 2000-lemma curriculum (new word ids; old saves reset).
-export const STATE_VERSION = 3;
+// Bumped to 5: per-block Practice gate (practiceBlocksDone) for the always-on
+// learn -> practice cycle. Old saves reset.
+export const STATE_VERSION = 5;
 
 export function defaultPlayerState(now: number, focusStart: number): PlayerState {
   return {
@@ -33,6 +36,7 @@ export function defaultPlayerState(now: number, focusStart: number): PlayerState
     wordProgress: {},
     cipherWords: [],
     grammarWords: [],
+    practiceBlocksDone: [],
     challengesDone: [],
     levelsWon: 0,
     focus: focusStart,
