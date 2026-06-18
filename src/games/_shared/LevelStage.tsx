@@ -4,6 +4,7 @@ import { ECONOMY } from '../../state/economyConfig';
 import { canStartLevel, timeToNextFocusMs } from '../../state/focus';
 import { Button } from '../../components/ui/Button';
 import { Hearts } from '../../components/ui/Hearts';
+import { DevSkip } from '../../components/ui/DevSkip';
 import { ChevronLeft, HomeIcon } from '../../components/ui/icons';
 
 /** A board reports outcomes through these; LevelStage owns lives + flow. */
@@ -81,7 +82,19 @@ export function LevelStage<T extends { id: string }>({
     setLives(ECONOMY.livesPerLevel);
     setPhase('play');
   }
+  // DEV/TESTING: treat the current item as solved and jump straight on.
+  function skip() {
+    recordLevel(true, countsTowardGate);
+    if (item) onWin?.(item);
+    if (isLast) {
+      onComplete?.();
+      onExit();
+    } else {
+      goNext();
+    }
+  }
 
+  // Non-play screens: a single back chevron + a centered card.
   if (total === 0) {
     return (
       <Centered onBack={onExit} icon="❦" title="Nothing here yet"
@@ -131,6 +144,7 @@ export function LevelStage<T extends { id: string }>({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
+      {/* slim HUD: back · hearts */}
       <div className="mb-6 flex shrink-0 items-center justify-between">
         <button
           onClick={onExit}
@@ -158,6 +172,7 @@ export function LevelStage<T extends { id: string }>({
       <div key={`${index}-${attempt}`} className="flex min-h-0 flex-1 flex-col">
         {item && renderBoard(item, controls)}
       </div>
+      <DevSkip onSkip={skip} />
     </div>
   );
 }

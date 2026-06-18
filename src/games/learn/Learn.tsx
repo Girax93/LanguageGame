@@ -14,6 +14,7 @@ import { wordsToStudy, currentLearnSetIndex } from '../../state/progression';
 import { shuffle } from '../../lib/array';
 import { Button } from '../../components/ui/Button';
 import { ProgressBar } from '../../components/ui/ProgressBar';
+import { DevSkip } from '../../components/ui/DevSkip';
 import { ChevronLeft, HomeIcon } from '../../components/ui/icons';
 
 interface Step {
@@ -80,6 +81,15 @@ export function Learn({ onExit, onMain, onPractice }: GameProps) {
       setPicked(null);
     }
   }
+  // DEV/TESTING: master the current word and jump to the next.
+  function skip() {
+    if (!step) return;
+    answerWord(step.word.id, true);
+    answerWord(step.word.id, true);
+    setStep(null);
+    setRound(1);
+    setPicked(null);
+  }
 
   return (
     <div className="flex flex-1 flex-col">
@@ -114,8 +124,7 @@ export function Learn({ onExit, onMain, onPractice }: GameProps) {
           <div className="text-4xl text-brown">✦</div>
           <h3 className="mt-5 font-serif text-2xl font-semibold text-espresso">Set complete!</h3>
           <p className="mt-2 max-w-xs text-taupe">
-            You’ve learned these words. Now practise them — ciphers, grammar and the
-            crossword — to unlock the next set.
+            You’ve learned these words. Now practise them to unlock the next set.
           </p>
           <Button className="mt-8" onClick={onPractice ?? onExit}>
             Practice now!
@@ -131,6 +140,7 @@ export function Learn({ onExit, onMain, onPractice }: GameProps) {
           onAdvance={advance}
         />
       )}
+      {step !== null && <DevSkip onSkip={skip} />}
     </div>
   );
 }
