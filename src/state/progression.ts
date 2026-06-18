@@ -12,6 +12,7 @@ import { PROGRESSION } from './progressionConfig';
 import type { PlayerState } from './types';
 import type { VocabSet, VocabWord } from '../content/vocab';
 import { wordById, ALL_WORDS } from '../content/vocab';
+import { cipherRoundsForBlock } from '../content/cipherItems';
 
 const B = PROGRESSION.setsPerBlock;
 
@@ -100,10 +101,14 @@ export function challengeReady(s: PlayerState, sets: VocabSet[], block: number):
 }
 export function isBlockComplete(s: PlayerState, sets: VocabSet[], block: number): boolean {
   // LEARN -> PRACTICE -> ADVANCE: a block unlocks the next only when its sets
-  // are mastered AND its required Practice session is done. The session always
-  // has content (it pads with recently-learned nouns when a block has none), so
-  // every block gates. Cipher rounds join the same session when that ships.
-  return isBlockLearned(s, sets, block) && blockPracticeDone(s, block);
+  // are mastered AND both halves of its Practice session are done — the grammar
+  // drills (blockPracticeDone) and the cipher sentences that cover its new words
+  // (cipherSessionDone). Both always have content, so every block gates.
+  return (
+    isBlockLearned(s, sets, block) &&
+    blockPracticeDone(s, block) &&
+    cipherSessionDone(s, block)
+  );
 }
 
 export function currentBlock(s: PlayerState, sets: VocabSet[]): number {
@@ -200,6 +205,15 @@ export function practiceCount(s: PlayerState, block: number): number {
 export function blockPracticeDone(s: PlayerState, block: number): boolean {
   return practiceCount(s, block) >= PROGRESSION.practiceRounds;
 }
+/** Completed cipher Practice sentences for a block. */
+export function cipherRoundCount(s: PlayerState, block: number): number {
+  return (s.cipherCounts ?? {})[block] ?? 0;
+}
+/** The cipher half of the gate: all of the block's generated sentences solved. */
+export function cipherSessionDone(s: PlayerState, block: number): boolean {
+  const target = cipherRoundsForBlock(block);
+  return target === 0 || cipherRoundCount(s, block) >= target;
+}
 
 // Daily recap
 export function recapDue(s: PlayerState, sets: VocabSet[], now: number): boolean {
@@ -229,6 +243,13 @@ export function recordPracticeDrill(s: PlayerState, block: number): PlayerState 
   const cur = practiceCount(s, block);
   if (cur >= PROGRESSION.practiceRounds) return s;
   return { ...s, practiceCounts: { ...(s.practiceCounts ?? {}), [block]: cur + 1 } };
+}
+/** Count one solved cipher Practice sentence (capped at the block's target). */
+export function recordCipherRound(s: PlayerState, block: number): PlayerState {
+  const target = cipherRoundsForBlock(block);
+  const cur = cipherRoundCount(s, block);
+  if (target === 0 || cur >= target) return s;
+  return { ...s, cipherCounts: { ...(s.cipherCounts ?? {}), [block]: cur + 1 } };
 }
 export function recordChallengeDone(s: PlayerState, block: number): PlayerState {
   if (isChallengeDone(s, block)) return s;

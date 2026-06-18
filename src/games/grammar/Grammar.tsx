@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { GRAMMAR_ITEMS, type GrammarContentItem } from '../../content/grammarItems';
-import { isItemEligible, currentBlock, practiceNounsForBlock, practiceCount } from '../../state/progression';
+import { isItemEligible, currentBlock, practiceNounsForBlock, practiceCount, cipherSessionDone } from '../../state/progression';
 import { PROGRESSION } from '../../state/progressionConfig';
 import { SETS } from '../../content/vocab';
 import { shuffle } from '../../lib/array';
@@ -15,11 +15,11 @@ import { ChevronLeft } from '../../components/ui/icons';
  * Grammar drill.
  * - PRACTICE: the current block's required article session (remaining drills of
  *   PROGRESSION.practiceRounds; pads with recent nouns when sparse). Gates.
- * - DAILY: a short bounded review for the forced daily recap. Marks the recap
- *   done on completion; does not gate.
+ * - DAILY: a short bounded review (for the forced daily recap). Marks the recap
+ *   done on completion; does not gate the block.
  * - RECAP: free review across every learned noun (does not gate).
  */
-export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, onRecapDone, scope = 'practice' }: GameProps) {
+export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, onPractice, onRecapDone, scope = 'practice' }: GameProps) {
   const { state, recordPracticeDrill } = usePlayer();
   const block = currentBlock(state, SETS);
 
@@ -48,7 +48,7 @@ export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, onRe
       onWin={scope === 'practice' ? () => recordPracticeDrill(block) : undefined}
       renderComplete={
         scope === 'practice'
-          ? () => <PracticeDone onExit={onExit} onLearn={onLearn} onRecap={onRecap} />
+          ? () => <PracticeDone block={block} onExit={onExit} onLearn={onLearn} onRecap={onRecap} onPractice={onPractice} />
           : scope === 'daily'
             ? () => <DailyDone onContinue={onRecapDone ?? onExit} />
             : undefined
@@ -64,25 +64,42 @@ export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, onRe
   );
 }
 
-/** Shown when a block's Practice session is finished — the next words unlock. */
+/** Shown when the grammar drills are finished. If the block's cipher session is
+ *  also done the block is complete; otherwise it points the player at the cipher. */
 function PracticeDone({
+  block,
   onExit,
   onLearn,
   onRecap,
+  onPractice,
 }: {
+  block: number;
   onExit: () => void;
   onLearn?: () => void;
   onRecap?: () => void;
+  onPractice?: () => void;
 }) {
+  const { state } = usePlayer();
+  if (cipherSessionDone(state, block)) {
+    return (
+      <Done
+        onExit={onExit}
+        title="Block complete!"
+        body="Grammar and cipher done — the next words are unlocked."
+        primaryLabel="Learn more words"
+        onPrimary={onLearn ?? onExit}
+        secondaryLabel="Recap what you’ve learned"
+        onSecondary={onRecap ?? onExit}
+      />
+    );
+  }
   return (
     <Done
       onExit={onExit}
-      title="Block complete!"
-      body="Practice done — the next words are unlocked."
-      primaryLabel="Learn more words"
-      onPrimary={onLearn ?? onExit}
-      secondaryLabel="Recap what you’ve learned"
-      onSecondary={onRecap ?? onExit}
+      title="Grammar done!"
+      body="Now finish this block’s Letter Cipher to unlock the next words."
+      primaryLabel="Back to Practice"
+      onPrimary={onPractice ?? onExit}
     />
   );
 }

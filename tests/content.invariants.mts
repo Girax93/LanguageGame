@@ -6,19 +6,21 @@ import {
 } from '../src/content/vocab';
 import { LEMMAS, type Pos } from '../src/content/lemmas';
 import { GRAMMAR_ITEMS } from '../src/content/grammarItems';
-import { CIPHER_ITEMS } from '../src/content/cipherItems';
+import { CIPHER_ITEMS, cipherItemsForBlock, cipherRoundsForBlock } from '../src/content/cipherItems';
 import { CROSSWORDS } from '../src/content/crosswords';
 import {
   isItemEligible, isRecapEligible, grammarNounId,
   availableSetCount, masteredSetCount, currentLearnSetIndex,
   isSetMastered, isBlockComplete, currentBlock, blockCount,
-  blockNouns, grammarComplete, addGrammarNoun,
+  blockNouns, practiceNounsForBlock, blockPracticeDone, practiceCount, recordPracticeDrill,
+  cipherSessionDone, cipherRoundCount, recordCipherRound,
+  recapDue, recordRecapDone,
 } from '../src/state/progression';
 import { PROGRESSION } from '../src/state/progressionConfig';
 import type { PlayerState } from '../src/state/types';
 
 function st(p: Partial<PlayerState>): PlayerState {
-  return { learnedWords: [], wordProgress: {}, cipherWords: [], grammarWords: [], challengesDone: [], levelsWon: 0, ...p } as PlayerState;
+  return { learnedWords: [], wordProgress: {}, cipherWords: [], grammarWords: [], practiceCounts: {}, cipherCounts: {}, challengesDone: [], lastRecapAt: 0, levelsWon: 0, ...p } as PlayerState;
 }
 function learnedThrough(setIdx: number): string[] {
   return SETS.slice(0, setIdx + 1).flatMap((s) => s.words.map((w) => w.id));
@@ -77,10 +79,37 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   }
 }
 
-// (e) cipher/crossword content empty for now
+// (e) generated cipher content: every block's session covers its newly-learned
+//     words; every requires id is a real lemma eligible by that block; ids unique;
+//     levels in range; round count matches. (Crossword content is still empty.)
 {
-  if (CIPHER_ITEMS.length !== 0) fail('e:cipher-nonempty', CIPHER_ITEMS.length);
+  if (CIPHER_ITEMS.length === 0) fail('e:cipher-empty');
   if (CROSSWORDS.length !== 0) fail('e:crossword-nonempty', CROSSWORDS.length);
+  const BS = PROGRESSION.setsPerBlock * PROGRESSION.wordsPerSet;
+  const nb = Math.floor(LEMMAS.length / BS);
+  const seen = new Set<string>(); let dup = 0;
+  for (const it of CIPHER_ITEMS) {
+    if (seen.has(it.id)) dup++; else seen.add(it.id);
+    if (it.level < 1 || it.level > 6) fail('e:cipher-level', `${it.id}:${it.level}`);
+    if (!it.sentence || !it.translation || it.requires.length === 0) fail('e:cipher-shape', it.id);
+  }
+  if (dup) fail('e:cipher-dup-id', dup);
+  let totalUncovered = 0;
+  for (let b = 0; b < nb; b++) {
+    const learnedThru = new Set(LEMMAS.slice(0, (b + 1) * BS).map((w) => w.id));
+    const items = cipherItemsForBlock(b);
+    if (items.length !== cipherRoundsForBlock(b)) fail('e:cipher-round-count', b);
+    const cov = new Set<string>();
+    for (const it of items) {
+      for (const r of it.requires) {
+        if (!wordById(r)) fail('e:cipher-bad-require', `${b}:${r}`);
+        if (!learnedThru.has(r)) fail('e:cipher-require-uneligible', `${b}:${r}`);
+        cov.add(r);
+      }
+    }
+    for (const w of LEMMAS.slice(b * BS, b * BS + BS)) if (!cov.has(w.id)) totalUncovered++;
+  }
+  if (totalUncovered) fail('e:cipher-uncovered-words', totalUncovered);
 }
 
 // (f) strict eligibility
@@ -92,22 +121,39 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   if (!isRecapEligible(g, st({ learnedWords: [noun.id] }))) fail('f:recap');
 }
 
-// (g) LEARN -> PRACTICE -> ADVANCE gating: mastering a block's sets is NOT
-//     enough; its grammar must be covered before the next block unlocks.
+// (g) LEARN -> PRACTICE -> ADVANCE: mastering a block's sets is not enough; its
+//     Practice session (practiceRounds drills) must be completed to advance.
 {
   const B = PROGRESSION.setsPerBlock;
   let s = st({ learnedWords: learnedThrough(B - 1) }); // master block 0's sets
   for (let i = 0; i < B; i++) if (!isSetMastered(s, SETS[i])) fail('g:set-not-mastered', i);
-  const nouns0 = blockNouns(SETS, 0);
-  if (nouns0.length === 0) fail('g:block0-has-no-nouns-to-gate-on');
-  if (isBlockComplete(s, SETS, 0)) fail('g:complete-without-grammar');
-  if (availableSetCount(s, SETS) !== B) fail('g:avail-before-grammar', availableSetCount(s, SETS));
-  if (currentBlock(s, SETS) !== 0) fail('g:block-before-grammar');
-  for (const n of nouns0) s = addGrammarNoun(s, n.id);
-  if (!grammarComplete(s, SETS, 0)) fail('g:grammar-not-complete');
-  if (!isBlockComplete(s, SETS, 0)) fail('g:incomplete-after-grammar');
+  if (isBlockComplete(s, SETS, 0)) fail('g:complete-without-practice');
+  if (availableSetCount(s, SETS) !== B) fail('g:avail-before', availableSetCount(s, SETS));
+  if (currentBlock(s, SETS) !== 0) fail('g:block-before');
+  if (practiceNounsForBlock(s, SETS, 0).length === 0) fail('g:empty-session-block0');
+  for (let k = 0; k < PROGRESSION.practiceRounds; k++) s = recordPracticeDrill(s, 0);
+  if (practiceCount(s, 0) !== PROGRESSION.practiceRounds) fail('g:count', practiceCount(s, 0));
+  if (!blockPracticeDone(s, 0)) fail('g:flag');
+  // grammar alone is no longer enough — the cipher session must be done too.
+  if (isBlockComplete(s, SETS, 0)) fail('g:complete-without-cipher');
+  for (let k = 0; k < cipherRoundsForBlock(0); k++) s = recordCipherRound(s, 0);
+  if (!cipherSessionDone(s, 0)) fail('g:cipher-flag');
+  if (cipherRoundCount(s, 0) !== cipherRoundsForBlock(0)) fail('g:cipher-count');
+  if (!isBlockComplete(s, SETS, 0)) fail('g:incomplete-after-practice');
   if (availableSetCount(s, SETS) !== 2 * B) fail('g:avail-after', availableSetCount(s, SETS));
   if (currentBlock(s, SETS) !== 1) fail('g:block-after', currentBlock(s, SETS));
+
+  // partial progress is tracked (1 drill < required) and a noun-sparse block
+  // still produces a non-empty session.
+  let p = st({ learnedWords: learnedThrough(B - 1) });
+  p = recordPracticeDrill(p, 0);
+  if (practiceCount(p, 0) !== 1) fail('g:partial-count');
+  if (blockPracticeDone(p, 0)) fail('g:partial-done');
+  let s2 = st({ learnedWords: SETS.slice(0, 10).flatMap((x) => x.words.map((w) => w.id)) });
+  let firstNounless = -1;
+  for (let b = 0; b < 5; b++) if (blockNouns(SETS, b).length === 0) { firstNounless = b; break; }
+  if (firstNounless >= 0 && practiceNounsForBlock(s2, SETS, firstNounless).length === 0)
+    fail('g:nounless-empty-session', firstNounless);
 }
 
 // (h) display helpers
@@ -131,6 +177,19 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   }
 }
 
-console.log(`lemmas=${LEMMAS.length} sets=${SETS.length} blocks=${blockCount(SETS)} grammar=${GRAMMAR_ITEMS.length}`);
+// (j) daily recap: due after the interval once >=2 sets are mastered.
+{
+  const DAY = PROGRESSION.recapIntervalMs;
+  const learned = SETS.slice(0, 4).flatMap((x) => x.words.map((w) => w.id)); // >=2 sets
+  const s = st({ learnedWords: learned, lastRecapAt: 1000 });
+  if (recapDue(s, SETS, 1000 + 1000)) fail('j:due-too-early');
+  if (!recapDue(s, SETS, 1000 + DAY + 1)) fail('j:not-due-after-interval');
+  const after = recordRecapDone(s, 1000 + DAY + 1);
+  if (recapDue(after, SETS, 1000 + DAY + 2)) fail('j:still-due-after-done');
+  const few = st({ learnedWords: SETS[0].words.map((w) => w.id), lastRecapAt: 1 });
+  if (recapDue(few, SETS, 1e15)) fail('j:due-without-2-sets');
+}
+
+console.log(`lemmas=${LEMMAS.length} sets=${SETS.length} blocks=${blockCount(SETS)} grammar=${GRAMMAR_ITEMS.length} practiceRounds=${PROGRESSION.practiceRounds}`);
 if (!ok) { console.log('\nINVARIANTS FAILED'); process.exit(1); }
 console.log('OK — all invariants pass');

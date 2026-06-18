@@ -23,8 +23,11 @@ import {
   blockCount,
   blockPracticeDone,
   practiceCount,
+  cipherRoundCount,
+  cipherSessionDone,
   recapDue,
 } from '../state/progression';
+import { cipherRoundsForBlock } from '../content/cipherItems';
 
 export function App() {
   const { state, now, recordRecapDone, forceRecapDue } = usePlayer();
@@ -65,9 +68,13 @@ export function App() {
   const blocks = blockCount(SETS);
   const block = currentBlock(state, SETS);
   const onBlock = block < blocks;
-  const practiceDone = onBlock ? blockPracticeDone(state, block) : true;
+  const grammarDone = onBlock ? blockPracticeDone(state, block) : true;
+  const cipherDone = onBlock ? cipherSessionDone(state, block) : true;
+  const practiceDone = grammarDone && cipherDone; // whole Practice gate
   const pCount = onBlock ? practiceCount(state, block) : 0;
   const pTarget = PROGRESSION.practiceRounds;
+  const cCount = onBlock ? cipherRoundCount(state, block) : 0;
+  const cTarget = onBlock ? cipherRoundsForBlock(block) : 0;
   const recapDueNow = recapDue(state, SETS, now);
 
   const curIdx = currentLearnSetIndex(state, SETS);
@@ -132,8 +139,8 @@ export function App() {
           icon: '🎯',
           label: 'Practice',
           sublabel: practiceUnlocked ? 'Drill the new words to advance' : 'Learn a set to unlock practice',
-          status: !practiceUnlocked ? undefined : practiceDone ? '✓' : `${pCount}/${pTarget}`,
-          progress: practiceDone ? 1 : pCount / pTarget,
+          status: !practiceUnlocked ? undefined : practiceDone ? '✓' : `${pCount + cCount}/${pTarget + cTarget}`,
+          progress: practiceDone ? 1 : pTarget + cTarget ? (pCount + cCount) / (pTarget + cTarget) : 1,
           badge: !practiceUnlocked ? 'Locked' : mustPractice ? 'Required' : undefined,
           locked: !practiceUnlocked,
           onClick: practiceUnlocked ? () => navigate('practice') : undefined,
@@ -155,17 +162,27 @@ export function App() {
 
   const practiceItems: MenuItem[] = [
     {
+      icon: '🔡',
+      label: 'Letter Cipher',
+      sublabel: 'Decode sentences built from this block’s new words',
+      status: !onBlock ? '✓' : cipherDone ? 'Done ✓' : `${cCount}/${cTarget}`,
+      progress: !onBlock ? 1 : cipherDone ? 1 : cTarget ? cCount / cTarget : 1,
+      badge: mustPractice && !cipherDone ? 'Required' : undefined,
+      onClick: () => navigate('fill-in-the-blanks'),
+    },
+    {
       icon: '🧠',
       label: 'Grammar',
       sublabel: 'A few der / die / das drills to clear this block',
-      status: !onBlock ? '✓' : practiceDone ? 'Done ✓' : `${pCount}/${pTarget}`,
-      progress: !onBlock ? 1 : practiceDone ? 1 : pCount / pTarget,
-      badge: mustPractice ? 'Required' : undefined,
+      status: !onBlock ? '✓' : grammarDone ? 'Done ✓' : `${pCount}/${pTarget}`,
+      progress: !onBlock ? 1 : grammarDone ? 1 : pCount / pTarget,
+      badge: mustPractice && !grammarDone ? 'Required' : undefined,
       onClick: () => navigate('grammar'),
     },
   ];
 
   const recapItems: MenuItem[] = [
+    { icon: '🔡', label: 'Letter Cipher', sublabel: 'Decode sentences from everything you know', onClick: () => navigate('recap-cipher') },
     { icon: '🧠', label: 'Grammar', sublabel: 'Articles across everything you know', onClick: () => navigate('recap-grammar') },
     ...completedChallenges.map((b) => ({
       icon: '🏆',
@@ -198,8 +215,8 @@ export function App() {
           title="Practice"
           intro={
             mustPractice
-              ? 'Clear this block’s Grammar to unlock the next words. (Letter Cipher arrives in an upcoming update.)'
-              : 'Reinforce what you’ve learned. (Letter Cipher arrives in an upcoming update.)'
+              ? 'Clear this block’s Letter Cipher and Grammar to unlock the next words.'
+              : 'Reinforce what you’ve learned with the cipher and grammar drills.'
           }
           items={practiceItems}
           onBack={back}
@@ -263,6 +280,13 @@ export function App() {
       ) : null;
       break;
     }
+    case 'recap-cipher': {
+      const Game = getGame('fill-in-the-blanks')?.component;
+      screen = Game ? (
+        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
+      ) : null;
+      break;
+    }
     case 'recap-grammar': {
       const Game = getGame('grammar')?.component;
       screen = Game ? (
@@ -311,6 +335,7 @@ export function App() {
   const pinned =
     route === 'fill-in-the-blanks' ||
     route === 'grammar' ||
+    route === 'recap-cipher' ||
     route === 'recap-grammar' ||
     route === 'daily-recap-grammar' ||
     route === 'recap-challenge' ||
