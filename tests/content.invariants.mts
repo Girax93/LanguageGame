@@ -79,9 +79,10 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   }
 }
 
-// (e) generated cipher content: every block's session covers its newly-learned
-//     words; every requires id is a real lemma eligible by that block; ids unique;
-//     levels in range; round count matches. (Crossword content is still empty.)
+// (e) generated cipher content: each block's session is 1..4 sentences (capped so
+//     practice stays short) covering a healthy majority of its new words; every
+//     requires id is a real lemma eligible by that block; ids unique; levels in
+//     range; round count matches. (Crossword content is still empty.)
 {
   if (CIPHER_ITEMS.length === 0) fail('e:cipher-empty');
   if (CROSSWORDS.length !== 0) fail('e:crossword-nonempty', CROSSWORDS.length);
@@ -94,11 +95,11 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
     if (!it.sentence || !it.translation || it.requires.length === 0) fail('e:cipher-shape', it.id);
   }
   if (dup) fail('e:cipher-dup-id', dup);
-  let totalUncovered = 0;
   for (let b = 0; b < nb; b++) {
     const learnedThru = new Set(LEMMAS.slice(0, (b + 1) * BS).map((w) => w.id));
     const items = cipherItemsForBlock(b);
     if (items.length !== cipherRoundsForBlock(b)) fail('e:cipher-round-count', b);
+    if (items.length < 1 || items.length > 4) fail('e:cipher-round-bounds', `${b}:${items.length}`);
     const cov = new Set<string>();
     for (const it of items) {
       for (const r of it.requires) {
@@ -107,9 +108,10 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
         cov.add(r);
       }
     }
-    for (const w of LEMMAS.slice(b * BS, b * BS + BS)) if (!cov.has(w.id)) totalUncovered++;
+    const target = LEMMAS.slice(b * BS, b * BS + BS);
+    const covered = target.filter((w) => cov.has(w.id)).length;
+    if (covered < 5) fail('e:cipher-low-coverage', `${b}:${covered}/10`);
   }
-  if (totalUncovered) fail('e:cipher-uncovered-words', totalUncovered);
 }
 
 // (f) strict eligibility

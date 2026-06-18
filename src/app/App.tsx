@@ -63,16 +63,6 @@ export function App() {
     window.history.pushState({ stack: s }, '');
     setStack(s);
   }
-  // The in-learning "back" button always returns to the German hub (lang-menu),
-  // not to whatever sub-screen was visited before — that felt confusing.
-  function goToLangMenu() {
-    const idx = stack.lastIndexOf('lang-menu');
-    if (idx >= 0) {
-      if (idx < stack.length - 1) window.history.go(-(stack.length - 1 - idx));
-    } else {
-      goLangMenu();
-    }
-  }
   const requestMain = () => setConfirmMain(true);
 
   const blocks = blockCount(SETS);
@@ -251,7 +241,7 @@ export function App() {
           }
           items={practiceItems}
           footer={practiceFooter}
-          onBack={goToLangMenu}
+          onBack={back}
           onMain={requestMain}
         />
       );
@@ -262,7 +252,7 @@ export function App() {
           title="Recap"
           intro="Mixed review from everything you've learned. Optional — it won't change your unlock progress."
           items={recapItems}
-          onBack={goToLangMenu}
+          onBack={back}
           onMain={requestMain}
         />
       );
@@ -273,7 +263,7 @@ export function App() {
           title="Daily Recap"
           intro="Your daily review keeps words fresh. Letter Cipher & Crossword join this soon."
           items={dailyRecapItems}
-          onBack={goToLangMenu}
+          onBack={back}
           onMain={requestMain}
         />
       );
@@ -302,7 +292,7 @@ export function App() {
       const Game = getGame(route)?.component;
       screen = Game ? (
         <Game
-          onExit={goToLangMenu}
+          onExit={back}
           onOpenSettings={() => navigate('settings')}
           onMain={requestMain}
           onPractice={() => navigate('practice')}
@@ -315,14 +305,14 @@ export function App() {
     case 'recap-cipher': {
       const Game = getGame('fill-in-the-blanks')?.component;
       screen = Game ? (
-        <Game onExit={goToLangMenu} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
+        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
       ) : null;
       break;
     }
     case 'recap-grammar': {
       const Game = getGame('grammar')?.component;
       screen = Game ? (
-        <Game onExit={goToLangMenu} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
+        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
       ) : null;
       break;
     }
@@ -330,7 +320,7 @@ export function App() {
       const Game = getGame('grammar')?.component;
       screen = Game ? (
         <Game
-          onExit={goToLangMenu}
+          onExit={back}
           onOpenSettings={() => navigate('settings')}
           onMain={requestMain}
           scope="daily"
@@ -347,7 +337,7 @@ export function App() {
         recapBlock !== null ? (
           <LevelStage
             items={[challengeCrossword(recapBlock)]}
-            onExit={goToLangMenu}
+            onExit={back}
             onOpenSettings={() => navigate('settings')}
             onMain={requestMain}
             countsTowardGate={false}
@@ -357,7 +347,7 @@ export function App() {
       break;
     case 'challenge':
       screen = (
-        <ChallengeCrossword onExit={goToLangMenu} onOpenSettings={() => navigate('settings')} onMain={requestMain} />
+        <ChallengeCrossword onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} />
       );
       break;
     default:

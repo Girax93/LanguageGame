@@ -158,52 +158,6 @@ function predicateAdj(a: Lemma): boolean {
 }
 // Verb lemmas (by surface) we never conjugate — auxiliaries / special forms.
 const VERB_EXCLUDE = new Set(['sein', 'werden', 'würde', 'wäre', 'sei', 'möchten', 'möchte', 'soll', 'lassen', 'tät']);
-// Reflexive-only verbs (ungrammatical without "sich") — never bare-conjugated.
-const REFLEXIVE = new Set([
-  'befinden', 'erinnern', 'kümmern', 'freuen', 'beeilen', 'verlieben', 'entscheiden',
-  'unterhalten', 'ausruhen', 'beschweren', 'bewerben', 'verabschieden', 'erholen',
-  'konzentrieren', 'entspannen', 'irren', 'melden', 'trauen', 'wundern', 'schämen',
-  'bedanken', 'setzen', 'nähern', 'ereignen', 'verhalten', 'erkundigen', 'gedulden',
-  'sehnen', 'weigern', 'beschäftigen', 'vorstellen', 'umdrehen', 'umsehen',
-]);
-// Separable-prefix starts: a forms-less verb beginning with one of these is
-// likely separable (its 3sg splits, e.g. aufmachen -> "macht auf"), which the
-// plain weak rule would get wrong — so we skip it (fall back) unless `forms`
-// gives us the split form explicitly.
-const SEP_PREFIX = [
-  'ab', 'an', 'auf', 'aus', 'bei', 'ein', 'her', 'hin', 'los', 'mit', 'nach', 'vor',
-  'weg', 'zu', 'zurück', 'zusammen', 'durch', 'über', 'um', 'unter', 'wieder', 'weiter',
-  'fort', 'hoch', 'empor', 'nieder', 'vorbei', 'voran', 'voraus', 'entgegen', 'zurecht',
-  'fest', 'frei', 'teil', 'heim', 'statt',
-];
-function likelySeparableRegular(de: string): boolean {
-  return SEP_PREFIX.some((p) => de.startsWith(p) && de.length > p.length + 2);
-}
-/** Naive English 3rd-singular from a gloss, for verbs outside the curated map.
- *  Conjugates the head verb and keeps any remainder ("get up" -> "gets up",
- *  "be crazy" -> "is crazy"), so phrasal glosses stay readable as hints. */
-const EN_IRR: Record<string, string> = { be: 'is', have: 'has', do: 'does', go: 'goes', say: 'says' };
-function ven3(v: Lemma): string {
-  let g = en1(v);
-  if (g.startsWith('to ')) g = g.slice(3);
-  const parts = g.split(' ').filter(Boolean);
-  let head = parts[0] || g;
-  if (EN_IRR[head]) head = EN_IRR[head];
-  else if (head.endsWith('e')) head += 's';
-  else if (/(s|x|z|ch|sh|o)$/.test(head)) head += 'es';
-  else if (head.endsWith('y') && !'aeiou'.includes(head[head.length - 2])) head = head.slice(0, -1) + 'ies';
-  else head += 's';
-  return [head, ...parts.slice(1)].join(' ');
-}
-/** Can this verb be conjugated to a safe 3sg for a bare/es frame? */
-function usableVerb(v: Lemma): boolean {
-  if (VERB_EXCLUDE.has(v.de) || REFLEXIVE.has(v.de)) return false;
-  // Only true infinitives conjugate safely (excludes finite-form lemmas like "soll").
-  if (!(v.de.endsWith('en') || v.de === 'tun')) return false;
-  if (!verb3sg(v)) return false;
-  if (!(v.forms && v.forms.trim()) && likelySeparableRegular(v.de)) return false;
-  return true;
-}
 
 // --- small utilities ----------------------------------------------------------
 function mulberry32(seed: number): () => number {
@@ -262,7 +216,7 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
 
   const nouns = pool.filter((x) => x.pos === 'noun' && x.gender);
   const adjs = pool.filter((x) => x.pos === 'adj' && predicateAdj(x));
-  const verbs = pool.filter((x) => x.pos === 'verb' && usableVerb(x));
+  const verbs = pool.filter((x) => x.pos === 'verb' && !!VERB[x.de] && !!verb3sg(x));
   const locs = pool.filter((x) => x.pos === 'adv' && x.de in LOC);
 
   const has = (id: string) => poolIds.has(id);
@@ -310,9 +264,7 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
     });
   };
 
-  let guard = 0;
-  while (unc.size && guard < 80) {
-    guard++;
+  const buildCands = (): Candidate[] => {
     cands = [];
 
     // ADJ predicate: "Der Mann ist [sehr|nicht|auch] gut."
@@ -347,36 +299,12 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
         }
       }
     }
-    // IDENTITY: "Das ist der Mann." (+ negation, + und/aber/oder, + sondern)
+    // IDENTITY: "Das ist [nicht] der Mann." (single clause; the assembler
+    // coordinates several clauses with und / aber / oder).
     if (hasS && hasDas) {
       const sp = pickNoun();
       if (sp) {
-        const joins: [string, string][] = [['l-und', 'und'], ['l-aber', 'aber'], ['l-oder', 'oder']];
-        const jk = joins.find(([id]) => has(id) && unc.has(id));
         const neg = has('l-nicht') && unc.has('l-nicht');
-        if (jk) {
-          const sp2 = pickNoun(false, new Set([sp.id]));
-          if (sp2 && sp2.id !== sp.id) {
-            if (jk[1] === 'oder') {
-              push(['Das', 'ist', ART_NOM[sp.gender!], sp.de, 'oder', ART_NOM[sp2.gender!], sp2.de + '.'],
-                `That is the ${en1(sp)} or the ${en1(sp2)}.`,
-                ['l-das', 'l-sein-verb', jk[0], ART_ID[sp.gender!], sp.id, ART_ID[sp2.gender!], sp2.id], 'ident', sp.de);
-            } else {
-              const w = jk[1] === 'und' ? 'and' : 'but';
-              push(['Das', 'ist', ART_NOM[sp.gender!], sp.de + ',', jk[1], 'das', 'ist', ART_NOM[sp2.gender!], sp2.de + '.'],
-                `That is the ${en1(sp)}, ${w} that is the ${en1(sp2)}.`,
-                ['l-das', 'l-sein-verb', jk[0], ART_ID[sp.gender!], sp.id, ART_ID[sp2.gender!], sp2.id], 'ident', sp.de);
-            }
-          }
-        }
-        if (has('l-sondern') && unc.has('l-sondern') && has('l-nicht')) {
-          const sp2 = pickNoun(false, new Set([sp.id]));
-          if (sp2 && sp2.id !== sp.id) {
-            push(['Das', 'ist', 'nicht', ART_NOM[sp.gender!], sp.de + ',', 'sondern', ART_NOM[sp2.gender!], sp2.de + '.'],
-              `That is not the ${en1(sp)}, but rather the ${en1(sp2)}.`,
-              ['l-das', 'l-sein-verb', 'l-nicht', 'l-sondern', ART_ID[sp.gender!], sp.id, ART_ID[sp2.gender!], sp2.id], 'ident', sp.de);
-          }
-        }
         push(['Das', 'ist', ...(neg ? ['nicht'] : []), ART_NOM[sp.gender!], sp.de + '.'],
           `That is ${neg ? 'not ' : ''}the ${en1(sp)}.`,
           ['l-das', 'l-sein-verb', ...(neg ? ['l-nicht'] : []), ART_ID[sp.gender!], sp.id], 'ident', sp.de);
@@ -498,12 +426,10 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
         if (n) { subT = [cap(ART_NOM[n.gender!]), n.de]; subE = `The ${en1(n)}`; subI = [ART_ID[n.gender!], n.id]; head = n.de; }
       }
       if (subT) {
-        const curated = VERB[v.de];
-        if (curated && curated[1] === 'es' && has('l-es')) {
-          push([...subT, f3, 'es.'], `${subE} ${curated[0]} it.`, [...subI, v.id, 'l-es'], 'verb', head);
+        const [eng, frame] = VERB[v.de];
+        if (frame === 'es' && has('l-es')) {
+          push([...subT, f3, 'es.'], `${subE} ${eng} it.`, [...subI, v.id, 'l-es'], 'verb', head);
         } else {
-          // curated 'bare', or any other usable verb -> grammatical bare 3sg frame
-          const eng = curated ? curated[0] : ven3(v);
           push([...subT, f3 + '.'], `${subE} ${eng}.`, [...subI, v.id], 'verb', head);
         }
       }
@@ -579,20 +505,70 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
       }
     }
 
-    if (cands.length) {
-      cands.sort((x, y) => y.score - x.score);
-      const best = cands[0];
-      out.push({ sentence: best.tokens.join(' '), translation: best.en, requires: [...new Set(best.ids)] });
-      prevKind = best.kind; prevHead = best.head ?? '';
-      if (best.head) usedNoun.add(best.head);
-      for (const i of best.ids) unc.delete(i);
-    } else {
-      // Fallback: a single-word puzzle for the first remaining word.
+    return cands;
+  };
+
+  // Clauses that are valid stand-alone main clauses and so can be coordinated.
+  const CHAINABLE = new Set(['adj', 'ident', 'det', 'indef', 'ipron', 'ploc', 'padj', 'pident', 'loc', 'verb', 'pp', 'front']);
+  const CONJ: [string, string, string][] = [['l-und', 'und', 'and'], ['l-aber', 'aber', 'but'], ['l-oder', 'oder', 'or']];
+  const hasConj = CONJ.some(([id]) => has(id));
+  const lowerFirst = (str: string) => str.charAt(0).toLowerCase() + str.slice(1);
+  const stripEnd = (str: string) => str.replace(/[.?!]+$/, '');
+
+  // Cap the session so practice stays short: the greedy emits the densest
+  // (most-covering) chained sentences first, so the cap only drops trailing
+  // hard-to-place function words (still taught in Learn).
+  const MAX_SENTENCES = 4;
+  let guard = 0;
+  while (unc.size && guard < 80) {
+    guard++;
+    if (out.length >= MAX_SENTENCES) break;
+    const ranked = buildCands().slice().sort((x, y) => y.score - x.score);
+    if (!ranked.length) {
+      // Fallback: a single-word puzzle for the first remaining (unplaceable) word.
       const i = [...unc].sort((p, q) => (byId.get(p)?.order ?? 0) - (byId.get(q)?.order ?? 0))[0];
       const x = byId.get(i)!;
       out.push({ sentence: x.de + '.', translation: cap(en1(x)) + '.', requires: [i] });
       unc.delete(i);
+      continue;
     }
+    // Pack up to 3 safe clauses into ONE sentence, joined by a coordinating
+    // conjunction, so a block needs ~3 sentences instead of one per clause.
+    const first = ranked[0];
+    const clauses = [first];
+    for (const id of first.ids) unc.delete(id);
+    let head = first.head ?? '';
+    if (CHAINABLE.has(first.kind) && hasConj) {
+      for (let k = 0; k < 2 && unc.size; k++) {
+        const usedKinds = new Set(clauses.map((c) => c.kind));
+        const pool = buildCands()
+          .filter((c) => CHAINABLE.has(c.kind) && (c.head ?? '') !== head)
+          .sort((x, y) => y.score - x.score);
+        if (!pool.length) break;
+        const varied = pool.filter((c) => !usedKinds.has(c.kind));
+        const nc = (varied.length ? varied : pool)[0];
+        clauses.push(nc);
+        for (const id of nc.ids) unc.delete(id);
+        head = nc.head ?? '';
+      }
+    }
+    if (clauses.length === 1) {
+      out.push({ sentence: first.tokens.join(' '), translation: first.en, requires: [...new Set(first.ids)] });
+    } else {
+      const conj =
+        (clauses.length === 2 ? CONJ.find(([id]) => has(id) && unc.has(id)) : undefined) ||
+        CONJ.find(([id]) => has(id)) ||
+        CONJ[0];
+      const de = clauses.map((c, i) => (i === 0 ? stripEnd(c.tokens.join(' ')) : lowerFirst(stripEnd(c.tokens.join(' ')))));
+      const en = clauses.map((c, i) => (i === 0 || /^I\b/.test(c.en) ? stripEnd(c.en) : lowerFirst(stripEnd(c.en))));
+      const sentence = `${de.slice(0, -1).join(', ')} ${conj[1]} ${de[de.length - 1]}.`;
+      const translation = `${en.slice(0, -1).join(', ')} ${conj[2]} ${en[en.length - 1]}.`;
+      unc.delete(conj[0]);
+      out.push({ sentence, translation, requires: [...new Set([...clauses.flatMap((c) => c.ids), conj[0]])] });
+    }
+    prevKind = first.kind;
+    prevHead = first.head ?? '';
+    for (const c of clauses) if (c.head) usedNoun.add(c.head);
   }
   return out;
 }
