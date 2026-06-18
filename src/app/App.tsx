@@ -58,11 +58,6 @@ export function App() {
     setConfirmMain(false);
     if (stack.length > 1) window.history.go(-(stack.length - 1));
   }
-  function goLangMenu() {
-    const s: Route[] = ['main', 'languages', 'lang-menu'];
-    window.history.pushState({ stack: s }, '');
-    setStack(s);
-  }
   const requestMain = () => setConfirmMain(true);
 
   const blocks = blockCount(SETS);
@@ -123,7 +118,7 @@ export function App() {
           label: 'Daily Recap',
           sublabel: 'Keep your words fresh to keep going',
           badge: 'Required',
-          onClick: () => navigate('daily-recap'),
+          onClick: () => navigate('daily-recap-grammar'),
         },
         { icon: '📖', label: 'Learn', sublabel: 'Finish your daily recap first', badge: 'Locked', locked: true },
         { icon: '🎯', label: 'Practice', sublabel: 'Finish your daily recap first', badge: 'Locked', locked: true },
@@ -214,12 +209,6 @@ export function App() {
     })),
   ];
 
-  const dailyRecapItems: MenuItem[] = [
-    { icon: '🧠', label: 'Grammar', sublabel: 'A quick article review', onClick: () => navigate('daily-recap-grammar') },
-    { icon: '🔡', label: 'Letter Cipher', sublabel: 'Joins your daily recap soon', badge: 'Soon', locked: true },
-    { icon: '🧩', label: 'Crossword', sublabel: 'Joins your daily recap soon', badge: 'Soon', locked: true },
-  ];
-
   let screen: ReactNode;
   switch (route) {
     case 'languages':
@@ -252,17 +241,6 @@ export function App() {
           title="Recap"
           intro="Mixed review from everything you've learned. Optional — it won't change your unlock progress."
           items={recapItems}
-          onBack={back}
-          onMain={requestMain}
-        />
-      );
-      break;
-    case 'daily-recap':
-      screen = (
-        <MenuScreen
-          title="Daily Recap"
-          intro="Your daily review keeps words fresh. Letter Cipher & Crossword join this soon."
-          items={dailyRecapItems}
           onBack={back}
           onMain={requestMain}
         />
@@ -326,7 +304,7 @@ export function App() {
           scope="daily"
           onRecapDone={() => {
             recordRecapDone();
-            goLangMenu();
+            back();
           }}
         />
       ) : null;

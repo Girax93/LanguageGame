@@ -117,8 +117,8 @@ export function CipherBoard({ item, flags, controls }: Props) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex min-h-0 flex-1 flex-col justify-center overflow-y-auto">
-        <div className="flex flex-wrap justify-center gap-x-4 gap-y-6">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto py-2">
+        <div className="my-auto flex flex-wrap justify-center gap-x-4 gap-y-6">
           {puzzle.words.map((cells, wi) => (
             <div key={wi} className="flex items-end gap-1">
               {cells.map((cell, ci) =>
