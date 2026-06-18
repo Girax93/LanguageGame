@@ -1,8 +1,10 @@
 import type { ComponentType } from 'react';
 
-/** How a game scopes its puzzle pool. Practice = recent words only; Recap =
- *  everything learned (and does not count toward the unlock gate). */
-export type GameScope = 'practice' | 'recap';
+/** How a game scopes its puzzle pool.
+ *  - practice: the current block's gating session.
+ *  - recap: everything learned (free review, does not gate).
+ *  - daily: a short bounded review for the forced daily recap. */
+export type GameScope = 'practice' | 'recap' | 'daily';
 
 /**
  * Props passed to every game's root component. Games read/update player
@@ -20,6 +22,8 @@ export interface GameProps {
   onLearn?: () => void;
   /** Go to the Recap menu (used by the practice-complete screen). */
   onRecap?: () => void;
+  /** Mark the daily recap done + leave (used by the daily-recap session). */
+  onRecapDone?: () => void;
   /** Word-pool scope. Defaults to 'practice'. */
   scope?: GameScope;
 }

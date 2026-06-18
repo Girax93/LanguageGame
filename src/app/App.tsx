@@ -23,10 +23,11 @@ import {
   blockCount,
   blockPracticeDone,
   practiceCount,
+  recapDue,
 } from '../state/progression';
 
 export function App() {
-  const { state } = usePlayer();
+  const { state, now, recordRecapDone, forceRecapDue } = usePlayer();
   const [stack, setStack] = useState<Route[]>(['main']);
   const [confirmMain, setConfirmMain] = useState(false);
   const [recapBlock, setRecapBlock] = useState<number | null>(null);
@@ -54,6 +55,11 @@ export function App() {
     setConfirmMain(false);
     if (stack.length > 1) window.history.go(-(stack.length - 1));
   }
+  function goLangMenu() {
+    const s: Route[] = ['main', 'languages', 'lang-menu'];
+    window.history.pushState({ stack: s }, '');
+    setStack(s);
+  }
   const requestMain = () => setConfirmMain(true);
 
   const blocks = blockCount(SETS);
@@ -62,6 +68,7 @@ export function App() {
   const practiceDone = onBlock ? blockPracticeDone(state, block) : true;
   const pCount = onBlock ? practiceCount(state, block) : 0;
   const pTarget = PROGRESSION.practiceRounds;
+  const recapDueNow = recapDue(state, SETS, now);
 
   const curIdx = currentLearnSetIndex(state, SETS);
   const mustPractice = curIdx === null && onBlock && !practiceDone;
@@ -96,38 +103,55 @@ export function App() {
     { icon: '🇩🇪', label: 'German', sublabel: 'Beginner · A1', onClick: () => navigate('lang-menu') },
     { icon: '🇳🇴', label: 'Norwegian', sublabel: 'Bokmål', badge: 'Coming', locked: true },
   ];
-  const langMenuItems: MenuItem[] = [
-    {
-      icon: '📖',
-      label: 'Learn',
-      sublabel: mustPractice ? 'Finish Practice to unlock the next words' : 'Pick up the next words',
-      status: learnStatus,
-      progress: learnProgress,
-      locked: mustPractice,
-      onClick: mustPractice ? () => navigate('practice') : () => navigate('learn'),
-    },
-    {
-      icon: '🎯',
-      label: 'Practice',
-      sublabel: practiceUnlocked ? 'Drill the new words to advance' : 'Learn a set to unlock practice',
-      status: !practiceUnlocked ? undefined : practiceDone ? '✓' : `${pCount}/${pTarget}`,
-      progress: practiceDone ? 1 : pCount / pTarget,
-      badge: !practiceUnlocked ? 'Locked' : mustPractice ? 'Required' : undefined,
-      locked: !practiceUnlocked,
-      onClick: practiceUnlocked ? () => navigate('practice') : undefined,
-    },
-    {
-      icon: '🔁',
-      label: 'Recap',
-      sublabel: recapUnlocked
-        ? 'Mixed review of everything you know'
-        : `Master 2 sets to unlock · ${masteredSets}/2`,
-      status: recapUnlocked ? `${state.learnedWords.length} words` : undefined,
-      badge: recapUnlocked ? undefined : 'Locked',
-      locked: !recapUnlocked,
-      onClick: recapUnlocked ? () => navigate('recap') : undefined,
-    },
-  ];
+
+  // When the daily recap is due, it's the only way forward — Learn/Practice/Recap lock.
+  const langMenuItems: MenuItem[] = recapDueNow
+    ? [
+        {
+          icon: '☀️',
+          label: 'Daily Recap',
+          sublabel: 'Keep your words fresh to keep going',
+          badge: 'Required',
+          onClick: () => navigate('daily-recap'),
+        },
+        { icon: '📖', label: 'Learn', sublabel: 'Finish your daily recap first', badge: 'Locked', locked: true },
+        { icon: '🎯', label: 'Practice', sublabel: 'Finish your daily recap first', badge: 'Locked', locked: true },
+        { icon: '🔁', label: 'Recap', sublabel: 'Finish your daily recap first', badge: 'Locked', locked: true },
+      ]
+    : [
+        {
+          icon: '📖',
+          label: 'Learn',
+          sublabel: mustPractice ? 'Finish Practice to unlock the next words' : 'Pick up the next words',
+          status: learnStatus,
+          progress: learnProgress,
+          locked: mustPractice,
+          onClick: mustPractice ? () => navigate('practice') : () => navigate('learn'),
+        },
+        {
+          icon: '🎯',
+          label: 'Practice',
+          sublabel: practiceUnlocked ? 'Drill the new words to advance' : 'Learn a set to unlock practice',
+          status: !practiceUnlocked ? undefined : practiceDone ? '✓' : `${pCount}/${pTarget}`,
+          progress: practiceDone ? 1 : pCount / pTarget,
+          badge: !practiceUnlocked ? 'Locked' : mustPractice ? 'Required' : undefined,
+          locked: !practiceUnlocked,
+          onClick: practiceUnlocked ? () => navigate('practice') : undefined,
+        },
+        {
+          icon: '🔁',
+          label: 'Recap',
+          sublabel: recapUnlocked
+            ? 'Mixed review of everything you know'
+            : `Master 2 sets to unlock · ${masteredSets}/2`,
+          status: recapUnlocked ? `${state.learnedWords.length} words` : undefined,
+          badge: recapUnlocked ? undefined : 'Locked',
+          locked: !recapUnlocked,
+          onClick: recapUnlocked ? () => navigate('recap') : undefined,
+        },
+        // DEV/TESTING: trigger the daily recap without waiting 24h.
+        { icon: '🔧', label: 'Dev: trigger daily recap', sublabel: 'Testing only', onClick: () => forceRecapDue() },
+      ];
 
   const practiceItems: MenuItem[] = [
     {
@@ -152,6 +176,12 @@ export function App() {
         navigate('recap-challenge');
       },
     })),
+  ];
+
+  const dailyRecapItems: MenuItem[] = [
+    { icon: '🧠', label: 'Grammar', sublabel: 'A quick article review', onClick: () => navigate('daily-recap-grammar') },
+    { icon: '🔡', label: 'Letter Cipher', sublabel: 'Joins your daily recap soon', badge: 'Soon', locked: true },
+    { icon: '🧩', label: 'Crossword', sublabel: 'Joins your daily recap soon', badge: 'Soon', locked: true },
   ];
 
   let screen: ReactNode;
@@ -183,6 +213,17 @@ export function App() {
           title="Recap"
           intro="Mixed review from everything you've learned. Optional — it won't change your unlock progress."
           items={recapItems}
+          onBack={back}
+          onMain={requestMain}
+        />
+      );
+      break;
+    case 'daily-recap':
+      screen = (
+        <MenuScreen
+          title="Daily Recap"
+          intro="Your daily review keeps words fresh. Letter Cipher & Crossword join this soon."
+          items={dailyRecapItems}
           onBack={back}
           onMain={requestMain}
         />
@@ -229,6 +270,22 @@ export function App() {
       ) : null;
       break;
     }
+    case 'daily-recap-grammar': {
+      const Game = getGame('grammar')?.component;
+      screen = Game ? (
+        <Game
+          onExit={back}
+          onOpenSettings={() => navigate('settings')}
+          onMain={requestMain}
+          scope="daily"
+          onRecapDone={() => {
+            recordRecapDone();
+            goLangMenu();
+          }}
+        />
+      ) : null;
+      break;
+    }
     case 'recap-challenge':
       screen =
         recapBlock !== null ? (
@@ -255,6 +312,7 @@ export function App() {
     route === 'fill-in-the-blanks' ||
     route === 'grammar' ||
     route === 'recap-grammar' ||
+    route === 'daily-recap-grammar' ||
     route === 'recap-challenge' ||
     route === 'challenge';
 

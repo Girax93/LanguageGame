@@ -13,18 +13,20 @@ import { ChevronLeft } from '../../components/ui/icons';
 
 /**
  * Grammar drill.
- * - PRACTICE: the current block's required article session. It serves the
- *   remaining drills (PROGRESSION.practiceRounds total per block), drawn from
- *   the block's new nouns and padded with recently-learned nouns when sparse.
- *   Each solved drill counts toward the block's Practice gate.
+ * - PRACTICE: the current block's required article session (remaining drills of
+ *   PROGRESSION.practiceRounds; pads with recent nouns when sparse). Gates.
+ * - DAILY: a short bounded review for the forced daily recap. Marks the recap
+ *   done on completion; does not gate.
  * - RECAP: free review across every learned noun (does not gate).
  */
-export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, scope = 'practice' }: GameProps) {
+export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, onRecapDone, scope = 'practice' }: GameProps) {
   const { state, recordPracticeDrill } = usePlayer();
   const block = currentBlock(state, SETS);
 
   const items: GrammarContentItem[] = useMemo(() => {
-    if (scope === 'recap') return shuffle(GRAMMAR_ITEMS.filter((i) => isItemEligible(i, state)));
+    const eligible = GRAMMAR_ITEMS.filter((i) => isItemEligible(i, state));
+    if (scope === 'recap') return shuffle(eligible);
+    if (scope === 'daily') return shuffle(eligible).slice(0, 5);
     const byNoun = new Map(GRAMMAR_ITEMS.map((g) => [g.requires[0], g]));
     const pool = practiceNounsForBlock(state, SETS, block);
     const count = practiceCount(state, block);
@@ -42,10 +44,14 @@ export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, scop
       onExit={onExit}
       onOpenSettings={onOpenSettings}
       onMain={onMain}
-      countsTowardGate={scope !== 'recap'}
-      onWin={scope === 'recap' ? undefined : () => recordPracticeDrill(block)}
+      countsTowardGate={scope === 'practice'}
+      onWin={scope === 'practice' ? () => recordPracticeDrill(block) : undefined}
       renderComplete={
-        scope === 'recap' ? undefined : () => <PracticeDone onExit={onExit} onLearn={onLearn} onRecap={onRecap} />
+        scope === 'practice'
+          ? () => <PracticeDone onExit={onExit} onLearn={onLearn} onRecap={onRecap} />
+          : scope === 'daily'
+            ? () => <DailyDone onContinue={onRecapDone ?? onExit} />
+            : undefined
       }
       renderWin={(item) => (
         <div className="mt-3 w-full max-w-xs rounded-xl border border-line bg-sand/40 px-4 py-3 text-center">
@@ -69,6 +75,49 @@ function PracticeDone({
   onRecap?: () => void;
 }) {
   return (
+    <Done
+      onExit={onExit}
+      title="Block complete!"
+      body="Practice done — the next words are unlocked."
+      primaryLabel="Learn more words"
+      onPrimary={onLearn ?? onExit}
+      secondaryLabel="Recap what you’ve learned"
+      onSecondary={onRecap ?? onExit}
+    />
+  );
+}
+
+/** Shown when the daily recap session is finished. */
+function DailyDone({ onContinue }: { onContinue: () => void }) {
+  return (
+    <Done
+      onExit={onContinue}
+      title="Daily recap done!"
+      body="Nice — your words are fresh. See you tomorrow."
+      primaryLabel="Continue"
+      onPrimary={onContinue}
+    />
+  );
+}
+
+function Done({
+  onExit,
+  title,
+  body,
+  primaryLabel,
+  onPrimary,
+  secondaryLabel,
+  onSecondary,
+}: {
+  onExit: () => void;
+  title: string;
+  body: string;
+  primaryLabel: string;
+  onPrimary: () => void;
+  secondaryLabel?: string;
+  onSecondary?: () => void;
+}) {
+  return (
     <div className="flex flex-1 flex-col">
       <div className="flex items-center">
         <button
@@ -81,17 +130,19 @@ function PracticeDone({
       </div>
       <div className="flex flex-1 flex-col items-center justify-center text-center animate-pop-in">
         <div className="text-4xl text-brown">✓</div>
-        <h2 className="mt-5 font-serif text-2xl font-semibold text-espresso">Block complete!</h2>
-        <p className="mt-2 max-w-xs text-taupe">Practice done — the next words are unlocked.</p>
-        <Button className="mt-8 w-64" onClick={onLearn ?? onExit}>
-          Learn more words
+        <h2 className="mt-5 font-serif text-2xl font-semibold text-espresso">{title}</h2>
+        <p className="mt-2 max-w-xs text-taupe">{body}</p>
+        <Button className="mt-8 w-64" onClick={onPrimary}>
+          {primaryLabel}
         </Button>
-        <button
-          onClick={onRecap ?? onExit}
-          className="mt-4 text-sm font-medium text-brown transition hover:text-espresso"
-        >
-          Recap what you’ve learned
-        </button>
+        {secondaryLabel && onSecondary && (
+          <button
+            onClick={onSecondary}
+            className="mt-4 text-sm font-medium text-brown transition hover:text-espresso"
+          >
+            {secondaryLabel}
+          </button>
+        )}
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ export interface PlayerState {
   practiceCounts: Record<number, number>;
   /** Challenge-block indices whose crossword has been completed. */
   challengesDone: number[];
-  /** Epoch ms of the last completed recap session (0 = never). Daily recap. */
+  /** Epoch ms of the last completed recap session (starts at creation). */
   lastRecapAt: number;
   /** Total games won (a statistic only — no longer gates anything). */
   levelsWon: number;
@@ -40,7 +40,7 @@ export function defaultPlayerState(now: number, focusStart: number): PlayerState
     grammarWords: [],
     practiceCounts: {},
     challengesDone: [],
-    lastRecapAt: 0,
+    lastRecapAt: now,
     levelsWon: 0,
     focus: focusStart,
     lastFocusRegenAt: now,

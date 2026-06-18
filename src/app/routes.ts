@@ -5,6 +5,8 @@ export type Route =
   | 'lang-menu'
   | 'practice'
   | 'recap'
+  | 'daily-recap'
+  | 'daily-recap-grammar'
   | 'statistics'
   | 'store'
   | 'settings'

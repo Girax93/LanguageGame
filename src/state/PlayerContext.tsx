@@ -21,13 +21,15 @@ import {
   recordWordAnswer,
   recordChallengeDone,
   recordPracticeDrill as applyPracticeDrill,
+  recordRecapDone as applyRecapDone,
+  forceRecapDue as applyForceRecapDue,
   addCipherWords,
   addGrammarNoun,
 } from './progression';
 
 interface PlayerContextValue {
   state: PlayerState;
-  /** A ticking clock (ms) so focus countdowns re-render. */
+  /** A ticking clock (ms) so focus countdowns + the daily-recap timer re-render. */
   now: number;
   answerWord: (wordId: string, correct: boolean) => void;
   recordLevel: (won: boolean, countsTowardGate?: boolean) => void;
@@ -35,6 +37,10 @@ interface PlayerContextValue {
   recordChallenge: (block: number) => void;
   /** Count one completed Practice drill for the block (gates advancement). */
   recordPracticeDrill: (block: number) => void;
+  /** Mark today's recap session complete (resets the 24h timer). */
+  recordRecapDone: () => void;
+  /** DEV: make the daily recap due now (for testing). */
+  forceRecapDue: () => void;
   /** Mark words used in a solved Practice cipher (block cipher-coverage). */
   recordCipherWords: (ids: string[]) => void;
   /** Mark a noun's article drilled in a solved Practice grammar (coverage). */
@@ -77,6 +83,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         ),
       recordChallenge: (block) => setState((s) => recordChallengeDone(s, block)),
       recordPracticeDrill: (block) => setState((s) => applyPracticeDrill(s, block)),
+      recordRecapDone: () => setState((s) => applyRecapDone(s, Date.now())),
+      forceRecapDue: () => setState((s) => applyForceRecapDue(s, Date.now())),
       recordCipherWords: (ids) => setState((s) => addCipherWords(s, ids)),
       recordGrammarNoun: (id) => setState((s) => addGrammarNoun(s, id)),
       buyFocus: () => setState((s) => buyFocusRefill(s, Date.now())),

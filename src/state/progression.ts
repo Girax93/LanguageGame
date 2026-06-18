@@ -201,6 +201,19 @@ export function blockPracticeDone(s: PlayerState, block: number): boolean {
   return practiceCount(s, block) >= PROGRESSION.practiceRounds;
 }
 
+// Daily recap
+export function recapDue(s: PlayerState, sets: VocabSet[], now: number): boolean {
+  if (masteredSetCount(s, sets) < 2) return false;
+  return now - (s.lastRecapAt ?? now) >= PROGRESSION.recapIntervalMs;
+}
+export function recordRecapDone(s: PlayerState, now: number): PlayerState {
+  return { ...s, lastRecapAt: now };
+}
+/** DEV: make the daily recap due immediately (for testing). */
+export function forceRecapDue(s: PlayerState, now: number): PlayerState {
+  return { ...s, lastRecapAt: now - PROGRESSION.recapIntervalMs - 1000 };
+}
+
 // Recording coverage
 export function addCipherWords(s: PlayerState, ids: string[]): PlayerState {
   const cur = new Set(s.cipherWords ?? []);
