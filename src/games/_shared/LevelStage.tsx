@@ -4,13 +4,14 @@ import { ECONOMY } from '../../state/economyConfig';
 import { canStartLevel, timeToNextFocusMs } from '../../state/focus';
 import { Button } from '../../components/ui/Button';
 import { Hearts } from '../../components/ui/Hearts';
-import { DevSkip } from '../../components/ui/DevSkip';
 import { ChevronLeft, HomeIcon } from '../../components/ui/icons';
 
 /** A board reports outcomes through these; LevelStage owns lives + flow. */
 export interface BoardControls {
   onWrong: () => void;
   onSolved: () => void;
+  /** DEV/TESTING: skip the current item as if solved (boards place a button). */
+  onSkip: () => void;
 }
 
 interface Props<T> {
@@ -60,27 +61,8 @@ export function LevelStage<T extends { id: string }>({
     if (won && isLast) onComplete?.();
     setPhase(won ? 'win' : 'lose');
   }
-  const controls: BoardControls = {
-    onSolved: () => handleResult(true),
-    onWrong: () => {
-      const left = lives - 1;
-      setLives(left);
-      if (left <= 0) handleResult(false);
-    },
-  };
   function goNext() {
     setIndex((i) => i + 1);
-    setAttempt(0);
-    setLives(ECONOMY.livesPerLevel);
-    setPhase('play');
-  }
-  function retry() {
-    setAttempt((a) => a + 1);
-    setLives(ECONOMY.livesPerLevel);
-    setPhase('play');
-  }
-  function restart() {
-    setIndex(0);
     setAttempt(0);
     setLives(ECONOMY.livesPerLevel);
     setPhase('play');
@@ -91,14 +73,31 @@ export function LevelStage<T extends { id: string }>({
     if (item) onWin?.(item);
     if (isLast) {
       onComplete?.();
-      if (renderComplete) {
-        setPhase('win');
-      } else {
-        onExit();
-      }
+      if (renderComplete) setPhase('win');
+      else onExit();
     } else {
       goNext();
     }
+  }
+  const controls: BoardControls = {
+    onSolved: () => handleResult(true),
+    onWrong: () => {
+      const left = lives - 1;
+      setLives(left);
+      if (left <= 0) handleResult(false);
+    },
+    onSkip: skip,
+  };
+  function retry() {
+    setAttempt((a) => a + 1);
+    setLives(ECONOMY.livesPerLevel);
+    setPhase('play');
+  }
+  function restart() {
+    setIndex(0);
+    setAttempt(0);
+    setLives(ECONOMY.livesPerLevel);
+    setPhase('play');
   }
 
   if (total === 0) {
@@ -178,7 +177,6 @@ export function LevelStage<T extends { id: string }>({
       <div key={`${index}-${attempt}`} className="flex min-h-0 flex-1 flex-col">
         {item && renderBoard(item, controls)}
       </div>
-      <DevSkip onSkip={skip} />
     </div>
   );
 }
@@ -240,5 +238,20 @@ function FocusDrop({ focus, max }: { focus: number; max: number }) {
         />
       ))}
     </div>
+  );
+}
+
+/** Small dev/testing "skip this round" button. Boards place it directly above
+ *  their keyboard so it never overlaps a key. */
+export function SkipButton({ onSkip }: { onSkip: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onSkip}
+      aria-label="Skip this round (testing)"
+      className="rounded-full border border-line bg-card px-2.5 py-1 text-xs font-medium text-taupe transition hover:bg-sand hover:text-espresso active:scale-95"
+    >
+      Skip ⏭
+    </button>
   );
 }

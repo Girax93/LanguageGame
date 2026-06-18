@@ -14,7 +14,7 @@ import { wordsToStudy, currentLearnSetIndex } from '../../state/progression';
 import { shuffle } from '../../lib/array';
 import { Button } from '../../components/ui/Button';
 import { ProgressBar } from '../../components/ui/ProgressBar';
-import { DevSkip } from '../../components/ui/DevSkip';
+import { SkipButton } from '../_shared/LevelStage';
 import { ChevronLeft, HomeIcon } from '../../components/ui/icons';
 
 interface Step {
@@ -102,7 +102,8 @@ export function Learn({ onExit, onMain, onPractice }: GameProps) {
           <ChevronLeft />
         </button>
         <h2 className="eyebrow">{currentSet ? `Learn · Set ${currentSet.index + 1}` : 'Learn'}</h2>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
+          {step !== null && <SkipButton onSkip={skip} />}
           <span className="text-xs tabular-nums text-taupe">
             {masteredInSet}/{setSize}
           </span>
@@ -140,7 +141,6 @@ export function Learn({ onExit, onMain, onPractice }: GameProps) {
           onAdvance={advance}
         />
       )}
-      {step !== null && <DevSkip onSkip={skip} />}
     </div>
   );
 }
