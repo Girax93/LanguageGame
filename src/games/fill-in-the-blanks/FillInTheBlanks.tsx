@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { CIPHER_ITEMS, cipherItemsForBlock, type CipherContentItem } from '../../content/cipherItems';
@@ -21,7 +21,9 @@ import { ChevronLeft } from '../../components/ui/icons';
  */
 export function FillInTheBlanks({ onExit, onOpenSettings, onMain, onLearn, onRecap, onPractice, scope = 'practice' }: GameProps) {
   const { state, recordCipherRound } = usePlayer();
-  const block = currentBlock(state, SETS);
+  // Frozen at mount so the completion screen labels the block just practiced
+  // (currentBlock advances the instant the block completes).
+  const [block] = useState(() => currentBlock(state, SETS));
 
   const items: CipherContentItem[] = useMemo(() => {
     if (scope === 'recap') return shuffle(CIPHER_ITEMS.filter((i) => isItemEligible(i, state)));

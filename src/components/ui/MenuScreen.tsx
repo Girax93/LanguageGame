@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { TopBar } from './TopBar';
 
 export interface MenuItem {
@@ -17,12 +18,14 @@ interface Props {
   title?: string;
   intro?: string;
   items: MenuItem[];
+  /** Optional content rendered below the items (e.g. a completion panel). */
+  footer?: ReactNode;
   onBack?: () => void;
   onMain?: () => void;
 }
 
 /** A calm list-of-cards menu, reused for every menu level. */
-export function MenuScreen({ title, intro, items, onBack, onMain }: Props) {
+export function MenuScreen({ title, intro, items, footer, onBack, onMain }: Props) {
   return (
     <div className="flex flex-1 flex-col animate-fade-in">
       <TopBar title={title} onBack={onBack} onMain={onMain} />
@@ -32,6 +35,7 @@ export function MenuScreen({ title, intro, items, onBack, onMain }: Props) {
           <Card key={i} item={item} />
         ))}
       </div>
+      {footer}
     </div>
   );
 }

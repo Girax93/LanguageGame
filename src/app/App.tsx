@@ -63,22 +63,37 @@ export function App() {
     window.history.pushState({ stack: s }, '');
     setStack(s);
   }
+  // The in-learning "back" button always returns to the German hub (lang-menu),
+  // not to whatever sub-screen was visited before — that felt confusing.
+  function goToLangMenu() {
+    const idx = stack.lastIndexOf('lang-menu');
+    if (idx >= 0) {
+      if (idx < stack.length - 1) window.history.go(-(stack.length - 1 - idx));
+    } else {
+      goLangMenu();
+    }
+  }
   const requestMain = () => setConfirmMain(true);
 
   const blocks = blockCount(SETS);
   const block = currentBlock(state, SETS);
   const onBlock = block < blocks;
-  const grammarDone = onBlock ? blockPracticeDone(state, block) : true;
-  const cipherDone = onBlock ? cipherSessionDone(state, block) : true;
-  const practiceDone = grammarDone && cipherDone; // whole Practice gate
-  const pCount = onBlock ? practiceCount(state, block) : 0;
-  const pTarget = PROGRESSION.practiceRounds;
-  const cCount = onBlock ? cipherRoundCount(state, block) : 0;
-  const cTarget = onBlock ? cipherRoundsForBlock(block) : 0;
   const recapDueNow = recapDue(state, SETS, now);
-
   const curIdx = currentLearnSetIndex(state, SETS);
-  const mustPractice = curIdx === null && onBlock && !practiceDone;
+
+  const masteredSets = masteredSetCount(state, SETS);
+  // Practice always refers to the latest FULLY-learned block, so finishing a
+  // block shows "Completed" here — not the next (unlearned) block's empty 0/X.
+  const practiceIdx = Math.floor(masteredSets / PROGRESSION.setsPerBlock) - 1;
+  const hasPractice = practiceIdx >= 0;
+  const pTarget = PROGRESSION.practiceRounds;
+  const pgCount = hasPractice ? practiceCount(state, practiceIdx) : 0;
+  const pcCount = hasPractice ? cipherRoundCount(state, practiceIdx) : 0;
+  const pcTarget = hasPractice ? cipherRoundsForBlock(practiceIdx) : 0;
+  const pGrammarDone = hasPractice ? blockPracticeDone(state, practiceIdx) : false;
+  const pCipherDone = hasPractice ? cipherSessionDone(state, practiceIdx) : false;
+  const practiceComplete = hasPractice && pGrammarDone && pCipherDone;
+  const mustPractice = curIdx === null && onBlock && !practiceComplete;
 
   let learnStatus: string;
   let learnProgress: number;
@@ -95,10 +110,11 @@ export function App() {
     learnProgress = 1;
   }
 
-  const masteredSets = masteredSetCount(state, SETS);
+  const masteredSets2 = masteredSets;
   const practiceUnlocked = masteredSets >= 1;
   const recapUnlocked = masteredSets >= 2;
   const completedChallenges = [...(state.challengesDone ?? [])].sort((a, b) => a - b);
+  void masteredSets2;
 
   const mainItems: MenuItem[] = [
     { icon: '📖', label: 'Learn', sublabel: 'Acquire words in a language', onClick: () => navigate('languages') },
@@ -139,8 +155,8 @@ export function App() {
           icon: '🎯',
           label: 'Practice',
           sublabel: practiceUnlocked ? 'Drill the new words to advance' : 'Learn a set to unlock practice',
-          status: !practiceUnlocked ? undefined : practiceDone ? '✓' : `${pCount + cCount}/${pTarget + cTarget}`,
-          progress: practiceDone ? 1 : pTarget + cTarget ? (pCount + cCount) / (pTarget + cTarget) : 1,
+          status: !practiceUnlocked || !hasPractice ? undefined : practiceComplete ? '✓' : `${pgCount + pcCount}/${pTarget + pcTarget}`,
+          progress: practiceComplete ? 1 : !hasPractice ? 0 : pTarget + pcTarget ? (pgCount + pcCount) / (pTarget + pcTarget) : 0,
           badge: !practiceUnlocked ? 'Locked' : mustPractice ? 'Required' : undefined,
           locked: !practiceUnlocked,
           onClick: practiceUnlocked ? () => navigate('practice') : undefined,
@@ -165,21 +181,36 @@ export function App() {
       icon: '🔡',
       label: 'Letter Cipher',
       sublabel: 'Decode sentences built from this block’s new words',
-      status: !onBlock ? '✓' : cipherDone ? 'Done ✓' : `${cCount}/${cTarget}`,
-      progress: !onBlock ? 1 : cipherDone ? 1 : cTarget ? cCount / cTarget : 1,
-      badge: mustPractice && !cipherDone ? 'Required' : undefined,
-      onClick: () => navigate('fill-in-the-blanks'),
+      status: !hasPractice ? undefined : pCipherDone ? (practiceComplete ? 'Completed' : 'Done ✓') : `${pcCount}/${pcTarget}`,
+      progress: !hasPractice ? 0 : pCipherDone ? 1 : pcTarget ? pcCount / pcTarget : 1,
+      locked: !hasPractice || pCipherDone,
+      onClick: hasPractice && !pCipherDone ? () => navigate('fill-in-the-blanks') : undefined,
     },
     {
       icon: '🧠',
       label: 'Grammar',
       sublabel: 'A few der / die / das drills to clear this block',
-      status: !onBlock ? '✓' : grammarDone ? 'Done ✓' : `${pCount}/${pTarget}`,
-      progress: !onBlock ? 1 : grammarDone ? 1 : pCount / pTarget,
-      badge: mustPractice && !grammarDone ? 'Required' : undefined,
-      onClick: () => navigate('grammar'),
+      status: !hasPractice ? undefined : pGrammarDone ? (practiceComplete ? 'Completed' : 'Done ✓') : `${pgCount}/${pTarget}`,
+      progress: !hasPractice ? 0 : pGrammarDone ? 1 : pgCount / pTarget,
+      locked: !hasPractice || pGrammarDone,
+      onClick: hasPractice && !pGrammarDone ? () => navigate('grammar') : undefined,
     },
   ];
+
+  // Shown on the Practice screen once the lesson's cipher + grammar are both done.
+  const practiceFooter = practiceComplete ? (
+    <div className="mt-6 rounded-2xl border border-line bg-sand/40 p-5 text-center animate-fade-in">
+      <div className="text-3xl text-brown" aria-hidden>✓</div>
+      <h3 className="mt-2 font-serif text-lg font-semibold text-espresso">Great job!</h3>
+      <p className="mx-auto mt-1 max-w-sm text-sm leading-relaxed text-taupe">
+        Your practice for this lesson is done. Click{' '}
+        <button type="button" onClick={() => navigate('recap')} className="font-medium text-brown underline underline-offset-2 transition hover:text-espresso">here</button>{' '}
+        to keep rehearsing everything you’ve learned, or{' '}
+        <button type="button" onClick={() => navigate('learn')} className="font-medium text-brown underline underline-offset-2 transition hover:text-espresso">here</button>{' '}
+        to learn new words!
+      </p>
+    </div>
+  ) : undefined;
 
   const recapItems: MenuItem[] = [
     { icon: '🔡', label: 'Letter Cipher', sublabel: 'Decode sentences from everything you know', onClick: () => navigate('recap-cipher') },
@@ -214,12 +245,15 @@ export function App() {
         <MenuScreen
           title="Practice"
           intro={
-            mustPractice
-              ? 'Clear this block’s Letter Cipher and Grammar to unlock the next words.'
-              : 'Reinforce what you’ve learned with the cipher and grammar drills.'
+            !hasPractice
+              ? 'Finish learning this block to unlock its practice.'
+              : practiceComplete
+                ? undefined
+                : 'Clear this block’s Letter Cipher and Grammar to unlock the next words.'
           }
           items={practiceItems}
-          onBack={back}
+          footer={practiceFooter}
+          onBack={goToLangMenu}
           onMain={requestMain}
         />
       );
@@ -230,7 +264,7 @@ export function App() {
           title="Recap"
           intro="Mixed review from everything you've learned. Optional — it won't change your unlock progress."
           items={recapItems}
-          onBack={back}
+          onBack={goToLangMenu}
           onMain={requestMain}
         />
       );
@@ -241,7 +275,7 @@ export function App() {
           title="Daily Recap"
           intro="Your daily review keeps words fresh. Letter Cipher & Crossword join this soon."
           items={dailyRecapItems}
-          onBack={back}
+          onBack={goToLangMenu}
           onMain={requestMain}
         />
       );
@@ -270,7 +304,7 @@ export function App() {
       const Game = getGame(route)?.component;
       screen = Game ? (
         <Game
-          onExit={back}
+          onExit={goToLangMenu}
           onOpenSettings={() => navigate('settings')}
           onMain={requestMain}
           onPractice={() => navigate('practice')}
@@ -283,14 +317,14 @@ export function App() {
     case 'recap-cipher': {
       const Game = getGame('fill-in-the-blanks')?.component;
       screen = Game ? (
-        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
+        <Game onExit={goToLangMenu} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
       ) : null;
       break;
     }
     case 'recap-grammar': {
       const Game = getGame('grammar')?.component;
       screen = Game ? (
-        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
+        <Game onExit={goToLangMenu} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
       ) : null;
       break;
     }
@@ -298,7 +332,7 @@ export function App() {
       const Game = getGame('grammar')?.component;
       screen = Game ? (
         <Game
-          onExit={back}
+          onExit={goToLangMenu}
           onOpenSettings={() => navigate('settings')}
           onMain={requestMain}
           scope="daily"
@@ -315,7 +349,7 @@ export function App() {
         recapBlock !== null ? (
           <LevelStage
             items={[challengeCrossword(recapBlock)]}
-            onExit={back}
+            onExit={goToLangMenu}
             onOpenSettings={() => navigate('settings')}
             onMain={requestMain}
             countsTowardGate={false}
@@ -325,7 +359,7 @@ export function App() {
       break;
     case 'challenge':
       screen = (
-        <ChallengeCrossword onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} />
+        <ChallengeCrossword onExit={goToLangMenu} onOpenSettings={() => navigate('settings')} onMain={requestMain} />
       );
       break;
     default:

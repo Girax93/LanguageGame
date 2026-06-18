@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CipherContentItem } from '../../../content/cipherItems';
 import type { DifficultyFlags } from '../../../state/difficulty';
-import type { BoardControls } from '../../_shared/LevelStage';
+import { type BoardControls, SkipButton } from '../../_shared/LevelStage';
 import { buildPuzzle, initialFilled, keyStateFor, toUpperDE, isLetterDE } from '../cipher';
 import { Keyboard } from './Keyboard';
 
@@ -147,13 +147,16 @@ export function CipherBoard({ item, flags, controls }: Props) {
       </div>
 
       <div className="mt-4 flex shrink-0 flex-col items-center gap-3 border-t border-line bg-page pt-3 pb-2">
-        <button
-          type="button"
-          onClick={() => setShowHint((s) => !s)}
-          className="text-sm text-taupe underline-offset-4 transition hover:text-brown hover:underline"
-        >
-          {showHint ? item.translation : 'Need a hint?'}
-        </button>
+        <div className="flex w-full items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setShowHint((s) => !s)}
+            className="text-sm text-taupe underline-offset-4 transition hover:text-brown hover:underline"
+          >
+            {showHint ? item.translation : 'Need a hint?'}
+          </button>
+          <SkipButton onSkip={controls.onSkip} />
+        </div>
         <div className="w-full">
           <Keyboard
             onKey={pressLetter}

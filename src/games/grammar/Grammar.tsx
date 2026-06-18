@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { GRAMMAR_ITEMS, type GrammarContentItem } from '../../content/grammarItems';
@@ -21,7 +21,9 @@ import { ChevronLeft } from '../../components/ui/icons';
  */
 export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, onPractice, onRecapDone, scope = 'practice' }: GameProps) {
   const { state, recordPracticeDrill } = usePlayer();
-  const block = currentBlock(state, SETS);
+  // Frozen at mount so the completion screen labels the block just practiced
+  // (currentBlock advances the instant the block completes).
+  const [block] = useState(() => currentBlock(state, SETS));
 
   const items: GrammarContentItem[] = useMemo(() => {
     const eligible = GRAMMAR_ITEMS.filter((i) => isItemEligible(i, state));
