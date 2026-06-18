@@ -23,6 +23,8 @@ interface Props<T> {
   /** Fired once when the LAST item in the set is solved (the session is done). */
   onComplete?: () => void;
   renderWin?: (item: T) => ReactNode;
+  /** Replaces the final win screen when the whole session is cleared. */
+  renderComplete?: () => ReactNode;
   renderBoard: (item: T, controls: BoardControls) => ReactNode;
 }
 
@@ -38,6 +40,7 @@ export function LevelStage<T extends { id: string }>({
   onWin,
   onComplete,
   renderWin,
+  renderComplete,
   renderBoard,
 }: Props<T>) {
   const { state, now, recordLevel } = usePlayer();
@@ -88,13 +91,16 @@ export function LevelStage<T extends { id: string }>({
     if (item) onWin?.(item);
     if (isLast) {
       onComplete?.();
-      onExit();
+      if (renderComplete) {
+        setPhase('win');
+      } else {
+        onExit();
+      }
     } else {
       goNext();
     }
   }
 
-  // Non-play screens: a single back chevron + a centered card.
   if (total === 0) {
     return (
       <Centered onBack={onExit} icon="❦" title="Nothing here yet"
@@ -110,6 +116,7 @@ export function LevelStage<T extends { id: string }>({
     );
   }
   if (phase === 'win') {
+    if (isLast && renderComplete) return <>{renderComplete()}</>;
     return (
       <Centered onBack={onExit} icon="✓" title="Level won" body="Success is free — no focus spent."
         extra={item ? renderWin?.(item) : undefined}
@@ -144,7 +151,6 @@ export function LevelStage<T extends { id: string }>({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      {/* slim HUD: back · hearts */}
       <div className="mb-6 flex shrink-0 items-center justify-between">
         <button
           onClick={onExit}

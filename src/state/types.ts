@@ -11,10 +11,12 @@ export interface PlayerState {
   cipherWords: string[];
   /** Nouns whose article was drilled in a solved Practice grammar (coverage). */
   grammarWords: string[];
-  /** Block indices whose required Practice session has been completed. */
-  practiceBlocksDone: number[];
+  /** Per-block count of completed Practice drills (block index -> count). */
+  practiceCounts: Record<number, number>;
   /** Challenge-block indices whose crossword has been completed. */
   challengesDone: number[];
+  /** Epoch ms of the last completed recap session (0 = never). Daily recap. */
+  lastRecapAt: number;
   /** Total games won (a statistic only — no longer gates anything). */
   levelsWon: number;
   /** Current focus (energy). */
@@ -25,9 +27,9 @@ export interface PlayerState {
   subscribed: boolean;
 }
 
-// Bumped to 5: per-block Practice gate (practiceBlocksDone) for the always-on
-// learn -> practice cycle. Old saves reset.
-export const STATE_VERSION = 5;
+// Bumped to 6: Practice gate is now a per-block drill count (practiceCounts)
+// + lastRecapAt for the daily recap. Old saves reset.
+export const STATE_VERSION = 6;
 
 export function defaultPlayerState(now: number, focusStart: number): PlayerState {
   return {
@@ -36,8 +38,9 @@ export function defaultPlayerState(now: number, focusStart: number): PlayerState
     wordProgress: {},
     cipherWords: [],
     grammarWords: [],
-    practiceBlocksDone: [],
+    practiceCounts: {},
     challengesDone: [],
+    lastRecapAt: 0,
     levelsWon: 0,
     focus: focusStart,
     lastFocusRegenAt: now,

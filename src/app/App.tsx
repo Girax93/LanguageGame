@@ -15,12 +15,14 @@ import { Subscription } from './Subscription';
 import { ResetProgress } from './ResetProgress';
 import { usePlayer } from '../state/PlayerContext';
 import { SETS } from '../content/vocab';
+import { PROGRESSION } from '../state/progressionConfig';
 import {
   currentLearnSetIndex,
   masteredSetCount,
   currentBlock,
   blockCount,
   blockPracticeDone,
+  practiceCount,
 } from '../state/progression';
 
 export function App() {
@@ -54,13 +56,12 @@ export function App() {
   }
   const requestMain = () => setConfirmMain(true);
 
-  // Learn -> Practice -> Advance cycle. You can always LEARN the current block's
-  // sets; once mastered, learning is held until the block's Practice session is
-  // done (mustPractice), then the next block unlocks.
   const blocks = blockCount(SETS);
   const block = currentBlock(state, SETS);
   const onBlock = block < blocks;
   const practiceDone = onBlock ? blockPracticeDone(state, block) : true;
+  const pCount = onBlock ? practiceCount(state, block) : 0;
+  const pTarget = PROGRESSION.practiceRounds;
 
   const curIdx = currentLearnSetIndex(state, SETS);
   const mustPractice = curIdx === null && onBlock && !practiceDone;
@@ -108,11 +109,9 @@ export function App() {
     {
       icon: '🎯',
       label: 'Practice',
-      sublabel: practiceUnlocked
-        ? 'Drill the new words to advance'
-        : 'Learn a set to unlock practice',
-      status: !practiceUnlocked ? undefined : practiceDone ? '✓' : 'Required',
-      progress: practiceDone ? 1 : 0,
+      sublabel: practiceUnlocked ? 'Drill the new words to advance' : 'Learn a set to unlock practice',
+      status: !practiceUnlocked ? undefined : practiceDone ? '✓' : `${pCount}/${pTarget}`,
+      progress: practiceDone ? 1 : pCount / pTarget,
       badge: !practiceUnlocked ? 'Locked' : mustPractice ? 'Required' : undefined,
       locked: !practiceUnlocked,
       onClick: practiceUnlocked ? () => navigate('practice') : undefined,
@@ -135,8 +134,8 @@ export function App() {
       icon: '🧠',
       label: 'Grammar',
       sublabel: 'A few der / die / das drills to clear this block',
-      status: !onBlock ? '✓' : practiceDone ? 'Done ✓' : 'Required',
-      progress: practiceDone ? 1 : 0,
+      status: !onBlock ? '✓' : practiceDone ? 'Done ✓' : `${pCount}/${pTarget}`,
+      progress: !onBlock ? 1 : practiceDone ? 1 : pCount / pTarget,
       badge: mustPractice ? 'Required' : undefined,
       onClick: () => navigate('grammar'),
     },
@@ -217,6 +216,8 @@ export function App() {
           onOpenSettings={() => navigate('settings')}
           onMain={requestMain}
           onPractice={() => navigate('practice')}
+          onLearn={() => navigate('learn')}
+          onRecap={() => navigate('recap')}
         />
       ) : null;
       break;

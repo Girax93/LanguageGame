@@ -16,6 +16,10 @@ export interface GameProps {
   onMain?: () => void;
   /** Jump to the Practice menu (Learn uses this when a set is complete). */
   onPractice?: () => void;
+  /** Go to Learn (used by the practice-complete screen). */
+  onLearn?: () => void;
+  /** Go to the Recap menu (used by the practice-complete screen). */
+  onRecap?: () => void;
   /** Word-pool scope. Defaults to 'practice'. */
   scope?: GameScope;
 }

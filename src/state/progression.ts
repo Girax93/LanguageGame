@@ -194,8 +194,11 @@ export function practiceNounsForBlock(s: PlayerState, sets: VocabSet[], block: n
   }
   return target;
 }
+export function practiceCount(s: PlayerState, block: number): number {
+  return (s.practiceCounts ?? {})[block] ?? 0;
+}
 export function blockPracticeDone(s: PlayerState, block: number): boolean {
-  return (s.practiceBlocksDone ?? []).includes(block);
+  return practiceCount(s, block) >= PROGRESSION.practiceRounds;
 }
 
 // Recording coverage
@@ -209,9 +212,10 @@ export function addGrammarNoun(s: PlayerState, id: string | undefined): PlayerSt
   if (!id || (s.grammarWords ?? []).includes(id)) return s;
   return { ...s, grammarWords: [...(s.grammarWords ?? []), id] };
 }
-export function recordPracticeBlockDone(s: PlayerState, block: number): PlayerState {
-  if (blockPracticeDone(s, block)) return s;
-  return { ...s, practiceBlocksDone: [...(s.practiceBlocksDone ?? []), block] };
+export function recordPracticeDrill(s: PlayerState, block: number): PlayerState {
+  const cur = practiceCount(s, block);
+  if (cur >= PROGRESSION.practiceRounds) return s;
+  return { ...s, practiceCounts: { ...(s.practiceCounts ?? {}), [block]: cur + 1 } };
 }
 export function recordChallengeDone(s: PlayerState, block: number): PlayerState {
   if (isChallengeDone(s, block)) return s;

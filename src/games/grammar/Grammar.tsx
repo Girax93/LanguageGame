@@ -2,31 +2,39 @@ import { useMemo } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { GRAMMAR_ITEMS, type GrammarContentItem } from '../../content/grammarItems';
-import { isItemEligible, currentBlock, practiceNounsForBlock, grammarNounId } from '../../state/progression';
+import { isItemEligible, currentBlock, practiceNounsForBlock, practiceCount } from '../../state/progression';
+import { PROGRESSION } from '../../state/progressionConfig';
 import { SETS } from '../../content/vocab';
 import { shuffle } from '../../lib/array';
 import { LevelStage } from '../_shared/LevelStage';
 import { GrammarBoard } from './components/GrammarBoard';
+import { Button } from '../../components/ui/Button';
+import { ChevronLeft } from '../../components/ui/icons';
 
 /**
  * Grammar drill.
- * - PRACTICE: the current block's required article session — the block's new
- *   nouns, padded with recently-learned nouns when the block has fewer than 3.
- *   Completing it marks the block's Practice done, which gates advancement.
+ * - PRACTICE: the current block's required article session. It serves the
+ *   remaining drills (PROGRESSION.practiceRounds total per block), drawn from
+ *   the block's new nouns and padded with recently-learned nouns when sparse.
+ *   Each solved drill counts toward the block's Practice gate.
  * - RECAP: free review across every learned noun (does not gate).
  */
-export function Grammar({ onExit, onOpenSettings, onMain, scope = 'practice' }: GameProps) {
-  const { state, recordGrammarNoun, recordPracticeBlock } = usePlayer();
+export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, scope = 'practice' }: GameProps) {
+  const { state, recordPracticeDrill } = usePlayer();
   const block = currentBlock(state, SETS);
 
   const items: GrammarContentItem[] = useMemo(() => {
     if (scope === 'recap') return shuffle(GRAMMAR_ITEMS.filter((i) => isItemEligible(i, state)));
     const byNoun = new Map(GRAMMAR_ITEMS.map((g) => [g.requires[0], g]));
-    return practiceNounsForBlock(state, SETS, block)
-      .map((id) => byNoun.get(id))
-      .filter((g): g is GrammarContentItem => !!g);
+    const pool = practiceNounsForBlock(state, SETS, block);
+    const count = practiceCount(state, block);
+    const remaining = Math.max(0, PROGRESSION.practiceRounds - count);
+    const ids: string[] = [];
+    for (let i = 0; i < remaining && pool.length; i++) ids.push(pool[(count + i) % pool.length]);
+    return ids.map((id) => byNoun.get(id)).filter((g): g is GrammarContentItem => !!g);
+    // Session is fixed when the screen opens; each drill updates the count, not the items.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.learnedWords, state.practiceBlocksDone, scope, block]);
+  }, [state.learnedWords, scope, block]);
 
   return (
     <LevelStage
@@ -35,8 +43,10 @@ export function Grammar({ onExit, onOpenSettings, onMain, scope = 'practice' }: 
       onOpenSettings={onOpenSettings}
       onMain={onMain}
       countsTowardGate={scope !== 'recap'}
-      onWin={scope === 'recap' ? undefined : (item) => recordGrammarNoun(grammarNounId(item))}
-      onComplete={scope === 'recap' ? undefined : () => recordPracticeBlock(block)}
+      onWin={scope === 'recap' ? undefined : () => recordPracticeDrill(block)}
+      renderComplete={
+        scope === 'recap' ? undefined : () => <PracticeDone onExit={onExit} onLearn={onLearn} onRecap={onRecap} />
+      }
       renderWin={(item) => (
         <div className="mt-3 w-full max-w-xs rounded-xl border border-line bg-sand/40 px-4 py-3 text-center">
           <p className="font-serif text-lg font-semibold text-espresso">{`${item.before}${item.stem}${item.ending}${item.after}`}</p>
@@ -45,5 +55,44 @@ export function Grammar({ onExit, onOpenSettings, onMain, scope = 'practice' }: 
       )}
       renderBoard={(item, controls) => <GrammarBoard item={item} controls={controls} />}
     />
+  );
+}
+
+/** Shown when a block's Practice session is finished — the next words unlock. */
+function PracticeDone({
+  onExit,
+  onLearn,
+  onRecap,
+}: {
+  onExit: () => void;
+  onLearn?: () => void;
+  onRecap?: () => void;
+}) {
+  return (
+    <div className="flex flex-1 flex-col">
+      <div className="flex items-center">
+        <button
+          onClick={onExit}
+          aria-label="Back"
+          className="-ml-2 rounded-full p-2 text-taupe transition hover:bg-sand hover:text-espresso"
+        >
+          <ChevronLeft />
+        </button>
+      </div>
+      <div className="flex flex-1 flex-col items-center justify-center text-center animate-pop-in">
+        <div className="text-4xl text-brown">✓</div>
+        <h2 className="mt-5 font-serif text-2xl font-semibold text-espresso">Block complete!</h2>
+        <p className="mt-2 max-w-xs text-taupe">Practice done — the next words are unlocked.</p>
+        <Button className="mt-8 w-64" onClick={onLearn ?? onExit}>
+          Learn more words
+        </Button>
+        <button
+          onClick={onRecap ?? onExit}
+          className="mt-4 text-sm font-medium text-brown transition hover:text-espresso"
+        >
+          Recap what you’ve learned
+        </button>
+      </div>
+    </div>
   );
 }

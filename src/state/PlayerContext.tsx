@@ -20,7 +20,7 @@ import {
 import {
   recordWordAnswer,
   recordChallengeDone,
-  recordPracticeBlockDone,
+  recordPracticeDrill as applyPracticeDrill,
   addCipherWords,
   addGrammarNoun,
 } from './progression';
@@ -33,8 +33,8 @@ interface PlayerContextValue {
   recordLevel: (won: boolean, countsTowardGate?: boolean) => void;
   /** Mark the given challenge block cleared. */
   recordChallenge: (block: number) => void;
-  /** Mark a block's required Practice session complete (gates advancement). */
-  recordPracticeBlock: (block: number) => void;
+  /** Count one completed Practice drill for the block (gates advancement). */
+  recordPracticeDrill: (block: number) => void;
   /** Mark words used in a solved Practice cipher (block cipher-coverage). */
   recordCipherWords: (ids: string[]) => void;
   /** Mark a noun's article drilled in a solved Practice grammar (coverage). */
@@ -52,12 +52,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   );
   const [now, setNow] = useState(() => Date.now());
 
-  // Persist whenever state changes.
   useEffect(() => {
     savePlayerState(state);
   }, [state]);
 
-  // Tick: advance the clock and apply focus regen.
   useEffect(() => {
     const id = window.setInterval(() => {
       const t = Date.now();
@@ -78,7 +76,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
           (countsTowardGate ? recordLevelResult : recordLevelResultNoGate)(s, won, Date.now()),
         ),
       recordChallenge: (block) => setState((s) => recordChallengeDone(s, block)),
-      recordPracticeBlock: (block) => setState((s) => recordPracticeBlockDone(s, block)),
+      recordPracticeDrill: (block) => setState((s) => applyPracticeDrill(s, block)),
       recordCipherWords: (ids) => setState((s) => addCipherWords(s, ids)),
       recordGrammarNoun: (id) => setState((s) => addGrammarNoun(s, id)),
       buyFocus: () => setState((s) => buyFocusRefill(s, Date.now())),
