@@ -149,6 +149,35 @@ function predicateAdj(a: Lemma): boolean {
   const d = a.de.toLowerCase();
   return !ATTRIB_ONLY.has(d) && !ADJ_SKIP.has(d) && !d.endsWith('ste');
 }
+// Predicate-adjective SEMANTIC FIT. Most adjectives are universal (a person OR a
+// thing can be groß/gut/schön/neu/alt…), but two small sets only fit one kind of
+// subject: PERSON_ONLY reads wrong on a thing ("Das Haus ist müde") and
+// ABSTRACT_ONLY reads wrong on a person ("Der Vater ist klar"). We never pair an
+// adjective with a subject it doesn't fit; everything unlisted is universal.
+const ADJ_PERSON_ONLY = new Set([
+  'müde', 'krank', 'gesund', 'hungrig', 'durstig', 'satt', 'wach', 'betrunken',
+  'verliebt', 'verheiratet', 'ledig', 'schwanger', 'eifersüchtig', 'stolz', 'traurig',
+  'glücklich', 'froh', 'wütend', 'böse', 'nett', 'freundlich', 'unfreundlich', 'höflich',
+  'ehrlich', 'klug', 'intelligent', 'dumm', 'faul', 'fleißig', 'mutig', 'neugierig',
+  'schüchtern', 'nervös', 'einsam', 'beschäftigt', 'verrückt',
+]);
+const ADJ_ABSTRACT_ONLY = new Set([
+  'richtig', 'falsch', 'wahr', 'klar', 'unklar', 'möglich', 'unmöglich', 'nötig',
+  'notwendig', 'logisch', 'egal', 'üblich', 'eindeutig', 'wahrscheinlich',
+]);
+/** Does predicate adjective `a` fit a subject of the given animacy?
+ *  animate = a person/animal (or er/sie); !animate = a thing / "das" / a statement. */
+function adjFitsAnimate(a: Lemma, animate: boolean): boolean {
+  const d = a.de.toLowerCase();
+  return animate ? !ADJ_ABSTRACT_ONLY.has(d) : !ADJ_PERSON_ONLY.has(d);
+}
+/** The subject animacy an adjective needs: true=person, false=thing, null=either. */
+function adjNeedsAnimate(a: Lemma): boolean | null {
+  const d = a.de.toLowerCase();
+  if (ADJ_PERSON_ONLY.has(d)) return true;
+  if (ADJ_ABSTRACT_ONLY.has(d)) return false;
+  return null;
+}
 // Verb lemmas (by surface) we never conjugate — auxiliaries / special forms.
 const VERB_EXCLUDE = new Set(['sein', 'werden', 'würde', 'wäre', 'sei', 'möchten', 'möchte', 'soll', 'lassen', 'tät']);
 // A noun is animate (a sensible verb subject) if tagged people/family/animals.
@@ -255,6 +284,25 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
     const u = adjs.filter((a) => unc.has(a.id));
     return choice(preferUnc && u.length ? u : adjs);
   };
+  /** Pick an adjective that fits a subject of the given animacy (or undefined). */
+  const pickAdjFit = (animate: boolean, preferUnc = true): Lemma | undefined => {
+    const pool = adjs.filter((a) => adjFitsAnimate(a, animate));
+    if (!pool.length) return undefined;
+    const u = pool.filter((a) => unc.has(a.id));
+    return choice(preferUnc && u.length ? u : pool);
+  };
+  /** Pick a noun whose animacy fits adjective `a` (so the pairing makes sense). */
+  const pickNounFor = (a: Lemma, preferUnc = true, avoid = new Set<string>()): Lemma | undefined => {
+    const need = adjNeedsAnimate(a);
+    const opts = nouns.filter((n) => !avoid.has(n.id) && (need === null || isAnimate(n) === need));
+    if (!opts.length) return undefined;
+    if (preferUnc) {
+      const u = opts.filter((n) => unc.has(n.id));
+      if (u.length) return choice(u);
+    }
+    const fresh = opts.filter((n) => !usedNoun.has(n.de));
+    return choice(fresh.length ? fresh : opts);
+  };
 
   let cands: Candidate[] = [];
   const push = (tokens: string[], en: string, ids: string[], kind: string, head?: string, bonus = 0) => {
@@ -276,7 +324,7 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
     // ADJ predicate: "Der Mann ist [sehr|nicht|auch] gut."
     if (hasS && adjs.length) {
       const a = pickAdj();
-      const sp = pickNoun();
+      const sp = a ? pickNounFor(a) : undefined;
       if (a && sp) {
         let pre: string[] = [], preEn: string[] = [], preIds: string[] = [];
         const ik = Object.keys(INTENS).map((k) => idOf(k, 'adv', 'particle')).find((id) => id && unc.has(id));
@@ -299,8 +347,8 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
       for (const k of Object.keys(INTENS)) {
         const id = idOf(k, 'adv', 'particle');
         if (id && unc.has(id)) {
-          const a = pickAdj(false)!;
-          push(['Das', 'ist', k, a.de + '.'], `That is ${INTENS[k]} ${en1(a)}.`,
+          const a = pickAdjFit(false, false);
+          if (a) push(['Das', 'ist', k, a.de + '.'], `That is ${INTENS[k]} ${en1(a)}.`,
             ['l-das', 'l-sein-verb', id, a.id], 'adj');
         }
       }
@@ -353,8 +401,8 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
             push([cap(form), n.de, 'ist', lv.de + '.'], `${cap(DET[d][0])} ${en1(n)} is ${LOC[lv.de]}.`,
               [id, ART_ID[n.gender!], n.id, 'l-sein-verb', lv.id], 'det', n.de);
           } else {
-            const a = pickAdj(false)!;
-            push([cap(form), n.de, 'ist', a.de + '.'], `${cap(DET[d][0])} ${en1(n)} is ${en1(a)}.`,
+            const a = pickAdjFit(isAnimate(n), false);
+            if (a) push([cap(form), n.de, 'ist', a.de + '.'], `${cap(DET[d][0])} ${en1(n)} is ${en1(a)}.`,
               [id, ART_ID[n.gender!], n.id, 'l-sein-verb', a.id], 'det', n.de);
           }
         }
@@ -369,8 +417,8 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
           const lv = choice(locs)!;
           push([cap(k), vf, lv.de + '.'], `${cap(ken)} ${ve} ${LOC[lv.de]}.`, [id, 'l-sein-verb', lv.id], 'indef');
         } else {
-          const a = pickAdj(false)!;
-          push([cap(k), vf, a.de + '.'], `${cap(ken)} ${ve} ${en1(a)}.`, [id, 'l-sein-verb', a.id], 'indef');
+          const a = pickAdjFit(false, false);
+          if (a) push([cap(k), vf, a.de + '.'], `${cap(ken)} ${ve} ${en1(a)}.`, [id, 'l-sein-verb', a.id], 'indef');
         }
       }
     }
@@ -383,8 +431,8 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
           const lv = choice(locs)!;
           push([cap(k), vf, lv.de + '.'], `${cap(ken)} ${ve} ${LOC[lv.de]}.`, [id, 'l-sein-verb', lv.id], 'ipron');
         } else {
-          const a = pickAdj(false)!;
-          push([cap(k), vf, a.de + '.'], `${cap(ken)} ${ve} ${en1(a)}.`, [id, 'l-sein-verb', a.id], 'ipron');
+          const a = pickAdjFit(true, false);
+          if (a) push([cap(k), vf, a.de + '.'], `${cap(ken)} ${ve} ${en1(a)}.`, [id, 'l-sein-verb', a.id], 'ipron');
         }
       }
     }
@@ -397,8 +445,8 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
           const lv = choice(locs)!;
           push([cap(byId.get(p)!.de), form, lv.de + '.'], `${cap(es)} ${ev} ${LOC[lv.de]}.`, [p, 'l-sein-verb', lv.id], 'ploc');
         } else if (adjs.length) {
-          const a = pickAdj(false)!;
-          push([cap(byId.get(p)!.de), form, a.de + '.'], `${cap(es)} ${ev} ${en1(a)}.`, [p, 'l-sein-verb', a.id], 'padj');
+          const a = pickAdjFit(p !== 'l-es', false);
+          if (a) push([cap(byId.get(p)!.de), form, a.de + '.'], `${cap(es)} ${ev} ${en1(a)}.`, [p, 'l-sein-verb', a.id], 'padj');
         }
       }
     }
@@ -474,8 +522,8 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
           push([cap(fa.de), 'ist', ART_NOM[n.gender!], n.de, lv.de + '.'], `${FRONT[fa.de]} the ${en1(n)} is ${LOC[lv.de]}.`,
             [fa.id, 'l-sein-verb', ART_ID[n.gender!], n.id, lv.id], 'front', n.de);
         } else {
-          const a = pickAdj(false)!;
-          push([cap(fa.de), 'ist', ART_NOM[n.gender!], n.de, a.de + '.'], `${FRONT[fa.de]} the ${en1(n)} is ${en1(a)}.`,
+          const a = pickAdjFit(isAnimate(n), false);
+          if (a) push([cap(fa.de), 'ist', ART_NOM[n.gender!], n.de, a.de + '.'], `${FRONT[fa.de]} the ${en1(n)} is ${en1(a)}.`,
             [fa.id, 'l-sein-verb', ART_ID[n.gender!], n.id, a.id], 'front', n.de);
         }
       }
@@ -484,17 +532,18 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
     for (const sc of pool.filter((x) => x.pos === 'conj' && x.de in SUB_CONJ && unc.has(x.id))) {
       if (!(hasS && adjs.length && nouns.length)) continue;
       const n = pickNoun(false)!;
-      const a = pickAdj(false)!;
+      const a = pickAdjFit(isAnimate(n), false);
+      if (!a) continue;
       if ((sc.de === 'dass' || sc.de === 'ob')) {
         const sv = Object.keys(SAY).find(has);
         if (sv) push(['Er', verb3sg(byId.get(sv)!)! + ',', sc.de, ART_NOM[n.gender!], n.de, a.de, 'ist.'],
           `He ${SAY[sv]} ${SUB_CONJ[sc.de]} the ${en1(n)} is ${en1(a)}.`,
           ['l-er', sv, sc.id, ART_ID[n.gender!], n.id, a.id], 'sub', n.de);
       } else {
-        const a2 = pickAdj(false)!;
-        push(['Das', 'ist', a.de + ',', sc.de, ART_NOM[n.gender!], n.de, a2.de, 'ist.'],
-          `That is ${en1(a)} ${SUB_CONJ[sc.de]} the ${en1(n)} is ${en1(a2)}.`,
-          ['l-das', 'l-sein-verb', a.id, sc.id, ART_ID[n.gender!], n.id, a2.id], 'sub', n.de);
+        const aDas = pickAdjFit(false, false);
+        if (aDas) push(['Das', 'ist', aDas.de + ',', sc.de, ART_NOM[n.gender!], n.de, a.de, 'ist.'],
+          `That is ${en1(aDas)} ${SUB_CONJ[sc.de]} the ${en1(n)} is ${en1(a)}.`,
+          ['l-das', 'l-sein-verb', aDas.id, sc.id, ART_ID[n.gender!], n.id, a.id], 'sub', n.de);
       }
     }
     // INTERJECTIONS: "Ja, das ist der Mann."
@@ -512,8 +561,8 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
     if (hasS && has('l-und') && adjs.length && nouns.length >= 2) {
       const n1 = pickNoun();
       const n2 = pickNoun(true, new Set(n1 ? [n1.id] : []));
-      const a1 = pickAdj();
-      const a2 = choice(adjs.length > 1 ? adjs.filter((a) => a.id !== a1?.id) : adjs);
+      const a1 = n1 ? pickAdjFit(isAnimate(n1)) : undefined;
+      const a2 = n2 ? pickAdjFit(isAnimate(n2)) : undefined;
       if (n1 && n2 && a1 && a2) {
         push([cap(ART_NOM[n1.gender!]), n1.de, 'ist', a1.de, 'und', ART_NOM[n2.gender!], n2.de, 'ist', a2.de + '.'],
           `The ${en1(n1)} is ${en1(a1)} and the ${en1(n2)} is ${en1(a2)}.`,
@@ -523,8 +572,10 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
     // "Der Mann ist groß und gut." (two qualities of one thing)
     if (hasS && has('l-und') && adjs.length >= 2 && nouns.length) {
       const n = pickNoun();
-      const a1 = pickAdj();
-      const a2 = choice(adjs.filter((a) => a.id !== a1?.id));
+      const fitAdjs = n ? adjs.filter((a) => adjFitsAnimate(a, isAnimate(n))) : [];
+      const uFit = fitAdjs.filter((a) => unc.has(a.id));
+      const a1 = choice(uFit.length ? uFit : fitAdjs);
+      const a2 = choice(fitAdjs.filter((a) => a.id !== a1?.id));
       if (n && a1 && a2) {
         push([cap(ART_NOM[n.gender!]), n.de, 'ist', a1.de, 'und', a2.de + '.'],
           `The ${en1(n)} is ${en1(a1)} and ${en1(a2)}.`,
@@ -535,7 +586,9 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
     if (hasS && has('l-aber') && has('l-nicht') && adjs.length && nouns.length >= 2) {
       const n1 = pickNoun();
       const n2 = pickNoun(true, new Set(n1 ? [n1.id] : []));
-      const a = pickAdj();
+      const bothFit = n1 && n2 ? adjs.filter((x) => adjFitsAnimate(x, isAnimate(n1)) && adjFitsAnimate(x, isAnimate(n2))) : [];
+      const uBoth = bothFit.filter((x) => unc.has(x.id));
+      const a = choice(uBoth.length ? uBoth : bothFit);
       if (n1 && n2 && a) {
         push([cap(ART_NOM[n1.gender!]), n1.de, 'ist', a.de + ',', 'aber', ART_NOM[n2.gender!], n2.de, 'ist', 'nicht', a.de + '.'],
           `The ${en1(n1)} is ${en1(a)}, but the ${en1(n2)} is not ${en1(a)}.`,
