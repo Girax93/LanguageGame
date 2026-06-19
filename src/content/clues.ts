@@ -62,6 +62,7 @@ export const CLUES: Record<string, Clue> = {
   "l-leute": { de: "Mehrere Menschen; Personen", en: "Several people; persons" },
   "l-scheisse": { de: "Grobes Wort für Ärger", en: "A crude word for trouble" },
   "l-moment": { de: "Ein sehr kurzer Augenblick", en: "A very short instant" },
+  "l-mensch": { de: "Eine menschliche Person", en: "A human being" },
 
   // ── verbs ───────────────────────────────────────────────────────────────--
   "l-haben": { de: "Besitzen, sein Eigen nennen", en: "To own, to possess" },
@@ -85,6 +86,7 @@ export const CLUES: Record<string, Clue> = {
   "l-sei": { de: "Befehlsform von „sein“: ___ still!", en: "Imperative of 'to be': ___ quiet!" },
   "l-waere": { de: "Möglichkeitsform von „sein“", en: "The 'would-be' form of 'to be'" },
   "l-wuerde": { de: "Höfliches „würde“: ich ___ gern …", en: "Polite 'would': I ___ like to …" },
+  "l-nehmen": { de: "Etwas mit der Hand greifen und halten", en: "To grasp and hold something" },
 
   // ── prepositions ──────────────────────────────────────────────────────────
   "l-zu": { de: "Richtung auf ein Ziel: ___ Hause", en: "Toward a goal: ___ home" },
@@ -104,6 +106,7 @@ export const CLUES: Record<string, Clue> = {
   "l-seit": { de: "Von einem früheren Zeitpunkt an bis jetzt", en: "From a past point in time until now" },
   "l-wegen": { de: "Aus einem bestimmten Grund", en: "For a particular reason" },
   "l-gegen": { de: "In die entgegengesetzte Richtung; dagegen", en: "Against; in opposition" },
+  "l-in": { de: "Innerhalb von etwas: ___ dem Haus", en: "Inside something: ___ the house" },
 
   // ── adverbs ─────────────────────────────────────────────────────────────--
   "l-wie": { de: "Frage nach der Art: ___ geht es dir?", en: "Asks in what way: ___ are you?" },
@@ -141,6 +144,7 @@ export const CLUES: Record<string, Clue> = {
   "l-oder": { de: "Bietet eine Wahl: Tee ___ Kaffee", en: "Offers a choice: tea ___ coffee" },
   "l-denn": { de: "Gibt einen Grund an; weil", en: "Gives a reason; for" },
   "l-damit": { de: "Zu dem Zweck, dass", en: "So that; in order that" },
+  "l-und": { de: "Verbindet zwei Dinge: Brot ___ Butter", en: "Joins two things: bread ___ butter" },
 
   // ── particles / interjections ───────────────────────────────────────────--
   "l-nein": { de: "Verneinende Antwort", en: "A negative answer" },

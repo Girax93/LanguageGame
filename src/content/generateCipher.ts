@@ -509,35 +509,14 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
     return cands;
   };
 
-  // Each sentence is ONE self-contained clause (no chaining of unrelated clauses,
-  // which read as non-sequiturs). The block's new nouns are gathered into a
-  // single natural enumeration; everything else is a stand-alone sentence.
+  // Each cipher sentence is ONE self-contained, individually sensible clause —
+  // no chaining and no noun-list enumeration (both read as non-sequiturs, e.g.
+  // "Those are the house, the day and the hand", which no one would say). We emit
+  // the single best sentence per placeable word and stop at the cap; whatever a
+  // block can't place into a natural sentence is simply left for the crossword,
+  // which picks up the leftover words. So cipher = a few real sentences, not a
+  // forced cover-everything dump.
   const MAX_SENTENCES = 4;
-
-  // 1) "Das sind der Mann, die Frau und das Kind." (or "Das ist der Mann." for one)
-  if (hasS && hasDas) {
-    const newNouns = nouns.filter((n) => unc.has(n.id)).slice(0, 4);
-    if (newNouns.length === 1) {
-      const n = newNouns[0];
-      out.push({ sentence: `Das ist ${ART_NOM[n.gender!]} ${n.de}.`, translation: `That is the ${en1(n)}.`,
-        requires: [...new Set(['l-das', 'l-sein-verb', ART_ID[n.gender!], n.id])] });
-      for (const id of ['l-das', 'l-sein-verb', n.id]) unc.delete(id);
-      usedNoun.add(n.de);
-    } else if (newNouns.length >= 2 && has('l-und')) {
-      const de = newNouns.map((n) => `${ART_NOM[n.gender!]} ${n.de}`);
-      const en = newNouns.map((n) => `the ${en1(n)}`);
-      out.push({
-        sentence: `Das sind ${de.slice(0, -1).join(', ')} und ${de[de.length - 1]}.`,
-        translation: `Those are ${en.slice(0, -1).join(', ')} and ${en[en.length - 1]}.`,
-        requires: [...new Set(['l-das', 'l-sein-verb', 'l-und', ...newNouns.flatMap((n) => [ART_ID[n.gender!], n.id])])],
-      });
-      for (const n of newNouns) { unc.delete(n.id); usedNoun.add(n.de); }
-      for (const id of ['l-das', 'l-sein-verb', 'l-und']) unc.delete(id);
-    }
-    // (2+ new nouns but no "und" yet, e.g. block 0: handled as single "Das ist X" below.)
-  }
-
-  // 2) One coherent sentence per remaining placeable word, up to the cap.
   let guard = 0;
   while (unc.size && guard < 80 && out.length < MAX_SENTENCES) {
     guard++;

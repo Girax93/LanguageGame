@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import type { CrosswordContentItem } from '../../../content/crosswords';
-import type { BoardControls } from '../../_shared/LevelStage';
+import { SkipButton, type BoardControls } from '../../_shared/LevelStage';
 import { toUpperDE, isLetterDE } from '../../fill-in-the-blanks/cipher';
 import { Keyboard } from '../../fill-in-the-blanks/components/Keyboard';
 import { buildCrossword, cellKey } from '../crossword';
@@ -503,7 +503,10 @@ export function CrosswordBoard({ item, controls }: Props) {
       </div>
 
       {/* keyboard — outside the clues overlay so it is never covered */}
-      <div className="mt-4 shrink-0 border-t border-line bg-page pt-3 pb-2">
+      <div className="mt-4 shrink-0 border-t border-line bg-page pt-2 pb-2">
+        <div className="mb-2 flex justify-end">
+          <SkipButton onSkip={controls.onSkip} />
+        </div>
         <Keyboard onKey={pressLetter} stateFor={() => 'idle'} />
       </div>
     </div>

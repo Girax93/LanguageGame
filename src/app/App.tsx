@@ -32,6 +32,45 @@ import {
 import { cipherRoundsForBlock } from '../content/cipherItems';
 import { crosswordRoundsForBlock } from '../content/crosswords';
 
+/**
+ * The screen tree: each route's PARENT is the menu it belongs to. "Back" always
+ * goes one level up this tree (never to whatever was visited before, and never
+ * to a game), so e.g. a game's parent is its menu, not another game.
+ */
+const PARENT: Partial<Record<Route, Route>> = {
+  languages: 'main',
+  'lang-menu': 'languages',
+  learn: 'lang-menu',
+  practice: 'lang-menu',
+  recap: 'lang-menu',
+  'daily-recap': 'lang-menu',
+  'daily-recap-grammar': 'lang-menu',
+  'fill-in-the-blanks': 'practice',
+  grammar: 'practice',
+  crossword: 'practice',
+  'recap-cipher': 'recap',
+  'recap-grammar': 'recap',
+  'recap-crossword': 'recap',
+  'recap-challenge': 'recap',
+  challenge: 'practice',
+  statistics: 'main',
+  store: 'main',
+  settings: 'main',
+  account: 'settings',
+  subscription: 'settings',
+  reset: 'settings',
+};
+/** The canonical tree path from 'main' down to `route` (used as the nav stack). */
+function pathTo(route: Route): Route[] {
+  const path: Route[] = [route];
+  let cur: Route = route;
+  while (PARENT[cur]) {
+    cur = PARENT[cur]!;
+    path.unshift(cur);
+  }
+  return path;
+}
+
 export function App() {
   const { state, now, recordRecapDone, forceRecapDue } = usePlayer();
   const [stack, setStack] = useState<Route[]>(['main']);
@@ -49,17 +88,22 @@ export function App() {
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
+  // Navigate to a route by its canonical tree path, so the stack is always a
+  // clean path from 'main' (a game never lingers beneath a menu we navigated to).
   function navigate(r: Route) {
-    const next = [...stack, r];
+    const next = pathTo(r);
     window.history.pushState({ stack: next }, '');
     setStack(next);
   }
+  // Back = up one level of the tree (the menu the current page belongs to).
   function back() {
-    if (stack.length > 1) window.history.back();
+    const parent = PARENT[route];
+    if (parent) navigate(parent);
   }
   function goMain() {
     setConfirmMain(false);
-    if (stack.length > 1) window.history.go(-(stack.length - 1));
+    window.history.pushState({ stack: ['main'] }, '');
+    setStack(['main']);
   }
   const requestMain = () => setConfirmMain(true);
 
