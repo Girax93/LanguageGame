@@ -22,6 +22,7 @@ import {
   recordChallengeDone,
   recordPracticeDrill as applyPracticeDrill,
   recordCipherRound as applyCipherRound,
+  recordCrosswordRound as applyCrosswordRound,
   recordRecapDone as applyRecapDone,
   forceRecapDue as applyForceRecapDue,
   addCipherWords,
@@ -40,6 +41,8 @@ interface PlayerContextValue {
   recordPracticeDrill: (block: number) => void;
   /** Count one solved cipher Practice sentence for the block (gates advancement). */
   recordCipherRound: (block: number) => void;
+  /** Mark the block's crossword Practice puzzle solved (gates advancement). */
+  recordCrosswordRound: (block: number) => void;
   /** Mark today's recap session complete (resets the 24h timer). */
   recordRecapDone: () => void;
   /** DEV: make the daily recap due now (for testing). */
@@ -87,6 +90,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       recordChallenge: (block) => setState((s) => recordChallengeDone(s, block)),
       recordPracticeDrill: (block) => setState((s) => applyPracticeDrill(s, block)),
       recordCipherRound: (block) => setState((s) => applyCipherRound(s, block)),
+      recordCrosswordRound: (block) => setState((s) => applyCrosswordRound(s, block)),
       recordRecapDone: () => setState((s) => applyRecapDone(s, Date.now())),
       forceRecapDue: () => setState((s) => applyForceRecapDue(s, Date.now())),
       recordCipherWords: (ids) => setState((s) => addCipherWords(s, ids)),

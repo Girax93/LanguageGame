@@ -16,6 +16,7 @@ export type Route =
   | 'learn'
   | 'fill-in-the-blanks'
   | 'grammar'
+  | 'crossword'
   | 'recap-cipher'
   | 'recap-grammar'
   | 'recap-crossword'

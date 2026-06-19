@@ -15,6 +15,8 @@ export interface PlayerState {
   practiceCounts: Record<number, number>;
   /** Per-block count of completed cipher Practice sentences (block index -> count). */
   cipherCounts: Record<number, number>;
+  /** Per-block count of completed crossword Practice puzzles (block index -> count). */
+  crosswordCounts: Record<number, number>;
   /** Challenge-block indices whose crossword has been completed. */
   challengesDone: number[];
   /** Epoch ms of the last completed recap session (starts at creation). */
@@ -29,9 +31,10 @@ export interface PlayerState {
   subscribed: boolean;
 }
 
-// Bumped to 7: the per-block Practice gate now also requires the cipher session
-// (cipherCounts) alongside the grammar drills. Old saves reset.
-export const STATE_VERSION = 7;
+// Bumped to 8: the per-block Practice gate now also requires the crossword
+// session (crosswordCounts) alongside the grammar drills and cipher session.
+// Old saves reset.
+export const STATE_VERSION = 8;
 
 export function defaultPlayerState(now: number, focusStart: number): PlayerState {
   return {
@@ -42,6 +45,7 @@ export function defaultPlayerState(now: number, focusStart: number): PlayerState
     grammarWords: [],
     practiceCounts: {},
     cipherCounts: {},
+    crosswordCounts: {},
     challengesDone: [],
     lastRecapAt: now,
     levelsWon: 0,

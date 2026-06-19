@@ -25,9 +25,12 @@ import {
   practiceCount,
   cipherRoundCount,
   cipherSessionDone,
+  crosswordRoundCount,
+  crosswordSessionDone,
   recapDue,
 } from '../state/progression';
 import { cipherRoundsForBlock } from '../content/cipherItems';
+import { crosswordRoundsForBlock } from '../content/crosswords';
 
 export function App() {
   const { state, now, recordRecapDone, forceRecapDue } = usePlayer();
@@ -75,9 +78,15 @@ export function App() {
   const pgCount = hasPractice ? practiceCount(state, practiceIdx) : 0;
   const pcCount = hasPractice ? cipherRoundCount(state, practiceIdx) : 0;
   const pcTarget = hasPractice ? cipherRoundsForBlock(practiceIdx) : 0;
+  const pxCount = hasPractice ? crosswordRoundCount(state, practiceIdx) : 0;
+  const pxTarget = hasPractice ? crosswordRoundsForBlock(practiceIdx) : 0;
   const pGrammarDone = hasPractice ? blockPracticeDone(state, practiceIdx) : false;
   const pCipherDone = hasPractice ? cipherSessionDone(state, practiceIdx) : false;
-  const practiceComplete = hasPractice && pGrammarDone && pCipherDone;
+  const pCrosswordDone = hasPractice ? crosswordSessionDone(state, practiceIdx) : false;
+  const practiceComplete = hasPractice && pGrammarDone && pCipherDone && pCrosswordDone;
+  // Combined "X/total" across all three Practice games.
+  const pDoneCount = pgCount + pcCount + pxCount;
+  const pTotalTarget = pTarget + pcTarget + pxTarget;
   const mustPractice = curIdx === null && onBlock && !practiceComplete;
 
   let learnStatus: string;
@@ -138,8 +147,8 @@ export function App() {
           icon: '🎯',
           label: 'Practice',
           sublabel: practiceUnlocked ? 'Drill the new words to advance' : 'Learn a set to unlock practice',
-          status: !practiceUnlocked || !hasPractice ? undefined : practiceComplete ? '✓' : `${pgCount + pcCount}/${pTarget + pcTarget}`,
-          progress: practiceComplete ? 1 : !hasPractice ? 0 : pTarget + pcTarget ? (pgCount + pcCount) / (pTarget + pcTarget) : 0,
+          status: !practiceUnlocked || !hasPractice ? undefined : practiceComplete ? '✓' : `${pDoneCount}/${pTotalTarget}`,
+          progress: practiceComplete ? 1 : !hasPractice ? 0 : pTotalTarget ? pDoneCount / pTotalTarget : 0,
           badge: !practiceUnlocked ? 'Locked' : mustPractice ? 'Required' : undefined,
           locked: !practiceUnlocked,
           onClick: practiceUnlocked ? () => navigate('practice') : undefined,
@@ -177,6 +186,15 @@ export function App() {
       progress: !hasPractice ? 0 : pGrammarDone ? 1 : pgCount / pTarget,
       locked: !hasPractice || pGrammarDone,
       onClick: hasPractice && !pGrammarDone ? () => navigate('grammar') : undefined,
+    },
+    {
+      icon: '🧩',
+      label: 'Crossword',
+      sublabel: 'Fit this block’s leftover words into a grid',
+      status: !hasPractice || !pxTarget ? undefined : pCrosswordDone ? (practiceComplete ? 'Completed' : 'Done ✓') : `${pxCount}/${pxTarget}`,
+      progress: !hasPractice ? 0 : pCrosswordDone ? 1 : pxTarget ? pxCount / pxTarget : 1,
+      locked: !hasPractice || pCrosswordDone,
+      onClick: hasPractice && !pCrosswordDone ? () => navigate('crossword') : undefined,
     },
   ];
 
@@ -226,7 +244,7 @@ export function App() {
               ? 'Finish learning this block to unlock its practice.'
               : practiceComplete
                 ? undefined
-                : 'Clear this block’s Letter Cipher and Grammar to unlock the next words.'
+                : 'Clear this block’s Letter Cipher, Grammar and Crossword to unlock the next words.'
           }
           items={practiceItems}
           footer={practiceFooter}
@@ -266,7 +284,8 @@ export function App() {
       break;
     case 'learn':
     case 'fill-in-the-blanks':
-    case 'grammar': {
+    case 'grammar':
+    case 'crossword': {
       const Game = getGame(route)?.component;
       screen = Game ? (
         <Game
@@ -335,6 +354,7 @@ export function App() {
   const pinned =
     route === 'fill-in-the-blanks' ||
     route === 'grammar' ||
+    route === 'crossword' ||
     route === 'recap-cipher' ||
     route === 'recap-grammar' ||
     route === 'daily-recap-grammar' ||

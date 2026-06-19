@@ -13,6 +13,7 @@ import type { PlayerState } from './types';
 import type { VocabSet, VocabWord } from '../content/vocab';
 import { wordById, ALL_WORDS } from '../content/vocab';
 import { cipherRoundsForBlock } from '../content/cipherItems';
+import { crosswordRoundsForBlock } from '../content/crosswords';
 
 const B = PROGRESSION.setsPerBlock;
 
@@ -101,13 +102,14 @@ export function challengeReady(s: PlayerState, sets: VocabSet[], block: number):
 }
 export function isBlockComplete(s: PlayerState, sets: VocabSet[], block: number): boolean {
   // LEARN -> PRACTICE -> ADVANCE: a block unlocks the next only when its sets
-  // are mastered AND both halves of its Practice session are done — the grammar
-  // drills (blockPracticeDone) and the cipher sentences that cover its new words
-  // (cipherSessionDone). Both always have content, so every block gates.
+  // are mastered AND all three Practice games are done — the grammar drills
+  // (blockPracticeDone), the cipher sentences covering its new words
+  // (cipherSessionDone), and the crossword over the leftovers (crosswordSessionDone).
   return (
     isBlockLearned(s, sets, block) &&
     blockPracticeDone(s, block) &&
-    cipherSessionDone(s, block)
+    cipherSessionDone(s, block) &&
+    crosswordSessionDone(s, block)
   );
 }
 
@@ -214,6 +216,15 @@ export function cipherSessionDone(s: PlayerState, block: number): boolean {
   const target = cipherRoundsForBlock(block);
   return target === 0 || cipherRoundCount(s, block) >= target;
 }
+/** Completed crossword Practice puzzles for a block (0 or 1). */
+export function crosswordRoundCount(s: PlayerState, block: number): number {
+  return (s.crosswordCounts ?? {})[block] ?? 0;
+}
+/** The crossword part of the gate: the block's leftover-words puzzle solved. */
+export function crosswordSessionDone(s: PlayerState, block: number): boolean {
+  const target = crosswordRoundsForBlock(block);
+  return target === 0 || crosswordRoundCount(s, block) >= target;
+}
 
 // Daily recap
 export function recapDue(s: PlayerState, sets: VocabSet[], now: number): boolean {
@@ -250,6 +261,13 @@ export function recordCipherRound(s: PlayerState, block: number): PlayerState {
   const cur = cipherRoundCount(s, block);
   if (target === 0 || cur >= target) return s;
   return { ...s, cipherCounts: { ...(s.cipherCounts ?? {}), [block]: cur + 1 } };
+}
+/** Count the block's solved crossword (capped at the block's target). */
+export function recordCrosswordRound(s: PlayerState, block: number): PlayerState {
+  const target = crosswordRoundsForBlock(block);
+  const cur = crosswordRoundCount(s, block);
+  if (target === 0 || cur >= target) return s;
+  return { ...s, crosswordCounts: { ...(s.crosswordCounts ?? {}), [block]: cur + 1 } };
 }
 export function recordChallengeDone(s: PlayerState, block: number): PlayerState {
   if (isChallengeDone(s, block)) return s;
