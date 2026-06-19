@@ -17,6 +17,8 @@ export interface PlayerState {
   cipherCounts: Record<number, number>;
   /** Per-block count of completed crossword Practice puzzles (block index -> count). */
   crosswordCounts: Record<number, number>;
+  /** Per-block count of solved Hurdle Practice words (block index -> count). */
+  hurdleCounts: Record<number, number>;
   /** Challenge-block indices whose crossword has been completed. */
   challengesDone: number[];
   /** Epoch ms of the last completed recap session (starts at creation). */
@@ -31,10 +33,10 @@ export interface PlayerState {
   subscribed: boolean;
 }
 
-// Bumped to 8: the per-block Practice gate now also requires the crossword
-// session (crosswordCounts) alongside the grammar drills and cipher session.
+// Bumped to 9: the per-block Practice gate now also requires the Hurdle session
+// (hurdleCounts) alongside the grammar drills, cipher session and crossword.
 // Old saves reset.
-export const STATE_VERSION = 8;
+export const STATE_VERSION = 9;
 
 export function defaultPlayerState(now: number, focusStart: number): PlayerState {
   return {
@@ -46,6 +48,7 @@ export function defaultPlayerState(now: number, focusStart: number): PlayerState
     practiceCounts: {},
     cipherCounts: {},
     crosswordCounts: {},
+    hurdleCounts: {},
     challengesDone: [],
     lastRecapAt: now,
     levelsWon: 0,

@@ -27,10 +27,13 @@ import {
   cipherSessionDone,
   crosswordRoundCount,
   crosswordSessionDone,
+  hurdleRoundCount,
+  hurdleSessionDone,
   recapDue,
 } from '../state/progression';
 import { cipherRoundsForBlock } from '../content/cipherItems';
 import { crosswordRoundsForBlock } from '../content/crosswords';
+import { hurdleRoundsForBlock } from '../content/hurdleItems';
 
 /**
  * The screen tree: each route's PARENT is the menu it belongs to. "Back" always
@@ -48,9 +51,11 @@ const PARENT: Partial<Record<Route, Route>> = {
   'fill-in-the-blanks': 'practice',
   grammar: 'practice',
   crossword: 'practice',
+  hurdle: 'practice',
   'recap-cipher': 'recap',
   'recap-grammar': 'recap',
   'recap-crossword': 'recap',
+  'recap-hurdle': 'recap',
   'recap-challenge': 'recap',
   challenge: 'practice',
   statistics: 'main',
@@ -124,13 +129,16 @@ export function App() {
   const pcTarget = hasPractice ? cipherRoundsForBlock(practiceIdx) : 0;
   const pxCount = hasPractice ? crosswordRoundCount(state, practiceIdx) : 0;
   const pxTarget = hasPractice ? crosswordRoundsForBlock(practiceIdx) : 0;
+  const phCount = hasPractice ? hurdleRoundCount(state, practiceIdx) : 0;
+  const phTarget = hasPractice ? hurdleRoundsForBlock(practiceIdx) : 0;
   const pGrammarDone = hasPractice ? blockPracticeDone(state, practiceIdx) : false;
   const pCipherDone = hasPractice ? cipherSessionDone(state, practiceIdx) : false;
   const pCrosswordDone = hasPractice ? crosswordSessionDone(state, practiceIdx) : false;
-  const practiceComplete = hasPractice && pGrammarDone && pCipherDone && pCrosswordDone;
-  // Combined "X/total" across all three Practice games.
-  const pDoneCount = pgCount + pcCount + pxCount;
-  const pTotalTarget = pTarget + pcTarget + pxTarget;
+  const pHurdleDone = hasPractice ? hurdleSessionDone(state, practiceIdx) : false;
+  const practiceComplete = hasPractice && pGrammarDone && pCipherDone && pCrosswordDone && pHurdleDone;
+  // Combined "X/total" across all four Practice games.
+  const pDoneCount = pgCount + pcCount + pxCount + phCount;
+  const pTotalTarget = pTarget + pcTarget + pxTarget + phTarget;
   const mustPractice = curIdx === null && onBlock && !practiceComplete;
 
   let learnStatus: string;
@@ -240,6 +248,15 @@ export function App() {
       locked: !hasPractice || pCrosswordDone,
       onClick: hasPractice && !pCrosswordDone ? () => navigate('crossword') : undefined,
     },
+    {
+      icon: '🟩',
+      label: 'Hurdle',
+      sublabel: 'Spell this block’s words letter by letter',
+      status: !hasPractice || !phTarget ? undefined : pHurdleDone ? (practiceComplete ? 'Completed' : 'Done ✓') : `${phCount}/${phTarget}`,
+      progress: !hasPractice ? 0 : pHurdleDone ? 1 : phTarget ? phCount / phTarget : 1,
+      locked: !hasPractice || pHurdleDone,
+      onClick: hasPractice && !pHurdleDone ? () => navigate('hurdle') : undefined,
+    },
   ];
 
   // Shown on the Practice screen once the lesson's cipher + grammar are both done.
@@ -260,6 +277,7 @@ export function App() {
   const recapItems: MenuItem[] = [
     { icon: '🔡', label: 'Letter Cipher', sublabel: 'Decode sentences from everything you know', onClick: () => navigate('recap-cipher') },
     { icon: '🧠', label: 'Grammar', sublabel: 'Articles across everything you know', onClick: () => navigate('recap-grammar') },
+    { icon: '🟩', label: 'Hurdle', sublabel: 'Spell any word you’ve learned', onClick: () => navigate('recap-hurdle') },
     ...completedChallenges.map((b) => ({
       icon: '🏆',
       label: `Challenge — sets ${b * 2 + 1}–${b * 2 + 2}`,
@@ -288,7 +306,7 @@ export function App() {
               ? 'Finish learning this block to unlock its practice.'
               : practiceComplete
                 ? undefined
-                : 'Clear this block’s Letter Cipher, Grammar and Crossword to unlock the next words.'
+                : 'Clear this block’s Letter Cipher, Grammar, Crossword and Hurdle to unlock the next words.'
           }
           items={practiceItems}
           footer={practiceFooter}
@@ -329,7 +347,8 @@ export function App() {
     case 'learn':
     case 'fill-in-the-blanks':
     case 'grammar':
-    case 'crossword': {
+    case 'crossword':
+    case 'hurdle': {
       const Game = getGame(route)?.component;
       screen = Game ? (
         <Game
@@ -352,6 +371,13 @@ export function App() {
     }
     case 'recap-grammar': {
       const Game = getGame('grammar')?.component;
+      screen = Game ? (
+        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
+      ) : null;
+      break;
+    }
+    case 'recap-hurdle': {
+      const Game = getGame('hurdle')?.component;
       screen = Game ? (
         <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="recap" />
       ) : null;
@@ -399,8 +425,10 @@ export function App() {
     route === 'fill-in-the-blanks' ||
     route === 'grammar' ||
     route === 'crossword' ||
+    route === 'hurdle' ||
     route === 'recap-cipher' ||
     route === 'recap-grammar' ||
+    route === 'recap-hurdle' ||
     route === 'daily-recap-grammar' ||
     route === 'recap-challenge' ||
     route === 'challenge';

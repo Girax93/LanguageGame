@@ -10,6 +10,8 @@ import { CIPHER_ITEMS, cipherItemsForBlock, cipherRoundsForBlock } from '../src/
 import { CROSSWORDS, crosswordWordsForBlock, crosswordItemsForBlock, crosswordRoundsForBlock } from '../src/content/crosswords';
 import { buildCrossword } from '../src/games/crossword/crossword';
 import { CLUES } from '../src/content/clues';
+import { HURDLE_ITEMS, hurdleItemsForBlock, hurdleRoundsForBlock, isHurdleWord, HURDLE_MAX_ROUNDS } from '../src/content/hurdleItems';
+import { triesFor, scoreGuess, isSolved, answerLength, keyHints } from '../src/games/hurdle/hurdle';
 import {
   isItemEligible, isRecapEligible, grammarNounId,
   availableSetCount, masteredSetCount, currentLearnSetIndex,
@@ -17,13 +19,14 @@ import {
   blockNouns, practiceNounsForBlock, blockPracticeDone, practiceCount, recordPracticeDrill,
   cipherSessionDone, cipherRoundCount, recordCipherRound,
   crosswordSessionDone, crosswordRoundCount, recordCrosswordRound,
+  hurdleSessionDone, hurdleRoundCount, recordHurdleRound,
   recapDue, recordRecapDone,
 } from '../src/state/progression';
 import { PROGRESSION } from '../src/state/progressionConfig';
 import type { PlayerState } from '../src/state/types';
 
 function st(p: Partial<PlayerState>): PlayerState {
-  return { learnedWords: [], wordProgress: {}, cipherWords: [], grammarWords: [], practiceCounts: {}, cipherCounts: {}, crosswordCounts: {}, challengesDone: [], lastRecapAt: 0, levelsWon: 0, ...p } as PlayerState;
+  return { learnedWords: [], wordProgress: {}, cipherWords: [], grammarWords: [], practiceCounts: {}, cipherCounts: {}, crosswordCounts: {}, hurdleCounts: {}, challengesDone: [], lastRecapAt: 0, levelsWon: 0, ...p } as PlayerState;
 }
 function learnedThrough(setIdx: number): string[] {
   return SETS.slice(0, setIdx + 1).flatMap((s) => s.words.map((w) => w.id));
@@ -152,6 +155,11 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   for (let k = 0; k < crosswordRoundsForBlock(0); k++) s = recordCrosswordRound(s, 0);
   if (!crosswordSessionDone(s, 0)) fail('g:crossword-flag');
   if (crosswordRoundCount(s, 0) !== crosswordRoundsForBlock(0)) fail('g:crossword-count');
+  // grammar + cipher + crossword still isn't enough — Hurdle must be solved too.
+  if (isBlockComplete(s, SETS, 0)) fail('g:complete-without-hurdle');
+  for (let k = 0; k < hurdleRoundsForBlock(0); k++) s = recordHurdleRound(s, 0);
+  if (!hurdleSessionDone(s, 0)) fail('g:hurdle-flag');
+  if (hurdleRoundCount(s, 0) !== hurdleRoundsForBlock(0)) fail('g:hurdle-count');
   if (!isBlockComplete(s, SETS, 0)) fail('g:incomplete-after-practice');
   if (availableSetCount(s, SETS) !== 2 * B) fail('g:avail-after', availableSetCount(s, SETS));
   if (currentBlock(s, SETS) !== 1) fail('g:block-after', currentBlock(s, SETS));
@@ -252,6 +260,65 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   }
 }
 
-console.log(`lemmas=${LEMMAS.length} sets=${SETS.length} blocks=${blockCount(SETS)} grammar=${GRAMMAR_ITEMS.length} crosswords=${CROSSWORDS.length} practiceRounds=${PROGRESSION.practiceRounds}`);
+// (m) Hurdle: tries scale with length (floor 5, no cap); Wordle scoring handles
+//     duplicate letters; the per-block session is 1..MAX of the block's own
+//     spellable words, every word eligible by that block; the flat pool is sound.
+{
+  const eq = (a: unknown[], b: unknown[]) => a.length === b.length && a.every((x, i) => x === b[i]);
+
+  // tries: max(5, len + 3), no ceiling.
+  if (triesFor('AB') !== 5) fail('m:tries-floor', triesFor('AB'));
+  if (triesFor('ABC') !== 6) fail('m:tries-3', triesFor('ABC'));
+  if (triesFor('HALLO') !== 8) fail('m:tries-5', triesFor('HALLO'));
+  if (triesFor('ABCDEFG') !== 10) fail('m:tries-7', triesFor('ABCDEFG'));
+  if (triesFor('A'.repeat(14)) !== 17) fail('m:tries-nocap', triesFor('A'.repeat(14)));
+  if (answerLength('GROß') !== 4) fail('m:len-eszett', answerLength('GROß'));
+
+  // scoring: greens, duplicate handling, and over-guessed letters going absent.
+  if (!eq(scoreGuess('MANN', 'MANN'), ['correct', 'correct', 'correct', 'correct'])) fail('m:score-all');
+  if (!eq(scoreGuess('NANN', 'MANN'), ['absent', 'correct', 'correct', 'correct'])) fail('m:score-dup');
+  if (!eq(scoreGuess('TOOT', 'OTTO'), ['present', 'present', 'present', 'present'])) fail('m:score-anagram');
+  if (!eq(scoreGuess('AA', 'AB'), ['correct', 'absent'])) fail('m:score-overguess');
+  if (!isSolved('HAUS', 'HAUS') || isSolved('HAXS', 'HAUS') || isSolved('', '')) fail('m:isSolved');
+
+  // key hints: correct beats present beats absent across guesses.
+  const kh = keyHints([
+    { letters: ['A', 'B'], states: ['present', 'absent'] },
+    { letters: ['A', 'C'], states: ['correct', 'absent'] },
+  ]);
+  if (kh.A !== 'correct' || kh.B !== 'absent' || kh.C !== 'absent') fail('m:keyhints', JSON.stringify(kh));
+
+  // flat pool: shape + uniqueness.
+  if (HURDLE_ITEMS.length === 0) fail('m:pool-empty');
+  const seen = new Set<string>(); let dup = 0;
+  for (const it of HURDLE_ITEMS) {
+    if (seen.has(it.id)) dup++; else seen.add(it.id);
+    const w = wordById(it.wordId);
+    if (!w) { fail('m:pool-bad-word', it.id); continue; }
+    if (!isHurdleWord(w)) fail('m:pool-not-spellable', it.id);
+    if (it.requires.length !== 1 || it.requires[0] !== it.wordId) fail('m:pool-requires', it.id);
+    if (it.en !== w.en) fail('m:pool-en', it.id);
+    if (answerLength(it.answer) < 2) fail('m:pool-too-short', it.id);
+    if (it.level < 1 || it.level > 6) fail('m:pool-level', `${it.id}:${it.level}`);
+  }
+  if (dup) fail('m:pool-dup-id', dup);
+
+  // per-block session: bounded, non-empty, and every word belongs to the block
+  // (hence eligible once the block is learned). The gate role is checked in (g).
+  const BS = PROGRESSION.setsPerBlock * PROGRESSION.wordsPerSet;
+  const nb = Math.floor(LEMMAS.length / BS);
+  for (let b = 0; b < nb; b++) {
+    const items = hurdleItemsForBlock(b);
+    if (items.length !== hurdleRoundsForBlock(b)) fail('m:round-count', b);
+    if (items.length < 1) fail('m:block-empty', b);
+    if (items.length > HURDLE_MAX_ROUNDS) fail('m:round-bounds', `${b}:${items.length}`);
+    const blockIds = new Set(LEMMAS.slice(b * BS, b * BS + BS).map((w) => w.id));
+    for (const it of items) {
+      if (!blockIds.has(it.wordId)) fail('m:word-out-of-block', `${b}:${it.wordId}`);
+    }
+  }
+}
+
+console.log(`lemmas=${LEMMAS.length} sets=${SETS.length} blocks=${blockCount(SETS)} grammar=${GRAMMAR_ITEMS.length} crosswords=${CROSSWORDS.length} hurdlePool=${HURDLE_ITEMS.length} practiceRounds=${PROGRESSION.practiceRounds}`);
 if (!ok) { console.log('\nINVARIANTS FAILED'); process.exit(1); }
 console.log('OK — all invariants pass');

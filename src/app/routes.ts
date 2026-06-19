@@ -17,8 +17,10 @@ export type Route =
   | 'fill-in-the-blanks'
   | 'grammar'
   | 'crossword'
+  | 'hurdle'
   | 'recap-cipher'
   | 'recap-grammar'
   | 'recap-crossword'
+  | 'recap-hurdle'
   | 'challenge'
   | 'recap-challenge';

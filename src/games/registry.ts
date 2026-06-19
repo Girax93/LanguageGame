@@ -3,6 +3,7 @@ import { learnGame } from './learn';
 import { fillInTheBlanksGame } from './fill-in-the-blanks';
 import { grammarGame } from './grammar';
 import { crosswordGame } from './crossword';
+import { hurdleGame } from './hurdle';
 
 /**
  * Master list of games (order = home-screen order). The home screen applies
@@ -13,6 +14,7 @@ export const games: GameModule[] = [
   fillInTheBlanksGame,
   grammarGame,
   crosswordGame,
+  hurdleGame,
   {
     id: 'flashcards',
     title: 'Flashcards',

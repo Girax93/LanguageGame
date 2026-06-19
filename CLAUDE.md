@@ -5,8 +5,8 @@ Guidance for working on this codebase. Read this first.
 ## What this is
 
 LanguageGame is a **calm, minimal German language‑learning web app** (mobile‑first). The
-player learns small sets of words, then practises them through three game modes —
-letter ciphers, grammar (article) drills, and crosswords — gated by a structured
+player learns small sets of words, then practises them through four game modes —
+letter ciphers, grammar (article) drills, crosswords, and a Wordle‑style speller (Hurdle) — gated by a structured
 progression system. The aesthetic is deliberately warm, quiet, and uncluttered:
 solid fills only, no gradients or glows, generous whitespace, a serif display face.
 
@@ -80,15 +80,19 @@ mounted. So a fresh chat is set up correctly:
   - `cipherItems.ts` — sentence cryptograms; `grammarItems.ts` — article drills.
   - `crosswords.ts` — GENERATES one interlocking crossword per block from its leftover words (see Curriculum); `challenges.ts` — old per‑block challenge crossword (dormant/unwired).
   - `clues.ts` — `CLUES: Record<lemmaId, {de, en}>` (short parallel German + English DEFINITIONS, not literal glosses) and `clueFor(lemmaId, lang)`; authored for early‑block (0–20) crossword words, English‑gloss fallback beyond.
+  - `hurdleItems.ts` — GENERATES the per‑block Hurdle word list (`hurdleItemsForBlock`, up to 3 of the block's spellable words) + `HURDLE_ITEMS` flat pool for Recap.
   - `derive.ts` — helpers that derive data from the sets.
 - `src/games/` — one folder per mode, each exposes a default game component via `registry.ts`:
   - `_shared/LevelStage.tsx` — the shared focus‑gated level flow (owns lives, win/lose screens,
-    `renderBoard` / `onWin` / `renderWin`). All games render their board through this.
+    `renderBoard` / `onWin` / `renderWin`, plus optional `livesForItem` / `renderHud` / `loseTitle` /
+    `renderLoseExtra` for variable‑tries games like Hurdle). All games render their board through this.
   - `fill-in-the-blanks/` — letter‑cipher game (`cipher.ts`, `CipherBoard`, German `Keyboard`).
   - `grammar/` — article drill (`grammar.ts`, `GrammarBoard`).
   - `crossword/` — `Crossword` (recap/practice), `ChallengeCrossword` (the block capstone),
     `components/CrosswordBoard` (zoom/pan grid, German keyboard, left clue drawer),
     `crossword.ts` (build/layout), `generate.ts` (procedural generator).
+  - `hurdle/` — Wordle‑style speller: `hurdle.ts` (pure `triesFor` / `scoreGuess` / `keyHints`),
+    `Hurdle.tsx` (practice/recap shell), `components/HurdleBoard` + `HurdleKeyboard` (QWERTZ + Enter/⌫).
   - `learn/` — the Learn (study new words) flow.
   - `types.ts` — `GameProps` (`onExit`, `onMain`, `onOpenSettings`, `onPractice`, `scope`).
 - `src/state/` — all the logic, kept pure and React‑free where possible so it can be unit‑tested:
@@ -119,7 +123,9 @@ Two separate resources:
 In games, the HUD shows **only the hearts** — the persistent focus dots were removed. When the
 player loses all 3 lives, the "Out of lives" screen plays a short **`focus-drop`** animation of one
 focus pip popping and fading, so the focus cost is felt without a permanent meter. `FocusPips` is
-still used outside games (Home/Settings).
+still used outside games (Home/Settings). **Hurdle is the exception:** it replaces the hearts with
+its grid of **tries** (`triesFor(word) = max(5, letters+3)`, no cap) via `LevelStage`'s
+`livesForItem`/`renderHud` hooks; running out of tries still costs 1 focus like any level loss.
 
 ### Progression: learn → practice → advance gating (`progressionConfig.ts`, `progression.ts`)
 `PROGRESSION = { wordsPerSet: 5, masteryThreshold: 2, setsPerBlock: 2, practiceRounds: 3,
@@ -133,11 +139,12 @@ PRACTICE → ADVANCE**, one block at a time:
 3. **Advance:** the next sets unlock. Finishing a block's practice shows a **"Block complete!"**
    screen with two buttons — **Learn more words** (→ next set) and **Recap** (→ recap mode).
 
-The Practice session has **three gating parts** (see Curriculum below): the grammar drills above
-(`practiceCounts`, X/3), the **generated letter‑cipher session** (`cipherCounts`), and the
-**generated block crossword** (`crosswordCounts`, one puzzle over the cipher's leftover words). So
-`isBlockComplete = isBlockLearned && blockPracticeDone && cipherSessionDone && crosswordSessionDone`.
-Recap mode replays learned material full‑pool without driving the gate.
+The Practice session has **four gating parts** (see Curriculum below): the grammar drills above
+(`practiceCounts`, X/3), the **generated letter‑cipher session** (`cipherCounts`), the
+**generated block crossword** (`crosswordCounts`, one puzzle over the cipher's leftover words), and
+the **Hurdle session** (`hurdleCounts`, up to 3 of the block's words spelled Wordle‑style). So
+`isBlockComplete = isBlockLearned && blockPracticeDone && cipherSessionDone && crosswordSessionDone &&
+hurdleSessionDone`. Recap mode replays learned material full‑pool without driving the gate.
 
 **Forced daily recap.** Every `recapIntervalMs` (24h), once ≥2 sets are mastered, `recapDue` fires
 and **locks Learn / Practice / Recap** until the player finishes a recap (`recordRecapDone` stamps
@@ -165,6 +172,20 @@ are in `learnedWords`. This is how puzzles are kept to words the player actually
   **floating left drawer** that slides out from the screen edge (inset top/bottom, rounded, no dim
   backdrop); a tiny edge nub opens it. Clues are **German DEFINITIONS by default with a DE/EN
   toggle** (`clueFor`, sourced from `clues.ts`) — not the literal translation.
+
+### Hurdle specifics
+- `Hurdle.tsx` is the **bounded per‑block Practice game** (`scope:'practice'`, frozen block,
+  `recordHurdleRound`, Block‑complete done‑screen) and a free Recap pool (`scope:'recap'`,
+  `HURDLE_ITEMS` — any learned word). It's the **fourth gate part** (see Curriculum).
+- One word per puzzle: the clue is the word's **English meaning**, the player spells the **German**
+  word. Tries scale with length — `triesFor(answer) = max(5, letters+3)`, **no cap** (Ari's call) —
+  replacing hearts via `LevelStage`'s `livesForItem`/`renderHud`; the lose screen reveals the word
+  (`renderLoseExtra`).
+- `hurdle.ts` is pure + tested: `scoreGuess` is standard Wordle scoring **with duplicate‑letter
+  handling** (a guessed letter never claims more copies than the answer has), `keyHints` aggregates
+  the best state per key (correct > present > absent). Ä/Ö/Ü/ß are single letters (`toUpperDE`).
+- `HurdleBoard.tsx` — fit‑to‑width tile grid + `HurdleKeyboard` (QWERTZ with Enter/Backspace,
+  colored by `keyHints`), hardware‑keyboard support, and the dev **Skip** button above the keyboard.
 
 ## Conventions
 
@@ -204,20 +225,26 @@ clue rules described above where they conflict.)
   interlock into one real grid of 4–8 words (`crosswordWordsForBlock` / `crosswordItemsForBlock`,
   built via `generate.ts` + `buildCrossword`). Clues come from `clueFor` (DE+EN definitions). Once
   prepositions move into Grammar (planned), they'll drop out of the crossword pool automatically.
-- **The per‑block gate requires ALL THREE Practice games**: grammar drills (`blockPracticeDone`,
+- **Hurdle is GENERATED per block** (`hurdleItems.ts`): it takes up to 3 of the block's own spellable
+  words (`hurdleWordsForBlock`/`hurdleItemsForBlock`, single token of ≥2 German letters) for the
+  bounded Practice session; `HURDLE_ITEMS` is the flat pool (any learned word) for Recap. Each puzzle
+  is one word guessed Wordle‑style from its English meaning.
+- **The per‑block gate requires ALL FOUR Practice games**: grammar drills (`blockPracticeDone`,
   X/3) + cipher session (`cipherSessionDone`, `state.cipherCounts`) + the block crossword
-  (`crosswordSessionDone`, `state.crosswordCounts`, one puzzle). So `isBlockComplete = isBlockLearned
-  && blockPracticeDone && cipherSessionDone && crosswordSessionDone`. App's Practice menu shows all
-  three with a combined X/total; each game's done‑screen branches on `isBlockComplete` (only offers
-  "Learn more words" when ALL three are done, else "Back to Practice").
+  (`crosswordSessionDone`, `state.crosswordCounts`, one puzzle) + the Hurdle session
+  (`hurdleSessionDone`, `state.hurdleCounts`, up to 3 words). So `isBlockComplete = isBlockLearned
+  && blockPracticeDone && cipherSessionDone && crosswordSessionDone && hurdleSessionDone`. App's
+  Practice menu shows all four with a combined X/total; each game's done‑screen branches on
+  `isBlockComplete` (only offers "Learn more words" when ALL four are done, else "Back to Practice").
 - Articles `der/die/das` are their own early entries glossed "the (masc./fem./neut.)".
-- `STATE_VERSION = 8` (old saves reset). `tests/content.invariants.mts` asserts the lemma‑dataset
+- `STATE_VERSION = 9` (old saves reset). `tests/content.invariants.mts` asserts the lemma‑dataset
   + gating invariants — sets/lookups, generated grammar drills, generated **cipher** coverage
   (1..4 sensible sentences/block; requires real + eligible; unique ids; avg ≥5/10), generated
   **crossword** (every block's puzzle places all its chosen words with no letter conflicts; eligible
   requires; round count 0/1), **crossword clues** (every early‑block (0–20) crossword word has a
-  real DE+EN clue that isn't the literal answer), the per‑block Practice gate (grammar + cipher +
-  crossword), and the daily recap (`recapDue`/`lastRecapAt`).
+  real DE+EN clue that isn't the literal answer), generated **Hurdle** (tries `max(5, len+3)` no cap;
+  `scoreGuess` incl. duplicate handling; every block has 1..3 spellable in‑block words), the per‑block
+  Practice gate (grammar + cipher + crossword + Hurdle), and the daily recap (`recapDue`/`lastRecapAt`).
 
 ## Planned next (agreed with Ari, not built yet)
 
@@ -225,9 +252,9 @@ clue rules described above where they conflict.)
   that teaches their case‑government rules. This also shrinks the crossword leftover pool: the
   crossword takes "block words the cipher didn't cover", so once Grammar covers prepositions, wire a
   grammar‑coverage subtraction into `crosswordWordsForBlock` and they drop out automatically.
-- **"Hurdle" game.** A Wordle‑style guesser for ONE individual word, so a player can drill a single
-  missing/blocking word on demand (e.g. target a specific lemma). Design TBD with Ari. The done‑screen
-  routing already handles new games; add it to the gate via `isBlockComplete` only if it should gate.
+- **"Hurdle" game — ✅ SHIPPED** (was here). Built as a gating 4th Practice game + free Recap; see
+  "Hurdle specifics" and the Curriculum gate above. Possible follow‑up: a dedicated entry point to
+  drill ONE specific blocking lemma on demand (the current Hurdle cycles a block/pool, not a chosen word).
 - Possible cipher follow‑up: declarative `oder` is intentionally excluded (reads oddly) — it could
   return inside a question frame ("Ist das der Mann oder das Kind?").
 

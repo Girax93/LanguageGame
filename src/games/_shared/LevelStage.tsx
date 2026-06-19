@@ -27,6 +27,15 @@ interface Props<T> {
   /** Replaces the final win screen when the whole session is cleared. */
   renderComplete?: () => ReactNode;
   renderBoard: (item: T, controls: BoardControls) => ReactNode;
+  /** Lives (tries) for an item; defaults to ECONOMY.livesPerLevel. Lets a game
+   *  vary the number per item (e.g. Hurdle scales tries by word length). */
+  livesForItem?: (item: T) => number;
+  /** Replace the hearts HUD (remaining, total) — e.g. Hurdle shows tries left. */
+  renderHud?: (remaining: number, total: number) => ReactNode;
+  /** Title on the out-of-lives screen (default "Out of lives"). */
+  loseTitle?: string;
+  /** Extra content on the lose screen, above the focus-drop (e.g. reveal the answer). */
+  renderLoseExtra?: (item: T) => ReactNode;
 }
 
 type Phase = 'play' | 'win' | 'lose';
@@ -43,17 +52,24 @@ export function LevelStage<T extends { id: string }>({
   renderWin,
   renderComplete,
   renderBoard,
+  livesForItem,
+  renderHud,
+  loseTitle,
+  renderLoseExtra,
 }: Props<T>) {
   const { state, now, recordLevel } = usePlayer();
+  const livesFor = (it: T | undefined): number =>
+    it && livesForItem ? livesForItem(it) : ECONOMY.livesPerLevel;
   const [index, setIndex] = useState(0);
   const [attempt, setAttempt] = useState(0);
   const [phase, setPhase] = useState<Phase>('play');
-  const [lives, setLives] = useState(ECONOMY.livesPerLevel);
+  const [lives, setLives] = useState(() => livesFor(items[0]));
 
   const total = items.length;
   const cleared = index >= total;
   const item = cleared ? undefined : items[index];
   const isLast = index === total - 1;
+  const livesTotal = livesFor(item);
 
   function handleResult(won: boolean) {
     recordLevel(won, countsTowardGate);
@@ -64,7 +80,7 @@ export function LevelStage<T extends { id: string }>({
   function goNext() {
     setIndex((i) => i + 1);
     setAttempt(0);
-    setLives(ECONOMY.livesPerLevel);
+    setLives(livesFor(items[index + 1]));
     setPhase('play');
   }
   // DEV/TESTING: treat the current item as solved and jump straight on.
@@ -90,13 +106,13 @@ export function LevelStage<T extends { id: string }>({
   };
   function retry() {
     setAttempt((a) => a + 1);
-    setLives(ECONOMY.livesPerLevel);
+    setLives(livesFor(item));
     setPhase('play');
   }
   function restart() {
     setIndex(0);
     setAttempt(0);
-    setLives(ECONOMY.livesPerLevel);
+    setLives(livesFor(items[0]));
     setPhase('play');
   }
 
@@ -124,9 +140,14 @@ export function LevelStage<T extends { id: string }>({
   }
   if (phase === 'lose') {
     return (
-      <Centered onBack={onExit} icon="○" title="Out of lives"
+      <Centered onBack={onExit} icon="○" title={loseTitle ?? 'Out of lives'}
         body={state.subscribed ? 'Pro keeps your focus full.' : `That cost ${ECONOMY.focusCostOnFail} focus.`}
-        extra={state.subscribed ? undefined : <FocusDrop focus={state.focus} max={ECONOMY.focusMax} />}
+        extra={
+          <>
+            {item && renderLoseExtra?.(item)}
+            {!state.subscribed && <FocusDrop focus={state.focus} max={ECONOMY.focusMax} />}
+          </>
+        }
         primary={{ label: 'Try again', onClick: retry }} />
     );
   }
@@ -159,7 +180,7 @@ export function LevelStage<T extends { id: string }>({
           <ChevronLeft />
         </button>
         <div className="flex items-center gap-3">
-          <Hearts total={ECONOMY.livesPerLevel} remaining={lives} />
+          {renderHud ? renderHud(lives, livesTotal) : <Hearts total={livesTotal} remaining={lives} />}
         </div>
         {onMain ? (
           <button

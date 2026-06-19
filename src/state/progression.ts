@@ -14,6 +14,7 @@ import type { VocabSet, VocabWord } from '../content/vocab';
 import { wordById, ALL_WORDS } from '../content/vocab';
 import { cipherRoundsForBlock } from '../content/cipherItems';
 import { crosswordRoundsForBlock } from '../content/crosswords';
+import { hurdleRoundsForBlock } from '../content/hurdleItems';
 
 const B = PROGRESSION.setsPerBlock;
 
@@ -109,7 +110,8 @@ export function isBlockComplete(s: PlayerState, sets: VocabSet[], block: number)
     isBlockLearned(s, sets, block) &&
     blockPracticeDone(s, block) &&
     cipherSessionDone(s, block) &&
-    crosswordSessionDone(s, block)
+    crosswordSessionDone(s, block) &&
+    hurdleSessionDone(s, block)
   );
 }
 
@@ -225,6 +227,15 @@ export function crosswordSessionDone(s: PlayerState, block: number): boolean {
   const target = crosswordRoundsForBlock(block);
   return target === 0 || crosswordRoundCount(s, block) >= target;
 }
+/** Solved Hurdle Practice words for a block. */
+export function hurdleRoundCount(s: PlayerState, block: number): number {
+  return (s.hurdleCounts ?? {})[block] ?? 0;
+}
+/** The Hurdle part of the gate: all of the block's Hurdle words solved. */
+export function hurdleSessionDone(s: PlayerState, block: number): boolean {
+  const target = hurdleRoundsForBlock(block);
+  return target === 0 || hurdleRoundCount(s, block) >= target;
+}
 
 // Daily recap
 export function recapDue(s: PlayerState, sets: VocabSet[], now: number): boolean {
@@ -268,6 +279,13 @@ export function recordCrosswordRound(s: PlayerState, block: number): PlayerState
   const cur = crosswordRoundCount(s, block);
   if (target === 0 || cur >= target) return s;
   return { ...s, crosswordCounts: { ...(s.crosswordCounts ?? {}), [block]: cur + 1 } };
+}
+/** Count one solved Hurdle Practice word (capped at the block's target). */
+export function recordHurdleRound(s: PlayerState, block: number): PlayerState {
+  const target = hurdleRoundsForBlock(block);
+  const cur = hurdleRoundCount(s, block);
+  if (target === 0 || cur >= target) return s;
+  return { ...s, hurdleCounts: { ...(s.hurdleCounts ?? {}), [block]: cur + 1 } };
 }
 export function recordChallengeDone(s: PlayerState, block: number): PlayerState {
   if (isChallengeDone(s, block)) return s;
