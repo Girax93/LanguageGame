@@ -1,10 +1,13 @@
 /**
- * Procedural crossword layout generator. Packs a set of words into one OR MORE
- * interlocking components inside a single grid, using EVERY word. Words that
- * can't legally cross anything start a new component (so a challenge can be a
- * few mini-crosswords side by side). Pure + deterministic (seeded), so the same
- * input always yields the same puzzle and it can be unit-tested. Nothing is
- * hand-authored — this scales to any word list.
+ * Procedural crossword layout generator. Two modes, both pure + deterministic
+ * (seeded), so the same input always yields the same puzzle and it can be
+ * unit-tested. Nothing is hand-authored — this scales to any word list.
+ *  - generateLayout: packs a set of words into one OR MORE interlocking
+ *    components, using EVERY word (a word that can't cross starts a new
+ *    component — used by the dormant multi-grid challenge).
+ *  - generateConnectedLayout: builds ONE connected component; words that can't
+ *    cross are left UNPLACED and returned for the caller to re-home (the block
+ *    Practice crossword uses this, sending its straggler to Hurdle).
  */
 export type Dir = 'across' | 'down';
 export interface GenWord {
@@ -50,15 +53,18 @@ interface BuildResult {
   minC: number;
   maxC: number;
   components: number;
+  /** Word ids skipped in single-component mode (couldn't cross the grid). */
+  unplaced: string[];
 }
 
-function buildOne(order: GenWord[]): BuildResult {
+function buildOne(order: GenWord[], singleComponent = false): BuildResult {
   const grid = new Map<string, string>();
   // Direction bitmask per cell: 1 = an across word uses it, 2 = a down word.
   // A cell may hold at most one across and one down word — never two in the
   // same direction (that would be a collinear overlap / merged word).
   const cellDir = new Map<string, number>();
   const placed: Placed[] = [];
+  const unplaced: string[] = [];
   let minR = 0;
   let maxR = 0;
   let minC = 0;
@@ -145,6 +151,10 @@ function buildOne(order: GenWord[]): BuildResult {
     }
     if (best) {
       commit(word, best.r, best.c, best.dir, best.cells);
+    } else if (singleComponent) {
+      // Connected mode: a word that can't cross the single component is left
+      // out (the caller routes it elsewhere — e.g. a lone straggler to Hurdle).
+      unplaced.push(word.id);
     } else {
       const r0 = placed.length ? maxR + 2 : 0;
       const res = canPlace(word.surface, r0, 0, 'across')!;
@@ -176,7 +186,7 @@ function buildOne(order: GenWord[]): BuildResult {
   }
   const components = new Set(placed.map((_, i) => find(i))).size;
 
-  return { placed, minR, maxR, minC, maxC, components };
+  return { placed, minR, maxR, minC, maxC, components, unplaced };
 }
 
 /**
@@ -220,4 +230,71 @@ export function generateLayout(words: GenWord[], seed: number, tries = 100): Gen
     dir: P.dir,
   }));
   return { rows: b.maxR - b.minR + 1, cols: b.maxC - b.minC + 1, entries };
+}
+
+export interface ConnectedLayout extends GenLayout {
+  /** Word ids that couldn't be attached to the single connected component. */
+  unplacedIds: string[];
+}
+
+/**
+ * Like generateLayout, but builds ONE connected component. A word that can't
+ * cross the growing grid is left UNPLACED (returned in `unplacedIds`) instead of
+ * starting a separate mini-grid, so the result is always a single interlocking
+ * puzzle. Tries several deterministic orderings and keeps the build that places
+ * the most PRIORITY words, then the most words overall, then the most compact
+ * grid. `priorityIds` are the words we most want in the grid (e.g. the block's
+ * leftover words — whatever stays unplaced is the caller's straggler to re-home).
+ */
+export function generateConnectedLayout(
+  words: GenWord[],
+  seed: number,
+  tries = 100,
+  priorityIds: Set<string> = new Set(),
+): ConnectedLayout {
+  const base = [...words].sort((a, b) =>
+    b.surface.length - a.surface.length || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0),
+  );
+  let best: BuildResult | null = null;
+  let bestScore: [number, number, number, number] | null = null;
+  for (let t = 0; t < tries; t++) {
+    let order = base;
+    if (t > 0) {
+      order = [...base];
+      const rnd = lcg(((seed + 1) * 2654435761) ^ (t * 40503));
+      for (let i = order.length - 1; i > 0; i--) {
+        const j = Math.floor(rnd() * (i + 1));
+        [order[i], order[j]] = [order[j], order[i]];
+      }
+    }
+    const res = buildOne(order, true);
+    const R = res.maxR - res.minR + 1;
+    const C = res.maxC - res.minC + 1;
+    const priUnplaced = res.unplaced.filter((id) => priorityIds.has(id)).length;
+    const score: [number, number, number, number] = [priUnplaced, res.unplaced.length, Math.max(R, C), R * C];
+    if (
+      bestScore === null ||
+      score[0] < bestScore[0] ||
+      (score[0] === bestScore[0] &&
+        (score[1] < bestScore[1] ||
+          (score[1] === bestScore[1] &&
+            (score[2] < bestScore[2] || (score[2] === bestScore[2] && score[3] < bestScore[3])))))
+    ) {
+      best = res;
+      bestScore = score;
+    }
+  }
+  const b = best!;
+  const entries: GenEntry[] = b.placed.map((P) => ({
+    wordId: P.id,
+    row: P.row - b.minR,
+    col: P.col - b.minC,
+    dir: P.dir,
+  }));
+  return {
+    rows: b.maxR - b.minR + 1,
+    cols: b.maxC - b.minC + 1,
+    entries,
+    unplacedIds: b.unplaced,
+  };
 }

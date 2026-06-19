@@ -248,16 +248,21 @@ export function App() {
       locked: !hasPractice || pCrosswordDone,
       onClick: hasPractice && !pCrosswordDone ? () => navigate('crossword') : undefined,
     },
-    {
+  ];
+  // Hurdle only appears when the block actually has a straggler the crossword
+  // couldn't place (often none). Before the block is learned, show it locked
+  // alongside the others.
+  if (!hasPractice || phTarget > 0) {
+    practiceItems.push({
       icon: '🟩',
       label: 'Hurdle',
-      sublabel: 'Spell this block’s words letter by letter',
-      status: !hasPractice || !phTarget ? undefined : pHurdleDone ? (practiceComplete ? 'Completed' : 'Done ✓') : `${phCount}/${phTarget}`,
+      sublabel: 'Spell the word the other games missed',
+      status: !hasPractice ? undefined : pHurdleDone ? (practiceComplete ? 'Completed' : 'Done ✓') : `${phCount}/${phTarget}`,
       progress: !hasPractice ? 0 : pHurdleDone ? 1 : phTarget ? phCount / phTarget : 1,
       locked: !hasPractice || pHurdleDone,
       onClick: hasPractice && !pHurdleDone ? () => navigate('hurdle') : undefined,
-    },
-  ];
+    });
+  }
 
   // Shown on the Practice screen once the lesson's cipher + grammar are both done.
   const practiceFooter = practiceComplete ? (
@@ -306,7 +311,7 @@ export function App() {
               ? 'Finish learning this block to unlock its practice.'
               : practiceComplete
                 ? undefined
-                : 'Clear this block’s Letter Cipher, Grammar, Crossword and Hurdle to unlock the next words.'
+                : 'Clear this block’s practice games to unlock the next words.'
           }
           items={practiceItems}
           footer={practiceFooter}

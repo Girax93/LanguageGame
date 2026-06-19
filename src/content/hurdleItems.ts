@@ -16,6 +16,7 @@ import { SETS, wordById } from './vocab';
 import { PROGRESSION } from '../state/progressionConfig';
 import { toUpperDE, isLetterDE } from '../games/fill-in-the-blanks/cipher';
 import { levelForRequires } from './derive';
+import { crosswordLeftoverWordsForBlock } from './crosswords';
 
 export interface HurdleContentItem {
   id: string;
@@ -30,9 +31,6 @@ export interface HurdleContentItem {
 
 const B = PROGRESSION.setsPerBlock;
 const BLOCK_COUNT = Math.floor(SETS.length / B);
-
-/** Words per block's Hurdle Practice session (gate target cap). */
-export const HURDLE_MAX_ROUNDS = 3;
 
 /** Can a lemma be a Hurdle answer? Single token, >= 2 German letters only. */
 export function isHurdleWord(w: Lemma): boolean {
@@ -53,29 +51,28 @@ function itemFor(w: Lemma): HurdleContentItem {
   };
 }
 
-function blockWordIds(block: number): string[] {
-  return SETS.slice(block * B, block * B + B).flatMap((s) => s.words.map((w) => w.id));
-}
-
-// Precompute the per-block sessions once at load (like cipher/crossword).
+// Precompute the per-block Hurdle sessions once at load. Hurdle drills only the
+// cipher-uncovered words the crossword couldn't fit into its grid — usually one,
+// sometimes none (then the block has no Hurdle in Practice). Together cipher +
+// crossword + Hurdle practise every block word at least once.
 const BY_BLOCK: HurdleContentItem[][] = [];
 for (let b = 0; b < BLOCK_COUNT; b++) {
-  const words = blockWordIds(b)
-    .map((id) => wordById(id)!)
-    .filter(isHurdleWord)
-    .slice(0, HURDLE_MAX_ROUNDS);
+  const words = crosswordLeftoverWordsForBlock(b)
+    .map((id) => wordById(id))
+    .filter((w): w is Lemma => !!w && isHurdleWord(w));
   BY_BLOCK[b] = words.map(itemFor);
 }
 
 /** Flat pool of every spellable lemma (used by free Recap eligibility). */
 export const HURDLE_ITEMS: HurdleContentItem[] = LEMMAS.filter(isHurdleWord).map(itemFor);
 
-/** The bounded Hurdle Practice session for a block (its own words). */
+/** The bounded Hurdle Practice session for a block: the crossword's leftover
+ *  straggler word(s). Empty when the crossword placed every leftover. */
 export function hurdleItemsForBlock(block: number): HurdleContentItem[] {
   return BY_BLOCK[block] ?? [];
 }
 
-/** How many Hurdle words a block's Practice session contains (gate target). */
+/** How many Hurdle words a block's Practice session contains (gate target; 0+). */
 export function hurdleRoundsForBlock(block: number): number {
   return BY_BLOCK[block]?.length ?? 0;
 }

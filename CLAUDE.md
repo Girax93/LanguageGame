@@ -165,8 +165,11 @@ are in `learnedWords`. This is how puzzles are kept to words the player actually
 - `Crossword.tsx` is the **bounded per‑block Practice game** (`scope:'practice'`, frozen block,
   `recordCrosswordRound`, Block‑complete done‑screen) and also a free Recap pool (`scope:'recap'`,
   the `CROSSWORDS` flat list). It's the third gate part (see Curriculum).
-- `generate.ts` — deterministic generator (seeded LCG), packs multiple components, only allows
-  **perpendicular** crossings (a `cellDir` bitmask prevents collinear overlaps that broke numbering).
+- `generate.ts` — deterministic generator (seeded LCG), only allows **perpendicular** crossings (a
+  `cellDir` bitmask prevents collinear overlaps that broke numbering). The block crossword uses
+  `generateConnectedLayout` → ONE connected component; a leftover it can't interlock is left unplaced
+  and handed to Hurdle (`crosswordLeftoverWordsForBlock`). (The legacy `generateLayout`, which packs
+  multiple components, stays for the dormant challenge.)
 - `CrosswordBoard.tsx` — pinch‑zoom + drag‑pan grid, fit‑to‑width, German keyboard, sage = solved /
   terracotta shake = wrong, plus the dev **Skip** button above the keyboard. Clues are in a
   **floating left drawer** that slides out from the screen edge (inset top/bottom, rounded, no dim
@@ -176,11 +179,13 @@ are in `learnedWords`. This is how puzzles are kept to words the player actually
 ### Hurdle specifics
 - `Hurdle.tsx` is the **bounded per‑block Practice game** (`scope:'practice'`, frozen block,
   `recordHurdleRound`, Block‑complete done‑screen) and a free Recap pool (`scope:'recap'`,
-  `HURDLE_ITEMS` — any learned word). It's the **fourth gate part** (see Curriculum).
-- One word per puzzle: the clue is the word's **English meaning**, the player spells the **German**
-  word. Tries scale with length — `triesFor(answer) = max(5, letters+3)`, **no cap** (Ari's call) —
-  replacing hearts via `LevelStage`'s `livesForItem`/`renderHud`; the lose screen reveals the word
-  (`renderLoseExtra`).
+  `HURDLE_ITEMS` — any learned word). It's the **fourth gate part** (see Curriculum), but Practice
+  only drills the word(s) the **crossword couldn't place** (`crosswordLeftoverWordsForBlock`) —
+  usually 0–1, so the Hurdle card often doesn't appear in Practice; Recap is always available.
+- One hidden word per puzzle, **no clue/translation** — it's a pure Wordle (a small **info tile**
+  explains the rules; the word + meaning are revealed only on win/lose via `renderWin`/`renderLoseExtra`).
+  Tries scale with length — `triesFor(answer) = max(5, letters+3)`, **no cap** (Ari's call) —
+  replacing hearts via `LevelStage`'s `livesForItem`/`renderHud`.
 - `hurdle.ts` is pure + tested: `scoreGuess` is standard Wordle scoring **with duplicate‑letter
   handling** (a guessed letter never claims more copies than the answer has), `keyHints` aggregates
   the best state per key (correct > present > absent). Ä/Ö/Ü/ß are single letters (`toUpperDE`).
@@ -221,30 +226,36 @@ clue rules described above where they conflict.)
   — never on a noun. Cipher no longer forces 100% coverage: it makes ~3 good sentences covering
   ~6/10 of a block's new words; **whatever it can't place naturally is left to the crossword**.
 - **Crossword is GENERATED per block** (`crosswords.ts`): it picks up the block's **leftover words**
-  the cipher didn't cover (mostly short function words) and pads them with the block's nouns so they
-  interlock into one real grid of 4–8 words (`crosswordWordsForBlock` / `crosswordItemsForBlock`,
-  built via `generate.ts` + `buildCrossword`). Clues come from `clueFor` (DE+EN definitions). Once
-  prepositions move into Grammar (planned), they'll drop out of the crossword pool automatically.
-- **Hurdle is GENERATED per block** (`hurdleItems.ts`): it takes up to 3 of the block's own spellable
-  words (`hurdleWordsForBlock`/`hurdleItemsForBlock`, single token of ≥2 German letters) for the
-  bounded Practice session; `HURDLE_ITEMS` is the flat pool (any learned word) for Recap. Each puzzle
-  is one word guessed Wordle‑style from its English meaning.
-- **The per‑block gate requires ALL FOUR Practice games**: grammar drills (`blockPracticeDone`,
-  X/3) + cipher session (`cipherSessionDone`, `state.cipherCounts`) + the block crossword
-  (`crosswordSessionDone`, `state.crosswordCounts`, one puzzle) + the Hurdle session
-  (`hurdleSessionDone`, `state.hurdleCounts`, up to 3 words). So `isBlockComplete = isBlockLearned
-  && blockPracticeDone && cipherSessionDone && crosswordSessionDone && hurdleSessionDone`. App's
-  Practice menu shows all four with a combined X/total; each game's done‑screen branches on
-  `isBlockComplete` (only offers "Learn more words" when ALL four are done, else "Back to Practice").
+  the cipher didn't cover (mostly short function words), pads them with a couple of the block's nouns,
+  and builds **ONE connected grid** via `generateConnectedLayout` (`crosswordWordsForBlock` /
+  `crosswordItemsForBlock` + `buildCrossword`). Any leftover it can't interlock is reported by
+  `crosswordLeftoverWordsForBlock` and handed to Hurdle. Clues come from `clueFor` (DE+EN
+  definitions). Once prepositions move into Grammar (planned), they drop out of the pool automatically.
+- **Hurdle is GENERATED per block** (`hurdleItems.ts`): Practice drills only the cipher‑uncovered
+  words the **crossword couldn't place** (`crosswordLeftoverWordsForBlock`, single token of ≥2 German
+  letters) — usually 0–1, so most blocks have no Practice Hurdle. `HURDLE_ITEMS` is the flat pool
+  (any learned word) for Recap. Each puzzle is one **hidden** word guessed Wordle‑style with **no
+  clue** (an info tile explains the rules; the word + meaning show only on finish). Together cipher +
+  crossword + Hurdle practise every block word at least once.
+- **The per‑block gate requires the Practice games that have content**: grammar drills
+  (`blockPracticeDone`, X/3) + cipher session (`cipherSessionDone`, `state.cipherCounts`) + the block
+  crossword (`crosswordSessionDone`, `state.crosswordCounts`, one puzzle) + the Hurdle session
+  (`hurdleSessionDone`, `state.hurdleCounts`) **when it has a straggler** (usually it doesn't, so the
+  Hurdle target is 0 and that part auto‑passes). So `isBlockComplete = isBlockLearned &&
+  blockPracticeDone && cipherSessionDone && crosswordSessionDone && hurdleSessionDone`. App's Practice
+  menu shows the active games with a combined X/total (the Hurdle card only appears when there's a
+  straggler word); each game's done‑screen branches on `isBlockComplete`.
 - Articles `der/die/das` are their own early entries glossed "the (masc./fem./neut.)".
 - `STATE_VERSION = 9` (old saves reset). `tests/content.invariants.mts` asserts the lemma‑dataset
   + gating invariants — sets/lookups, generated grammar drills, generated **cipher** coverage
   (1..4 sensible sentences/block; requires real + eligible; unique ids; avg ≥5/10), generated
-  **crossword** (every block's puzzle places all its chosen words with no letter conflicts; eligible
-  requires; round count 0/1), **crossword clues** (every early‑block (0–20) crossword word has a
-  real DE+EN clue that isn't the literal answer), generated **Hurdle** (tries `max(5, len+3)` no cap;
-  `scoreGuess` incl. duplicate handling; every block has 1..3 spellable in‑block words), the per‑block
-  Practice gate (grammar + cipher + crossword + Hurdle), and the daily recap (`recapDue`/`lastRecapAt`).
+  **crossword** (every block's puzzle is ONE connected component; placed words eligible + drawn from
+  the pool; no letter conflicts; round count 0/1), **crossword clues** (every early‑block (0–20)
+  crossword word has a real DE+EN clue that isn't the literal answer), generated **Hurdle** (tries
+  `max(5, len+3)` no cap; `scoreGuess` incl. duplicate handling; Hurdle = the crossword's leftover
+  stragglers, disjoint from cipher + crossword, and cipher + crossword + Hurdle cover every spellable
+  block word), the per‑block Practice gate (grammar + cipher + crossword + Hurdle), and the daily
+  recap (`recapDue`/`lastRecapAt`).
 
 ## Planned next (agreed with Ari, not built yet)
 

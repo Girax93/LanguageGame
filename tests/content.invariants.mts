@@ -10,7 +10,7 @@ import { CIPHER_ITEMS, cipherItemsForBlock, cipherRoundsForBlock } from '../src/
 import { CROSSWORDS, crosswordWordsForBlock, crosswordItemsForBlock, crosswordRoundsForBlock } from '../src/content/crosswords';
 import { buildCrossword } from '../src/games/crossword/crossword';
 import { CLUES } from '../src/content/clues';
-import { HURDLE_ITEMS, hurdleItemsForBlock, hurdleRoundsForBlock, isHurdleWord, HURDLE_MAX_ROUNDS } from '../src/content/hurdleItems';
+import { HURDLE_ITEMS, hurdleItemsForBlock, hurdleRoundsForBlock, isHurdleWord } from '../src/content/hurdleItems';
 import { triesFor, scoreGuess, isSolved, answerLength, keyHints } from '../src/games/hurdle/hurdle';
 import {
   isItemEligible, isRecapEligible, grammarNounId,
@@ -155,12 +155,27 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   for (let k = 0; k < crosswordRoundsForBlock(0); k++) s = recordCrosswordRound(s, 0);
   if (!crosswordSessionDone(s, 0)) fail('g:crossword-flag');
   if (crosswordRoundCount(s, 0) !== crosswordRoundsForBlock(0)) fail('g:crossword-count');
-  // grammar + cipher + crossword still isn't enough — Hurdle must be solved too.
-  if (isBlockComplete(s, SETS, 0)) fail('g:complete-without-hurdle');
-  for (let k = 0; k < hurdleRoundsForBlock(0); k++) s = recordHurdleRound(s, 0);
-  if (!hurdleSessionDone(s, 0)) fail('g:hurdle-flag');
-  if (hurdleRoundCount(s, 0) !== hurdleRoundsForBlock(0)) fail('g:hurdle-count');
+  // grammar + cipher + crossword: if block 0 has a Hurdle straggler it must be
+  // solved too; otherwise the block is already complete (Hurdle target 0).
+  if (hurdleRoundsForBlock(0) > 0) {
+    if (isBlockComplete(s, SETS, 0)) fail('g:complete-without-hurdle');
+    for (let k = 0; k < hurdleRoundsForBlock(0); k++) s = recordHurdleRound(s, 0);
+    if (!hurdleSessionDone(s, 0)) fail('g:hurdle-flag');
+    if (hurdleRoundCount(s, 0) !== hurdleRoundsForBlock(0)) fail('g:hurdle-count');
+  }
   if (!isBlockComplete(s, SETS, 0)) fail('g:incomplete-after-practice');
+  // The Hurdle gate genuinely gates on a block that HAS a straggler word.
+  let bH = -1;
+  for (let b = 0; b < blockCount(SETS); b++) if (hurdleRoundsForBlock(b) > 0) { bH = b; break; }
+  if (bH >= 0) {
+    let h = st({ learnedWords: learnedThrough(bH * B + B - 1) });
+    for (let k = 0; k < PROGRESSION.practiceRounds; k++) h = recordPracticeDrill(h, bH);
+    for (let k = 0; k < cipherRoundsForBlock(bH); k++) h = recordCipherRound(h, bH);
+    for (let k = 0; k < crosswordRoundsForBlock(bH); k++) h = recordCrosswordRound(h, bH);
+    if (isBlockComplete(h, SETS, bH)) fail('g:hurdle-not-gating', bH);
+    for (let k = 0; k < hurdleRoundsForBlock(bH); k++) h = recordHurdleRound(h, bH);
+    if (!isBlockComplete(h, SETS, bH)) fail('g:hurdle-incomplete', bH);
+  }
   if (availableSetCount(s, SETS) !== 2 * B) fail('g:avail-after', availableSetCount(s, SETS));
   if (currentBlock(s, SETS) !== 1) fail('g:block-after', currentBlock(s, SETS));
 
@@ -211,34 +226,47 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   if (recapDue(few, SETS, 1e15)) fail('j:due-without-2-sets');
 }
 
-// (k) generated crosswords: every block has one puzzle of >=4 placeable words
-//     (the leftovers the cipher didn't cover, padded with block words). Every
-//     chosen word is actually placed, the grid has no conflicting crossings,
-//     requires are real lemmas eligible by that block, ids are unique, and the
-//     round count is 0/1. The crossword's role in the gate is asserted in (g).
+// (k) generated crosswords: every block builds ONE connected puzzle of >=2
+//     interlocking words. Placed words are eligible block words drawn from the
+//     pool, the grid has no letter conflicts and is a SINGLE connected component,
+//     ids are unique, round count is 0/1. Words the crossword can't place fall to
+//     Hurdle (checked in (m)); the gate role is in (g).
 {
   if (CROSSWORDS.length === 0) fail('k:crossword-empty');
   const BS = PROGRESSION.setsPerBlock * PROGRESSION.wordsPerSet;
   const nb = Math.floor(LEMMAS.length / BS);
   const seen = new Set<string>(); let dup = 0;
   for (let b = 0; b < nb; b++) {
-    const ids = crosswordWordsForBlock(b);
+    const pool = new Set(crosswordWordsForBlock(b));
     const item = crosswordItemsForBlock(b);
     if (crosswordRoundsForBlock(b) !== (item ? 1 : 0)) fail('k:round-count', b);
-    if (!item) { if (ids.length >= 2) fail('k:null-with-words', b); continue; }
+    if (!item) continue;
     if (seen.has(item.id)) dup++; else seen.add(item.id);
-    if (ids.length < 4) fail('k:too-few-words', `${b}:${ids.length}`);
+    if (item.entries.length < 2) fail('k:too-few-placed', `${b}:${item.entries.length}`);
     if (item.level < 1 || item.level > 6) fail('k:level', `${b}:${item.level}`);
     const learnedThru = new Set(LEMMAS.slice(0, (b + 1) * BS).map((w) => w.id));
-    const placed = new Set(item.entries.map((e) => e.wordId));
-    for (const id of ids) {
-      if (!wordById(id)) fail('k:bad-word', `${b}:${id}`);
-      if (!learnedThru.has(id)) fail('k:require-uneligible', `${b}:${id}`);
-      if (!placed.has(id)) fail('k:word-not-placed', `${b}:${id}`);
+    for (const e of item.entries) {
+      if (!wordById(e.wordId)) fail('k:bad-word', `${b}:${e.wordId}`);
+      if (!learnedThru.has(e.wordId)) fail('k:require-uneligible', `${b}:${e.wordId}`);
+      if (!pool.has(e.wordId)) fail('k:placed-not-in-pool', `${b}:${e.wordId}`);
     }
     for (const r of item.requires) if (!learnedThru.has(r)) fail('k:require-out-of-block', `${b}:${r}`);
-    try { const built = buildCrossword(item); if (built.total < item.entries.length) fail('k:total', b); }
-    catch (e) { fail('k:build-threw', `${b}:${(e as Error).message}`); }
+    try {
+      const built = buildCrossword(item);
+      const cells = built.cells;
+      const start = cells.keys().next().value as string | undefined;
+      if (start) {
+        const reach = new Set<string>([start]); const stack = [start];
+        while (stack.length) {
+          const cur = stack.pop()!; const parts = cur.split(','); const r = +parts[0]; const c = +parts[1];
+          for (const [dr, dc] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+            const k2 = `${r + dr},${c + dc}`;
+            if (cells.has(k2) && !reach.has(k2)) { reach.add(k2); stack.push(k2); }
+          }
+        }
+        if (reach.size !== cells.size) fail('k:not-connected', `${b}:${reach.size}/${cells.size}`);
+      }
+    } catch (e) { fail('k:build-threw', `${b}:${(e as Error).message}`); }
   }
   if (dup) fail('k:dup-id', dup);
 }
@@ -261,8 +289,8 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
 }
 
 // (m) Hurdle: tries scale with length (floor 5, no cap); Wordle scoring handles
-//     duplicate letters; the per-block session is 1..MAX of the block's own
-//     spellable words, every word eligible by that block; the flat pool is sound.
+//     duplicate letters; the flat pool is sound; per-block Hurdle = the cipher-
+//     uncovered words the crossword couldn't place; coverage holds across games.
 {
   const eq = (a: unknown[], b: unknown[]) => a.length === b.length && a.every((x, i) => x === b[i]);
 
@@ -303,20 +331,34 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   }
   if (dup) fail('m:pool-dup-id', dup);
 
-  // per-block session: bounded, non-empty, and every word belongs to the block
-  // (hence eligible once the block is learned). The gate role is checked in (g).
+  // per-block Hurdle = the cipher-uncovered words the crossword couldn't place
+  // (0+, disjoint from cipher + crossword); and cipher + crossword + Hurdle
+  // together cover every spellable block word at least once.
   const BS = PROGRESSION.setsPerBlock * PROGRESSION.wordsPerSet;
   const nb = Math.floor(LEMMAS.length / BS);
+  let totalHurdle = 0; let blocksWithHurdle = 0;
   for (let b = 0; b < nb; b++) {
     const items = hurdleItemsForBlock(b);
     if (items.length !== hurdleRoundsForBlock(b)) fail('m:round-count', b);
-    if (items.length < 1) fail('m:block-empty', b);
-    if (items.length > HURDLE_MAX_ROUNDS) fail('m:round-bounds', `${b}:${items.length}`);
+    totalHurdle += items.length; if (items.length) blocksWithHurdle++;
     const blockIds = new Set(LEMMAS.slice(b * BS, b * BS + BS).map((w) => w.id));
+    const xitem = crosswordItemsForBlock(b);
+    const placed = new Set(xitem ? xitem.entries.map((e) => e.wordId) : []);
+    const cipherCov = new Set<string>();
+    for (const it of cipherItemsForBlock(b)) for (const r of it.requires) if (blockIds.has(r)) cipherCov.add(r);
+    const hset = new Set(items.map((it) => it.wordId));
     for (const it of items) {
       if (!blockIds.has(it.wordId)) fail('m:word-out-of-block', `${b}:${it.wordId}`);
+      if (placed.has(it.wordId)) fail('m:overlaps-crossword', `${b}:${it.wordId}`);
+      if (cipherCov.has(it.wordId)) fail('m:overlaps-cipher', `${b}:${it.wordId}`);
+    }
+    for (const id of blockIds) {
+      const w = wordById(id)!;
+      if (!isHurdleWord(w)) continue; // non-letter words can only ride along in the cipher
+      if (!cipherCov.has(id) && !placed.has(id) && !hset.has(id)) fail('m:uncovered-word', `${b}:${id}`);
     }
   }
+  console.log(`hurdleWordsTotal=${totalHurdle} blocksWithHurdle=${blocksWithHurdle}/${nb}`);
 }
 
 console.log(`lemmas=${LEMMAS.length} sets=${SETS.length} blocks=${blockCount(SETS)} grammar=${GRAMMAR_ITEMS.length} crosswords=${CROSSWORDS.length} hurdlePool=${HURDLE_ITEMS.length} practiceRounds=${PROGRESSION.practiceRounds}`);

@@ -26,6 +26,7 @@ export function HurdleBoard({ item, controls }: Props) {
   const [guesses, setGuesses] = useState<ScoredGuess[]>([]);
   const [current, setCurrent] = useState<string[]>([]);
   const [shake, setShake] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   const done = useRef(false);
 
   const hints = keyHints(guesses);
@@ -85,11 +86,30 @@ export function HurdleBoard({ item, controls }: Props) {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-5 overflow-y-auto py-3">
-        <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-wide text-taupe">Spell the German word</p>
-          <p className="mt-1 font-serif text-2xl font-semibold text-espresso">{item.en}</p>
-          <p className="mt-1 text-xs text-taupe">{len} letters</p>
+        <div className="flex w-full items-center justify-center gap-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-taupe">Guess the word</p>
+          <button
+            type="button"
+            onClick={() => setShowInfo((s) => !s)}
+            aria-label="How to play"
+            aria-expanded={showInfo}
+            className="flex h-5 w-5 items-center justify-center rounded-full border border-line text-[11px] font-semibold italic text-taupe transition hover:border-brown/50 hover:text-brown"
+          >
+            i
+          </button>
         </div>
+        {showInfo && (
+          <div className="w-full max-w-xs rounded-xl border border-line bg-sand/40 px-4 py-3 text-left text-sm text-taupe animate-pop-in">
+            <p className="mb-1 font-serif text-base font-semibold text-espresso">How to play</p>
+            <p>Guess the hidden German word — type a word of the right length and press Enter.</p>
+            <ul className="mt-2 space-y-1">
+              <li className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-sage" /> right letter, right spot</li>
+              <li className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-ochre" /> right letter, wrong spot</li>
+              <li className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-given/60" /> not in the word</li>
+            </ul>
+            <p className="mt-2">Longer words give you more tries.</p>
+          </div>
+        )}
 
         <div className="mx-auto flex flex-col gap-1.5" style={{ width: gridWidth }}>
           {Array.from({ length: maxRows }).map((_, r) => {
