@@ -509,60 +509,46 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
     return cands;
   };
 
-  // Clauses that are valid stand-alone main clauses and so can be coordinated.
-  const CHAINABLE = new Set(['adj', 'ident', 'det', 'indef', 'ipron', 'ploc', 'padj', 'pident', 'loc', 'verb', 'pp', 'front']);
-  const CONJ: [string, string, string][] = [['l-und', 'und', 'and'], ['l-aber', 'aber', 'but'], ['l-oder', 'oder', 'or']];
-  const hasConj = CONJ.some(([id]) => has(id));
-  const lowerFirst = (str: string) => str.charAt(0).toLowerCase() + str.slice(1);
-  const stripEnd = (str: string) => str.replace(/[.?!]+$/, '');
-
-  // Cap the session so practice stays short: the greedy emits the densest
-  // (most-covering) chained sentences first, so the cap only drops trailing
-  // hard-to-place function words (still taught in Learn).
+  // Each sentence is ONE self-contained clause (no chaining of unrelated clauses,
+  // which read as non-sequiturs). The block's new nouns are gathered into a
+  // single natural enumeration; everything else is a stand-alone sentence.
   const MAX_SENTENCES = 4;
+
+  // 1) "Das sind der Mann, die Frau und das Kind." (or "Das ist der Mann." for one)
+  if (hasS && hasDas) {
+    const newNouns = nouns.filter((n) => unc.has(n.id)).slice(0, 4);
+    if (newNouns.length === 1) {
+      const n = newNouns[0];
+      out.push({ sentence: `Das ist ${ART_NOM[n.gender!]} ${n.de}.`, translation: `That is the ${en1(n)}.`,
+        requires: [...new Set(['l-das', 'l-sein-verb', ART_ID[n.gender!], n.id])] });
+      for (const id of ['l-das', 'l-sein-verb', n.id]) unc.delete(id);
+      usedNoun.add(n.de);
+    } else if (newNouns.length >= 2 && has('l-und')) {
+      const de = newNouns.map((n) => `${ART_NOM[n.gender!]} ${n.de}`);
+      const en = newNouns.map((n) => `the ${en1(n)}`);
+      out.push({
+        sentence: `Das sind ${de.slice(0, -1).join(', ')} und ${de[de.length - 1]}.`,
+        translation: `Those are ${en.slice(0, -1).join(', ')} and ${en[en.length - 1]}.`,
+        requires: [...new Set(['l-das', 'l-sein-verb', 'l-und', ...newNouns.flatMap((n) => [ART_ID[n.gender!], n.id])])],
+      });
+      for (const n of newNouns) { unc.delete(n.id); usedNoun.add(n.de); }
+      for (const id of ['l-das', 'l-sein-verb', 'l-und']) unc.delete(id);
+    }
+    // (2+ new nouns but no "und" yet, e.g. block 0: handled as single "Das ist X" below.)
+  }
+
+  // 2) One coherent sentence per remaining placeable word, up to the cap.
   let guard = 0;
-  while (unc.size && guard < 80) {
+  while (unc.size && guard < 80 && out.length < MAX_SENTENCES) {
     guard++;
-    if (out.length >= MAX_SENTENCES) break;
     const ranked = buildCands().slice().sort((x, y) => y.score - x.score);
-    if (!ranked.length) break; // nothing placeable left — stop (no degenerate single-word puzzles)
-    // Pack up to 3 safe clauses into ONE sentence, joined by a coordinating
-    // conjunction, so a block needs ~3 sentences instead of one per clause.
-    const first = ranked[0];
-    const clauses = [first];
-    for (const id of first.ids) unc.delete(id);
-    let head = first.head ?? '';
-    if (CHAINABLE.has(first.kind) && hasConj) {
-      for (let k = 0; k < 2 && unc.size; k++) {
-        const usedKinds = new Set(clauses.map((c) => c.kind));
-        const pool = buildCands()
-          .filter((c) => CHAINABLE.has(c.kind) && (c.head ?? '') !== head)
-          .sort((x, y) => y.score - x.score);
-        if (!pool.length) break;
-        const varied = pool.filter((c) => !usedKinds.has(c.kind));
-        const nc = (varied.length ? varied : pool)[0];
-        clauses.push(nc);
-        for (const id of nc.ids) unc.delete(id);
-        head = nc.head ?? '';
-      }
-    }
-    if (clauses.length === 1) {
-      out.push({ sentence: first.tokens.join(' '), translation: first.en, requires: [...new Set(first.ids)] });
-    } else {
-      const conj =
-        (clauses.length === 2 ? CONJ.find(([id]) => has(id) && unc.has(id)) : undefined) ||
-        CONJ.find(([id]) => has(id)) ||
-        CONJ[0];
-      const de = clauses.map((c, i) => (i === 0 ? stripEnd(c.tokens.join(' ')) : lowerFirst(stripEnd(c.tokens.join(' ')))));
-      const en = clauses.map((c, i) => (i === 0 || /^I\b/.test(c.en) ? stripEnd(c.en) : lowerFirst(stripEnd(c.en))));
-      const sentence = `${de.slice(0, -1).join(', ')} ${conj[1]} ${de[de.length - 1]}.`;
-      const translation = `${en.slice(0, -1).join(', ')} ${conj[2]} ${en[en.length - 1]}.`;
-      unc.delete(conj[0]);
-      out.push({ sentence, translation, requires: [...new Set([...clauses.flatMap((c) => c.ids), conj[0]])] });
-    }
-    prevKind = first.kind;
-    prevHead = first.head ?? '';
-    for (const c of clauses) if (c.head) usedNoun.add(c.head);
+    if (!ranked.length) break; // nothing placeable left
+    const best = ranked[0];
+    out.push({ sentence: best.tokens.join(' '), translation: best.en, requires: [...new Set(best.ids)] });
+    prevKind = best.kind;
+    prevHead = best.head ?? '';
+    if (best.head) usedNoun.add(best.head);
+    for (const id of best.ids) unc.delete(id);
   }
   return out;
 }
