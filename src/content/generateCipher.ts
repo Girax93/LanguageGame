@@ -505,6 +505,43 @@ export function generateBlockDrafts(b: number, lemmas: Lemma[] = LEMMAS): Cipher
           `${iw}, that is the ${en1(n)}.`, [ik, 'l-das', 'l-sein-verb', ART_ID[n.gender!], n.id], 'inter', n.de);
       }
     }
+    // COORDINATION — only ever joins TWO complete, individually-valid clauses, so
+    // the whole sentence reads naturally (never mismatched fragments). This is how
+    // und / aber appear in real sentences.
+    // "Der Mann ist gut und die Frau ist schön." (two facts)
+    if (hasS && has('l-und') && adjs.length && nouns.length >= 2) {
+      const n1 = pickNoun();
+      const n2 = pickNoun(true, new Set(n1 ? [n1.id] : []));
+      const a1 = pickAdj();
+      const a2 = choice(adjs.length > 1 ? adjs.filter((a) => a.id !== a1?.id) : adjs);
+      if (n1 && n2 && a1 && a2) {
+        push([cap(ART_NOM[n1.gender!]), n1.de, 'ist', a1.de, 'und', ART_NOM[n2.gender!], n2.de, 'ist', a2.de + '.'],
+          `The ${en1(n1)} is ${en1(a1)} and the ${en1(n2)} is ${en1(a2)}.`,
+          [ART_ID[n1.gender!], n1.id, 'l-sein-verb', a1.id, 'l-und', ART_ID[n2.gender!], n2.id, a2.id], 'coord', n1.de);
+      }
+    }
+    // "Der Mann ist groß und gut." (two qualities of one thing)
+    if (hasS && has('l-und') && adjs.length >= 2 && nouns.length) {
+      const n = pickNoun();
+      const a1 = pickAdj();
+      const a2 = choice(adjs.filter((a) => a.id !== a1?.id));
+      if (n && a1 && a2) {
+        push([cap(ART_NOM[n.gender!]), n.de, 'ist', a1.de, 'und', a2.de + '.'],
+          `The ${en1(n)} is ${en1(a1)} and ${en1(a2)}.`,
+          [ART_ID[n.gender!], n.id, 'l-sein-verb', a1.id, 'l-und', a2.id], 'coord', n.de);
+      }
+    }
+    // "Der Mann ist groß, aber das Kind ist nicht groß." (a real contrast via negation)
+    if (hasS && has('l-aber') && has('l-nicht') && adjs.length && nouns.length >= 2) {
+      const n1 = pickNoun();
+      const n2 = pickNoun(true, new Set(n1 ? [n1.id] : []));
+      const a = pickAdj();
+      if (n1 && n2 && a) {
+        push([cap(ART_NOM[n1.gender!]), n1.de, 'ist', a.de + ',', 'aber', ART_NOM[n2.gender!], n2.de, 'ist', 'nicht', a.de + '.'],
+          `The ${en1(n1)} is ${en1(a)}, but the ${en1(n2)} is not ${en1(a)}.`,
+          [ART_ID[n1.gender!], n1.id, 'l-sein-verb', a.id, 'l-aber', ART_ID[n2.gender!], n2.id, 'l-nicht'], 'coord', n1.de);
+      }
+    }
 
     return cands;
   };

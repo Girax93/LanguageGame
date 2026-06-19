@@ -173,6 +173,8 @@ export const CLUES: Record<string, Clue> = {
   // ── numbers ─────────────────────────────────────────────────────────────--
   "l-zwei": { de: "Die Zahl 2", en: "The number 2" },
   "l-drei": { de: "Die Zahl 3", en: "The number 3" },
+  "l-dein": { de: "Gehört dir: ___ Haus", en: "Belonging to you: ___ house" },
+  "l-reden": { de: "Mit Worten sprechen", en: "To talk; to speak" },
 };
 
 export function clueFor(wordId: string, lang: 'de' | 'en'): string {
