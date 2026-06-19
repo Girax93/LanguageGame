@@ -7,20 +7,22 @@ import {
 import { LEMMAS, type Pos } from '../src/content/lemmas';
 import { GRAMMAR_ITEMS } from '../src/content/grammarItems';
 import { CIPHER_ITEMS, cipherItemsForBlock, cipherRoundsForBlock } from '../src/content/cipherItems';
-import { CROSSWORDS } from '../src/content/crosswords';
+import { CROSSWORDS, crosswordWordsForBlock, crosswordItemsForBlock, crosswordRoundsForBlock } from '../src/content/crosswords';
+import { buildCrossword } from '../src/games/crossword/crossword';
 import {
   isItemEligible, isRecapEligible, grammarNounId,
   availableSetCount, masteredSetCount, currentLearnSetIndex,
   isSetMastered, isBlockComplete, currentBlock, blockCount,
   blockNouns, practiceNounsForBlock, blockPracticeDone, practiceCount, recordPracticeDrill,
   cipherSessionDone, cipherRoundCount, recordCipherRound,
+  crosswordSessionDone, crosswordRoundCount, recordCrosswordRound,
   recapDue, recordRecapDone,
 } from '../src/state/progression';
 import { PROGRESSION } from '../src/state/progressionConfig';
 import type { PlayerState } from '../src/state/types';
 
 function st(p: Partial<PlayerState>): PlayerState {
-  return { learnedWords: [], wordProgress: {}, cipherWords: [], grammarWords: [], practiceCounts: {}, cipherCounts: {}, challengesDone: [], lastRecapAt: 0, levelsWon: 0, ...p } as PlayerState;
+  return { learnedWords: [], wordProgress: {}, cipherWords: [], grammarWords: [], practiceCounts: {}, cipherCounts: {}, crosswordCounts: {}, challengesDone: [], lastRecapAt: 0, levelsWon: 0, ...p } as PlayerState;
 }
 function learnedThrough(setIdx: number): string[] {
   return SETS.slice(0, setIdx + 1).flatMap((s) => s.words.map((w) => w.id));
@@ -83,10 +85,9 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
 //     SAFE sentences; every requires id is a real lemma eligible by that block;
 //     ids unique; levels in range; round count matches. Coverage is sense-first
 //     (hard-to-place function words may be skipped) so we only assert each block
-//     touches >=1 new word and the average is healthy. (Crossword still empty.)
+//     touches >=1 new word and the average is healthy.
 {
   if (CIPHER_ITEMS.length === 0) fail('e:cipher-empty');
-  if (CROSSWORDS.length !== 0) fail('e:crossword-nonempty', CROSSWORDS.length);
   const BS = PROGRESSION.setsPerBlock * PROGRESSION.wordsPerSet;
   const nb = Math.floor(LEMMAS.length / BS);
   const seen = new Set<string>(); let dup = 0;
@@ -145,6 +146,11 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   for (let k = 0; k < cipherRoundsForBlock(0); k++) s = recordCipherRound(s, 0);
   if (!cipherSessionDone(s, 0)) fail('g:cipher-flag');
   if (cipherRoundCount(s, 0) !== cipherRoundsForBlock(0)) fail('g:cipher-count');
+  // cipher + grammar still isn't enough — the crossword must be solved too.
+  if (isBlockComplete(s, SETS, 0)) fail('g:complete-without-crossword');
+  for (let k = 0; k < crosswordRoundsForBlock(0); k++) s = recordCrosswordRound(s, 0);
+  if (!crosswordSessionDone(s, 0)) fail('g:crossword-flag');
+  if (crosswordRoundCount(s, 0) !== crosswordRoundsForBlock(0)) fail('g:crossword-count');
   if (!isBlockComplete(s, SETS, 0)) fail('g:incomplete-after-practice');
   if (availableSetCount(s, SETS) !== 2 * B) fail('g:avail-after', availableSetCount(s, SETS));
   if (currentBlock(s, SETS) !== 1) fail('g:block-after', currentBlock(s, SETS));
@@ -196,6 +202,38 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   if (recapDue(few, SETS, 1e15)) fail('j:due-without-2-sets');
 }
 
-console.log(`lemmas=${LEMMAS.length} sets=${SETS.length} blocks=${blockCount(SETS)} grammar=${GRAMMAR_ITEMS.length} practiceRounds=${PROGRESSION.practiceRounds}`);
+// (k) generated crosswords: every block has one puzzle of >=4 placeable words
+//     (the leftovers the cipher didn't cover, padded with block words). Every
+//     chosen word is actually placed, the grid has no conflicting crossings,
+//     requires are real lemmas eligible by that block, ids are unique, and the
+//     round count is 0/1. The crossword's role in the gate is asserted in (g).
+{
+  if (CROSSWORDS.length === 0) fail('k:crossword-empty');
+  const BS = PROGRESSION.setsPerBlock * PROGRESSION.wordsPerSet;
+  const nb = Math.floor(LEMMAS.length / BS);
+  const seen = new Set<string>(); let dup = 0;
+  for (let b = 0; b < nb; b++) {
+    const ids = crosswordWordsForBlock(b);
+    const item = crosswordItemsForBlock(b);
+    if (crosswordRoundsForBlock(b) !== (item ? 1 : 0)) fail('k:round-count', b);
+    if (!item) { if (ids.length >= 2) fail('k:null-with-words', b); continue; }
+    if (seen.has(item.id)) dup++; else seen.add(item.id);
+    if (ids.length < 4) fail('k:too-few-words', `${b}:${ids.length}`);
+    if (item.level < 1 || item.level > 6) fail('k:level', `${b}:${item.level}`);
+    const learnedThru = new Set(LEMMAS.slice(0, (b + 1) * BS).map((w) => w.id));
+    const placed = new Set(item.entries.map((e) => e.wordId));
+    for (const id of ids) {
+      if (!wordById(id)) fail('k:bad-word', `${b}:${id}`);
+      if (!learnedThru.has(id)) fail('k:require-uneligible', `${b}:${id}`);
+      if (!placed.has(id)) fail('k:word-not-placed', `${b}:${id}`);
+    }
+    for (const r of item.requires) if (!learnedThru.has(r)) fail('k:require-out-of-block', `${b}:${r}`);
+    try { const built = buildCrossword(item); if (built.total < item.entries.length) fail('k:total', b); }
+    catch (e) { fail('k:build-threw', `${b}:${(e as Error).message}`); }
+  }
+  if (dup) fail('k:dup-id', dup);
+}
+
+console.log(`lemmas=${LEMMAS.length} sets=${SETS.length} blocks=${blockCount(SETS)} grammar=${GRAMMAR_ITEMS.length} crosswords=${CROSSWORDS.length} practiceRounds=${PROGRESSION.practiceRounds}`);
 if (!ok) { console.log('\nINVARIANTS FAILED'); process.exit(1); }
 console.log('OK — all invariants pass');
