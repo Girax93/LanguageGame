@@ -9,6 +9,7 @@ import { GRAMMAR_ITEMS } from '../src/content/grammarItems';
 import { CIPHER_ITEMS, cipherItemsForBlock, cipherRoundsForBlock } from '../src/content/cipherItems';
 import { CROSSWORDS, crosswordWordsForBlock, crosswordItemsForBlock, crosswordRoundsForBlock } from '../src/content/crosswords';
 import { buildCrossword } from '../src/games/crossword/crossword';
+import { CLUES } from '../src/content/clues';
 import {
   isItemEligible, isRecapEligible, grammarNounId,
   availableSetCount, masteredSetCount, currentLearnSetIndex,
@@ -232,6 +233,23 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
     catch (e) { fail('k:build-threw', `${b}:${(e as Error).message}`); }
   }
   if (dup) fail('k:dup-id', dup);
+}
+
+// (l) crossword clues: every word in an early-block (0–20) crossword has a real
+//     DE+EN definitional clue (not just the gloss fallback), and the clue is not
+//     literally the answer word. Beyond block 20 the gloss fallback is allowed
+//     until those clues are authored.
+{
+  const seen = new Set<string>();
+  for (let b = 0; b < 20; b++) for (const id of crosswordWordsForBlock(b)) seen.add(id);
+  for (const id of seen) {
+    const c = CLUES[id];
+    if (!c) { fail('l:missing-clue', id); continue; }
+    if (!c.de || !c.en) { fail('l:empty-clue', id); continue; }
+    const w = wordById(id);
+    if (w && (c.de.toLowerCase() === w.de.toLowerCase() || c.en.toLowerCase() === w.de.toLowerCase()))
+      fail('l:clue-is-answer', id);
+  }
 }
 
 console.log(`lemmas=${LEMMAS.length} sets=${SETS.length} blocks=${blockCount(SETS)} grammar=${GRAMMAR_ITEMS.length} crosswords=${CROSSWORDS.length} practiceRounds=${PROGRESSION.practiceRounds}`);

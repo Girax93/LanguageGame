@@ -11,8 +11,7 @@ import {
   isItemEligible,
   currentBlock,
   crosswordSessionDone,
-  cipherSessionDone,
-  blockPracticeDone,
+  isBlockComplete,
 } from '../../state/progression';
 import { shuffle } from '../../lib/array';
 import { LevelStage } from '../_shared/LevelStage';
@@ -75,13 +74,12 @@ function CrosswordDone({
   onPractice?: () => void;
 }) {
   const { state } = usePlayer();
-  const othersDone = cipherSessionDone(state, block) && blockPracticeDone(state, block);
-  if (othersDone) {
+  if (isBlockComplete(state, SETS, block)) {
     return (
       <Done
         onExit={onExit}
         title="Block complete!"
-        body="Cipher, grammar and crossword done — the next words are unlocked."
+        body="Every practice for this block is done — the next words are unlocked."
         primaryLabel="Learn more words"
         onPrimary={onLearn ?? onExit}
         secondaryLabel="Recap what you’ve learned"
@@ -93,7 +91,7 @@ function CrosswordDone({
     <Done
       onExit={onExit}
       title="Crossword done!"
-      body="Now finish this block’s Letter Cipher and Grammar to unlock the next words."
+      body="Keep going — finish this block’s other practice to unlock the next words."
       primaryLabel="Back to Practice"
       onPrimary={onPractice ?? onExit}
     />

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { GRAMMAR_ITEMS, type GrammarContentItem } from '../../content/grammarItems';
-import { isItemEligible, currentBlock, practiceNounsForBlock, practiceCount, cipherSessionDone } from '../../state/progression';
+import { isItemEligible, currentBlock, practiceNounsForBlock, practiceCount, isBlockComplete } from '../../state/progression';
 import { PROGRESSION } from '../../state/progressionConfig';
 import { SETS } from '../../content/vocab';
 import { shuffle } from '../../lib/array';
@@ -66,8 +66,9 @@ export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, onPr
   );
 }
 
-/** Shown when the grammar drills are finished. If the block's cipher session is
- *  also done the block is complete; otherwise it points the player at the cipher. */
+/** Shown when the grammar drills are finished. Only the LAST remaining practice
+ *  completes the block; until then we send the player back to Practice (this
+ *  stays correct as more Practice games are added). */
 function PracticeDone({
   block,
   onExit,
@@ -82,12 +83,12 @@ function PracticeDone({
   onPractice?: () => void;
 }) {
   const { state } = usePlayer();
-  if (cipherSessionDone(state, block)) {
+  if (isBlockComplete(state, SETS, block)) {
     return (
       <Done
         onExit={onExit}
         title="Block complete!"
-        body="Grammar and cipher done — the next words are unlocked."
+        body="Every practice for this block is done — the next words are unlocked."
         primaryLabel="Learn more words"
         onPrimary={onLearn ?? onExit}
         secondaryLabel="Recap what you’ve learned"
@@ -99,7 +100,7 @@ function PracticeDone({
     <Done
       onExit={onExit}
       title="Grammar done!"
-      body="Now finish this block’s Letter Cipher to unlock the next words."
+      body="Keep going — finish this block’s other practice to unlock the next words."
       primaryLabel="Back to Practice"
       onPrimary={onPractice ?? onExit}
     />
