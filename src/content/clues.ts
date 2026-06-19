@@ -34,6 +34,7 @@ export const CLUES: Record<string, Clue> = {
   "l-viele": { de: "Eine große Zahl von Dingen", en: "A large number of things" },
   "l-wer": { de: "Frage nach einer Person", en: "Asks which person" },
   "l-dieser": { de: "Dieses Ding hier", en: "This one here" },
+  "l-jemand": { de: "Irgendeine Person; man weiß nicht wer", en: "Some person; somebody" },
   "l-selbst": { de: "Persönlich, ohne Hilfe", en: "In person; without help" },
 
   // ── nouns ───────────────────────────────────────────────────────────────--
@@ -175,6 +176,9 @@ export const CLUES: Record<string, Clue> = {
   "l-drei": { de: "Die Zahl 3", en: "The number 3" },
   "l-dein": { de: "Gehört dir: ___ Haus", en: "Belonging to you: ___ house" },
   "l-reden": { de: "Mit Worten sprechen", en: "To talk; to speak" },
+  "l-jetzt": { de: "In diesem Augenblick", en: "At this very moment" },
+  "l-tun": { de: "Eine Handlung ausführen", en: "To carry out an action" },
+  "l-nie": { de: "Zu keiner Zeit", en: "At no time" },
 };
 
 export function clueFor(wordId: string, lang: 'de' | 'en'): string {
