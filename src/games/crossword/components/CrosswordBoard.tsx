@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import type { CrosswordContentItem } from '../../../content/crosswords';
 import { SkipButton, type BoardControls } from '../../_shared/LevelStage';
-import { toUpperDE, isLetterDE } from '../../fill-in-the-blanks/cipher';
+import { toUpperActive, isLetterActive } from '../../../content/lang/alphabet';
+import { getActiveCode } from '../../../content/lang/registry';
 import { Keyboard } from '../../fill-in-the-blanks/components/Keyboard';
 import { buildCrossword, cellKey } from '../crossword';
 import { clueFor } from '../../../content/clues';
@@ -32,6 +33,11 @@ export function CrosswordBoard({ item, controls }: Props) {
   const [wrong, setWrong] = useState<string | null>(null);
   const [showClues, setShowClues] = useState(false);
   const [lang, setLang] = useState<'de' | 'en'>('de');
+  // The "native" clue side adapts to the active course language.
+  const nativeCode = getActiveCode();
+  const nativeLabel = nativeCode === 'no' ? 'NO' : 'DE';
+  const acrossTitle = lang === 'de' ? (nativeCode === 'no' ? 'Vannrett' : 'Waagerecht') : 'Across';
+  const downTitle = lang === 'de' ? (nativeCode === 'no' ? 'Loddrett' : 'Senkrecht') : 'Down';
   const done = useRef(false);
 
   // ── zoom / pan ────────────────────────────────────────────────────────────
@@ -328,8 +334,8 @@ export function CrosswordBoard({ item, controls }: Props) {
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key.length === 1) {
-        const up = toUpperDE(e.key);
-        if (isLetterDE(up)) pressLetter(up);
+        const up = toUpperActive(e.key);
+        if (isLetterActive(up)) pressLetter(up);
       }
     }
     window.addEventListener('keydown', onKey);
@@ -474,7 +480,7 @@ export function CrosswordBoard({ item, controls }: Props) {
                   onClick={() => setLang('de')}
                   className={`px-3 py-1.5 transition ${lang === 'de' ? 'bg-brown text-cream' : 'text-brown'}`}
                 >
-                  DE
+                  {nativeLabel}
                 </button>
                 <button
                   type="button"
@@ -495,8 +501,8 @@ export function CrosswordBoard({ item, controls }: Props) {
             </div>
           </div>
           <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-4 py-3">
-            <ClueGroup title={lang === 'de' ? 'Waagerecht' : 'Across'} entries={across} selEntry={selEntry} onPick={selectClue} done={sageCells} lang={lang} />
-            <ClueGroup title={lang === 'de' ? 'Senkrecht' : 'Down'} entries={down} selEntry={selEntry} onPick={selectClue} done={sageCells} lang={lang} />
+            <ClueGroup title={acrossTitle} entries={across} selEntry={selEntry} onPick={selectClue} done={sageCells} lang={lang} />
+            <ClueGroup title={downTitle} entries={down} selEntry={selEntry} onPick={selectClue} done={sageCells} lang={lang} />
           </div>
         </div>
       </div>
