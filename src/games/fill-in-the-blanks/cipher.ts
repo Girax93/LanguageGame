@@ -4,6 +4,8 @@
  * Ä/Ö/Ü/ß; Norwegian Æ/Ø/Å) via the active-alphabet helpers.
  */
 import { toUpperActive, isLetterActive, activeAlphabet } from '../../content/lang/alphabet';
+// Back-compat aliases (some board components still import these names):
+export { toUpperActive as toUpperDE, isLetterActive as isLetterDE };
 
 export type CellKind = 'letter' | 'punct';
 
