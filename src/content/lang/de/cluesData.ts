@@ -81,7 +81,7 @@ export const CLUES_DE: Record<string, Clue> = {
   "l-wuerde": { de: "Höfliches „würde“: ich ___ gern …", en: "Polite 'would': I ___ like to …" },
   "l-nehmen": { de: "Etwas mit der Hand greifen und halten", en: "To grasp and hold something" },
 
-  // ── prepositions ────────────────────────────────────────────────────────
+  // ── prepositions ──────────────────────────────────────────────────────────
   "l-zu": { de: "Richtung auf ein Ziel: ___ Hause", en: "Toward a goal: ___ home" },
   "l-mit": { de: "Zusammen ___ jemandem", en: "Together ___ someone" },
   "l-auf": { de: "Oben auf einer Fläche", en: "On top of a surface" },
