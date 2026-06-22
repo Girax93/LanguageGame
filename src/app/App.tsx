@@ -77,7 +77,7 @@ function pathTo(route: Route): Route[] {
 }
 
 export function App() {
-  const { state, now, recordRecapDone, forceRecapDue } = usePlayer();
+  const { state, now, language, switchLanguage, recordRecapDone, forceRecapDue } = usePlayer();
   const [stack, setStack] = useState<Route[]>(['main']);
   const [confirmMain, setConfirmMain] = useState(false);
   const [recapBlock, setRecapBlock] = useState<number | null>(null);
@@ -166,10 +166,15 @@ export function App() {
     { icon: '🛒', label: 'Store', sublabel: 'Premium and extras', onClick: () => navigate('store') },
     { icon: '⚙️', label: 'Settings', sublabel: 'Account, subscription, reset', onClick: () => navigate('settings') },
   ];
+  const openLanguage = (code: string) => {
+    switchLanguage(code);
+    navigate('lang-menu');
+  };
   const languageItems: MenuItem[] = [
-    { icon: '🇩🇪', label: 'German', sublabel: 'Beginner · A1', onClick: () => navigate('lang-menu') },
-    { icon: '🇳🇴', label: 'Norwegian', sublabel: 'Bokmål', badge: 'Coming', locked: true },
+    { icon: '🇩🇪', label: 'German', sublabel: 'Beginner · A1', onClick: () => openLanguage('de') },
+    { icon: '🇳🇴', label: 'Norwegian', sublabel: 'Bokmål · A1', onClick: () => openLanguage('no') },
   ];
+  const langTitle = language === 'no' ? 'Norwegian' : 'German';
 
   // When the daily recap is due, it's the only way forward — Learn/Practice/Recap lock.
   const langMenuItems: MenuItem[] = recapDueNow
@@ -300,7 +305,7 @@ export function App() {
       screen = <MenuScreen title="Learn" items={languageItems} onBack={back} onMain={requestMain} />;
       break;
     case 'lang-menu':
-      screen = <MenuScreen title="German" items={langMenuItems} onBack={back} onMain={requestMain} />;
+      screen = <MenuScreen title={langTitle} items={langMenuItems} onBack={back} onMain={requestMain} />;
       break;
     case 'practice':
       screen = (
