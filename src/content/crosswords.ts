@@ -176,7 +176,7 @@ export function crosswordItemsForBlock(block: number): CrosswordContentItem | nu
 export function crosswordRoundsForBlock(block: number): number {
   return activeBlocks[block]?.item ? 1 : 0;
 }
-/** Cipher-uncovered words the block's crossword couldn't place → Hurdle). */
+/** Cipher-uncovered words the block's crossword couldn't place (→ Hurdle). */
 export function crosswordLeftoverWordsForBlock(block: number): string[] {
   return activeBlocks[block]?.hurdleLeftovers ?? [];
 }
