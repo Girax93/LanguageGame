@@ -5,17 +5,14 @@
  * agree), which the content test catches before shipping.
  */
 import { wordById } from '../../content/vocab';
-import { toUpperDE } from '../fill-in-the-blanks/cipher';
+import { toUpperActive } from '../../content/lang/alphabet';
 import type { CrosswordContentItem, CrosswordDir } from '../../content/crosswords';
 
 export interface XCell {
   r: number;
   c: number;
-  /** Correct uppercase letter for this cell. */
   answer: string;
-  /** Clue number if a word starts here. */
   number?: number;
-  /** Entry indices passing through this cell. */
   across?: number;
   down?: number;
 }
@@ -24,11 +21,9 @@ export interface XEntry {
   index: number;
   number: number;
   dir: CrosswordDir;
-  /** The vocab word-id (so the board can resolve a clue by language). */
   wordId: string;
   clue: string;
   answer: string;
-  /** Cell keys, in answer order. */
   cells: string[];
 }
 
@@ -38,7 +33,6 @@ export interface BuiltCrossword {
   cols: number;
   cells: Map<string, XCell>;
   entries: XEntry[];
-  /** Number of filled cells (puzzle solved when this many are correct). */
   total: number;
 }
 
@@ -50,7 +44,7 @@ export function buildCrossword(item: CrosswordContentItem): BuiltCrossword {
   const drafts = item.entries.map((e, i) => {
     const word = wordById(e.wordId);
     if (!word) throw new Error(`crossword ${item.id}: unknown word ${e.wordId}`);
-    const answer = toUpperDE(word.de);
+    const answer = toUpperActive(word.de);
     const clue = e.clue ?? word.en;
     const keys: string[] = [];
     for (let k = 0; k < answer.length; k++) {
@@ -79,7 +73,6 @@ export function buildCrossword(item: CrosswordContentItem): BuiltCrossword {
     }
   }
 
-  // Standard numbering: a cell is numbered if it starts an across and/or down word.
   let n = 0;
   for (let r = 0; r < item.rows; r++) {
     for (let c = 0; c < item.cols; c++) {

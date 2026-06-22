@@ -1,15 +1,4 @@
-import { GERMAN_ALPHABET, type KeyState } from '../cipher';
-
-// QWERTZ-style German layout, including ä/ö/ü and ß as their own keys.
-const ROWS: string[][] = [
-  ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ü'],
-  ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ö', 'Ä'],
-  ['Y', 'X', 'C', 'V', 'B', 'N', 'M', 'ß'],
-];
-
-// Safety net: make sure every cipher letter has a key somewhere.
-const MISSING = GERMAN_ALPHABET.filter((l) => !ROWS.flat().includes(l));
-if (MISSING.length) ROWS.push(MISSING);
+import { activeAlphabet, activeKeyboardRows, type KeyState } from '../../../content/lang/alphabet';
 
 interface Props {
   onKey: (letter: string) => void;
@@ -24,9 +13,14 @@ const KEY_STYLES: Record<KeyState, string> = {
 };
 
 export function Keyboard({ onKey, stateFor, disabled = false }: Props) {
+  // Active-language layout (German QWERTZ + ä/ö/ü/ß, Norwegian QWERTY + æ/ø/å).
+  const rows = activeKeyboardRows().map((r) => [...r]);
+  const missing = activeAlphabet().filter((l) => !rows.flat().includes(l));
+  if (missing.length) rows.push(missing);
+
   return (
     <div className="select-none space-y-1.5">
-      {ROWS.map((row, r) => (
+      {rows.map((row, r) => (
         <div key={r} className="flex justify-center gap-1">
           {row.map((letter) => {
             const state = stateFor(letter);

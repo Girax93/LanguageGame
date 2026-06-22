@@ -1,12 +1,6 @@
 import type { TileState } from '../hurdle';
+import { activeKeyboardRows } from '../../../content/lang/alphabet';
 import { ChevronLeft } from '../../../components/ui/icons';
-
-/** QWERTZ German layout. Bottom row is flanked by Enter + Backspace (Wordle-style). */
-const LETTER_ROWS: string[][] = [
-  ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ü'],
-  ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ö', 'Ä'],
-  ['Y', 'X', 'C', 'V', 'B', 'N', 'M', 'ß'],
-];
 
 type KeyHint = TileState | 'idle';
 
@@ -22,11 +16,12 @@ interface Props {
   onEnter: () => void;
   onDelete: () => void;
   hints: Record<string, TileState>;
-  /** Whether the current row is complete (Enter emphasised when true). */
   canSubmit: boolean;
 }
 
 export function HurdleKeyboard({ onLetter, onEnter, onDelete, hints, canSubmit }: Props) {
+  // QWERTY-style layout for the active language (German QWERTZ, Norwegian + Æ/Ø/Å).
+  const LETTER_ROWS = activeKeyboardRows();
   return (
     <div className="select-none space-y-1.5">
       {LETTER_ROWS.slice(0, 2).map((row, r) => (
