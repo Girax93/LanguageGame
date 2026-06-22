@@ -81,7 +81,7 @@ export const CLUES_DE: Record<string, Clue> = {
   "l-wuerde": { de: "Höfliches „würde“: ich ___ gern …", en: "Polite 'would': I ___ like to …" },
   "l-nehmen": { de: "Etwas mit der Hand greifen und halten", en: "To grasp and hold something" },
 
-  // ── prepositions ──────────────────────────────────────────────────────────
+  // ── prepositions ────────────────────────────────────────────────────────
   "l-zu": { de: "Richtung auf ein Ziel: ___ Hause", en: "Toward a goal: ___ home" },
   "l-mit": { de: "Zusammen ___ jemandem", en: "Together ___ someone" },
   "l-auf": { de: "Oben auf einer Fläche", en: "On top of a surface" },
@@ -101,7 +101,7 @@ export const CLUES_DE: Record<string, Clue> = {
   "l-gegen": { de: "In die entgegengesetzte Richtung; dagegen", en: "Against; in opposition" },
   "l-in": { de: "Innerhalb von etwas: ___ dem Haus", en: "Inside something: ___ the house" },
 
-  // ── adverbs ──────────────────────────────────────────────────────────────--
+  // ── adverbs ────────────────────────────────────────────────────────────--
   "l-wie": { de: "Frage nach der Art: ___ geht es dir?", en: "Asks in what way: ___ are you?" },
   "l-so": { de: "Auf diese Weise", en: "In this way" },
   "l-hier": { de: "An diesem Ort", en: "At this place" },
@@ -129,7 +129,7 @@ export const CLUES_DE: Record<string, Clue> = {
   "l-genug": { de: "So viel wie nötig", en: "As much as is needed" },
   "l-genau": { de: "Ganz richtig; präzise", en: "Exactly right; precise" },
 
-  // ── conjunctions ─────────────────────────────────────────────────────────
+  // ── conjunctions ────────────────────────────────────────────────────────
   "l-dass": { de: "Leitet einen Nebensatz ein: ich weiß, ___ …", en: "Introduces a clause: I know ___ …" },
   "l-aber": { de: "Drückt einen Gegensatz aus", en: "Expresses a contrast" },
   "l-wenn": { de: "Unter dieser Bedingung; falls", en: "Under this condition; if" },
@@ -157,7 +157,7 @@ export const CLUES_DE: Record<string, Clue> = {
   "l-na": { de: "Lockerer Gesprächsanfang: „___, wie geht's?“", en: "A casual opener: '___, how are you?'" },
   "l-hallo": { de: "Gruß zur Begrüßung", en: "A word of greeting" },
 
-  // ── adjectives ────────────────────────────────────────────────────────────
+  // ── adjectives ───────────────────────────────────────────────────────────
   "l-schoen": { de: "Schön anzusehen; angenehm", en: "Lovely to look at; pleasant" },
   "l-andere": { de: "Nicht dieselbe; eine weitere", en: "Not the same; a further one" },
   "l-tot": { de: "Nicht mehr lebendig", en: "No longer alive" },
