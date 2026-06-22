@@ -9,7 +9,14 @@ import {
 import type { PlayerState } from './types';
 import { defaultPlayerState } from './types';
 import { ECONOMY } from './economyConfig';
-import { loadPlayerState, savePlayerState, clearPlayerState } from './storage';
+import {
+  loadPlayerState,
+  savePlayerState,
+  clearPlayerState,
+  loadActiveLanguage,
+  saveActiveLanguage,
+} from './storage';
+import { setActiveContentLanguage } from '../content/lang/registry';
 import {
   applyRegen,
   recordLevelResult,
@@ -30,29 +37,27 @@ import {
   addGrammarNoun,
 } from './progression';
 
+// Pick the saved language and align the content layer BEFORE any state loads.
+const INITIAL_LANG = loadActiveLanguage();
+setActiveContentLanguage(INITIAL_LANG);
+
 interface PlayerContextValue {
   state: PlayerState;
-  /** A ticking clock (ms) so focus countdowns + the daily-recap timer re-render. */
   now: number;
+  /** The active course language ('de' | 'no'). */
+  language: string;
+  /** Switch course language: saves current progress, loads the other language's. */
+  switchLanguage: (code: string) => void;
   answerWord: (wordId: string, correct: boolean) => void;
   recordLevel: (won: boolean, countsTowardGate?: boolean) => void;
-  /** Mark the given challenge block cleared. */
   recordChallenge: (block: number) => void;
-  /** Count one completed grammar Practice drill for the block (gates advancement). */
   recordPracticeDrill: (block: number) => void;
-  /** Count one solved cipher Practice sentence for the block (gates advancement). */
   recordCipherRound: (block: number) => void;
-  /** Mark the block's crossword Practice puzzle solved (gates advancement). */
   recordCrosswordRound: (block: number) => void;
-  /** Count one solved Hurdle Practice word for the block (gates advancement). */
   recordHurdleRound: (block: number) => void;
-  /** Mark today's recap session complete (resets the 24h timer). */
   recordRecapDone: () => void;
-  /** DEV: make the daily recap due now (for testing). */
   forceRecapDue: () => void;
-  /** Mark words used in a solved Practice cipher (block cipher-coverage). */
   recordCipherWords: (ids: string[]) => void;
-  /** Mark a noun's article drilled in a solved Practice grammar (coverage). */
   recordGrammarNoun: (id: string | undefined) => void;
   buyFocus: () => void;
   setSubscribed: (value: boolean) => void;
@@ -62,14 +67,15 @@ interface PlayerContextValue {
 const PlayerCtx = createContext<PlayerContextValue | null>(null);
 
 export function PlayerProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<string>(INITIAL_LANG);
   const [state, setState] = useState<PlayerState>(() =>
-    applyRegen(loadPlayerState(Date.now()), Date.now()),
+    applyRegen(loadPlayerState(Date.now(), INITIAL_LANG), Date.now()),
   );
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    savePlayerState(state);
-  }, [state]);
+    savePlayerState(state, language);
+  }, [state, language]);
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -84,6 +90,15 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     () => ({
       state,
       now,
+      language,
+      switchLanguage: (code) => {
+        if (code === language) return;
+        savePlayerState(state, language); // persist the language we're leaving
+        setActiveContentLanguage(code);
+        saveActiveLanguage(code);
+        setLanguage(code);
+        setState(applyRegen(loadPlayerState(Date.now(), code), Date.now()));
+      },
       answerWord: (wordId, correct) =>
         setState((s) => recordWordAnswer(s, wordId, correct)),
       recordLevel: (won, countsTowardGate = true) =>
@@ -102,11 +117,11 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       buyFocus: () => setState((s) => buyFocusRefill(s, Date.now())),
       setSubscribed: (v) => setState((s) => setSubscribedPure(s, v, Date.now())),
       resetProgress: () => {
-        clearPlayerState();
+        clearPlayerState(language);
         setState(defaultPlayerState(Date.now(), ECONOMY.focusStart));
       },
     }),
-    [state, now],
+    [state, now, language],
   );
 
   return <PlayerCtx.Provider value={value}>{children}</PlayerCtx.Provider>;
