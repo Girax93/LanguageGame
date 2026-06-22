@@ -1,12 +1,11 @@
 /**
  * Challenge crosswords: the capstone of each block. One crossword built from
  * EVERY word in the block (2 sets * 5 = 10 words), generated procedurally and
- * deterministically (seeded by block index) so retries are the same puzzle and
- * nothing is hand-authored.
+ * deterministically (seeded by block index). Active-language aware.
  */
 import { SETS, wordById } from './vocab';
 import { PROGRESSION } from '../state/progressionConfig';
-import { toUpperDE } from '../games/fill-in-the-blanks/cipher';
+import { toUpperActive } from './lang/alphabet';
 import { levelForRequires } from './derive';
 import { generateLayout } from '../games/crossword/generate';
 import type { CrosswordContentItem } from './crosswords';
@@ -18,7 +17,7 @@ export function blockWordIds(block: number): string[] {
 
 export function challengeCrossword(block: number): CrosswordContentItem {
   const ids = blockWordIds(block);
-  const words = ids.map((id) => ({ id, surface: toUpperDE(wordById(id)!.de) }));
+  const words = ids.map((id) => ({ id, surface: toUpperActive(wordById(id)!.de) }));
   const layout = generateLayout(words, block);
   return {
     id: `challenge-${block}`,

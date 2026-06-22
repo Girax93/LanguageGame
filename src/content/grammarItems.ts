@@ -1,11 +1,10 @@
 /**
- * Grammar drills — GENERATED from the noun lemmas. For every gendered noun we
- * produce a der/die/das article drill (pick the right ending). This replaces
- * the old hand-authored list and scales to the whole vocabulary. The grammar
- * game layers a short "explain → practise" flow on top of these items.
+ * Article drills for the ACTIVE language. Each `LangPack` builds its own items
+ * (German d-er/d-ie/d-as; Norwegian en/ei/et), and this module exposes the
+ * active set as a live binding that swaps on a language switch.
  */
-import { ALL_WORDS } from './vocab';
 import type { Gender } from './lemmas';
+import { LANGS, getActiveCode, onLanguageChange } from './lang/registry';
 
 export interface GrammarContentItem {
   id: string;
@@ -19,24 +18,10 @@ export interface GrammarContentItem {
   level: number;
 }
 
-function endingFor(g: Gender): string {
-  return g === 'm' ? 'er' : g === 'f' ? 'ie' : 'as';
-}
-/** Spread the difficulty curve (1–6) across the ~2000-word order. */
-function levelForOrder(order: number): number {
-  return Math.max(1, Math.min(6, Math.floor((order - 1) / 334) + 1));
-}
+const BY_LANG = new Map<string, GrammarContentItem[]>(LANGS.map((l) => [l.code, l.grammarItems]));
 
-export const GRAMMAR_ITEMS: GrammarContentItem[] = ALL_WORDS.filter(
-  (w) => w.pos === 'noun' && !!w.gender,
-).map((noun) => ({
-  id: `g-${noun.id}`,
-  before: '',
-  stem: 'd',
-  ending: endingFor(noun.gender!),
-  after: ` ${noun.de}`,
-  translation: `the ${noun.en}`,
-  gender: noun.gender!,
-  requires: [noun.id],
-  level: levelForOrder(noun.order),
-}));
+export let GRAMMAR_ITEMS: GrammarContentItem[] = BY_LANG.get(getActiveCode()) ?? [];
+
+onLanguageChange((code) => {
+  GRAMMAR_ITEMS = BY_LANG.get(code) ?? [];
+});

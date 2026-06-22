@@ -1,24 +1,17 @@
 /**
- * Crossword content — GENERATED per block (see `generateLayout`).
- *
- * Division of labour across the three Practice games:
- *  - Cipher    teaches the block's words inside whole sentences.
- *  - Grammar   drills articles (and, later, prepositions).
- *  - Crossword PICKS UP THE LEFTOVERS — the block words the cipher session
- *    couldn't place (mostly short function words) — and pads them with the
- *    block's nouns so they actually interlock into a real grid (min 4 words).
- *
- * Each clue is just the answer's English meaning (the board has a DE/EN toggle
- * and falls back to the gloss), so no clue authoring is needed; crossings make
- * even hard-to-clue particles solvable. One puzzle per block — it's the third
- * half of the block's Practice gate.
+ * Crossword content — GENERATED per block, for every language. The crossword
+ * picks up a block's LEFTOVERS (words the cipher didn't place), pads them with
+ * the block's nouns so they interlock, and builds ONE connected grid. Whatever
+ * still can't be placed is handed to Hurdle. Precomputed per language; the
+ * public functions dispatch to the active language and swap on a switch.
  */
-import { SETS, wordById } from './vocab';
+import type { Lemma } from './lemmas';
 import { PROGRESSION } from '../state/progressionConfig';
-import { toUpperDE } from '../games/fill-in-the-blanks/cipher';
-import { levelForRequires } from './derive';
 import { generateConnectedLayout } from '../games/crossword/generate';
-import { cipherItemsForBlock } from './cipherItems';
+import { cipherBlocksForLang, type CipherContentItem } from './cipherItems';
+import { LANGS, getActiveCode, onLanguageChange } from './lang/registry';
+import { vocabFor, type VocabSet } from './vocab';
+import type { LangPack } from './lang/types';
 
 export type CrosswordDir = 'across' | 'down';
 
@@ -43,60 +36,61 @@ export interface CrosswordContentItem extends RawCrossword {
 }
 
 const B = PROGRESSION.setsPerBlock;
-const BLOCK_COUNT = Math.floor(SETS.length / B);
 
-/** All word-ids in a block (2 sets). */
-function blockWordIds(block: number): string[] {
-  return SETS.slice(block * B, block * B + B).flatMap((s) => s.words.map((w) => w.id));
+interface LangCtx {
+  code: string;
+  byId: Map<string, Lemma>;
+  idToSet: Map<string, number>;
+  sets: VocabSet[];
+  toUpper: (s: string) => string;
+  cipherBlocks: CipherContentItem[][];
 }
 
-/** Block words the generated cipher session already covers. */
-function cipherCoveredIds(block: number): Set<string> {
-  const ids = new Set(blockWordIds(block));
+function levelForRequiresLang(requires: string[], idToSet: Map<string, number>): number {
+  let maxIdx = 0;
+  for (const id of requires) maxIdx = Math.max(maxIdx, idToSet.get(id) ?? 0);
+  return Math.max(1, Math.min(6, maxIdx + 1));
+}
+
+function blockWordIds(ctx: LangCtx, block: number): string[] {
+  return ctx.sets.slice(block * B, block * B + B).flatMap((s) => s.words.map((w) => w.id));
+}
+function cipherCoveredIds(ctx: LangCtx, block: number): Set<string> {
+  const ids = new Set(blockWordIds(ctx, block));
   const covered = new Set<string>();
-  for (const it of cipherItemsForBlock(block)) {
+  for (const it of ctx.cipherBlocks[block] ?? []) {
     for (const r of it.requires) if (ids.has(r)) covered.add(r);
   }
   return covered;
 }
-
-/** A word can be a crossword answer only if it's a single token of >= 2 letters
- *  (multi-word contractions like "in dem" can't sit in a grid). */
-function isPlaceable(id: string): boolean {
-  const w = wordById(id);
+function isPlaceable(ctx: LangCtx, id: string): boolean {
+  const w = ctx.byId.get(id);
   return !!w && w.de.length >= 2 && !/\s/.test(w.de);
 }
+const lenOf = (ctx: LangCtx, id: string): number => ctx.byId.get(id)?.de.length ?? 0;
+const byLenDesc = (ctx: LangCtx, a: string, b: string): number =>
+  lenOf(ctx, b) - lenOf(ctx, a) || (a < b ? -1 : a > b ? 1 : 0);
 
-const lenOf = (id: string): number => wordById(id)?.de.length ?? 0;
-const byLenDesc = (a: string, b: string): number => lenOf(b) - lenOf(a) || (a < b ? -1 : a > b ? 1 : 0);
-
-/** Cipher-uncovered, placeable words of a block — the words the crossword most
- *  wants to place (priority); whatever it can't interlock falls to Hurdle. */
-function blockLeftovers(block: number): string[] {
-  const covered = cipherCoveredIds(block);
-  return blockWordIds(block).filter((id) => isPlaceable(id) && !covered.has(id));
+function blockLeftovers(ctx: LangCtx, block: number): string[] {
+  const covered = cipherCoveredIds(ctx, block);
+  return blockWordIds(ctx, block).filter((id) => isPlaceable(ctx, id) && !covered.has(id));
 }
 
-/**
- * The pool a block's crossword draws from: every leftover the cipher didn't
- * cover (priority), PLUS connector words from the same block (nouns first,
- * longest first) so short leftovers can interlock into ONE connected grid.
- */
-export function crosswordWordsForBlock(block: number): string[] {
-  const leftovers = blockLeftovers(block);
+function crosswordPool(ctx: LangCtx, block: number): string[] {
+  const leftovers = blockLeftovers(ctx, block);
   const used = new Set(leftovers);
-  const connectors = blockWordIds(block)
-    .filter((id) => isPlaceable(id) && !used.has(id))
+  const connectors = blockWordIds(ctx, block)
+    .filter((id) => isPlaceable(ctx, id) && !used.has(id))
     .sort((a, b) => {
-      const ga = wordById(a)?.gender ? 0 : 1;
-      const gb = wordById(b)?.gender ? 0 : 1;
-      return ga - gb || byLenDesc(a, b); // nouns first, then longest
+      const ga = ctx.byId.get(a)?.gender ? 0 : 1;
+      const gb = ctx.byId.get(b)?.gender ? 0 : 1;
+      return ga - gb || byLenDesc(ctx, a, b);
     });
   const result = [...leftovers];
   let added = 0;
   for (const id of connectors) {
     if (result.length >= 7) break;
-    if (result.length >= 4 && added >= 2) break; // enough size + interlock anchors
+    if (result.length >= 4 && added >= 2) break;
     result.push(id);
     added++;
   }
@@ -105,30 +99,22 @@ export function crosswordWordsForBlock(block: number): string[] {
 
 interface BlockCross {
   item: CrosswordContentItem | null;
-  /** Cipher-uncovered words the crossword couldn't place — sent to Hurdle. */
+  pool: string[];
   hurdleLeftovers: string[];
 }
 
-/**
- * Build the block's ONE connected crossword + the leftover word(s) it couldn't
- * place. The generator maximises placement of the priority leftovers; any that
- * still don't interlock are returned for Hurdle — so every block word is
- * practised by the cipher, the crossword, or Hurdle (at least once).
- */
-function buildBlockCrossword(block: number): BlockCross {
-  const leftovers = blockLeftovers(block);
-  const pool = crosswordWordsForBlock(block);
-  if (pool.length < 2) return { item: null, hurdleLeftovers: leftovers };
+function buildBlockCrossword(ctx: LangCtx, block: number): BlockCross {
+  const leftovers = blockLeftovers(ctx, block);
+  const pool = crosswordPool(ctx, block);
+  if (pool.length < 2) return { item: null, pool, hurdleLeftovers: leftovers };
 
-  const words = pool.map((id) => ({ id, surface: toUpperDE(wordById(id)!.de) }));
+  const words = pool.map((id) => ({ id, surface: ctx.toUpper(ctx.byId.get(id)!.de) }));
   const layout = generateConnectedLayout(words, 1000 + block, 60, new Set(leftovers));
   const placedIds = layout.entries.map((e) => e.wordId);
   const placed = new Set(placedIds);
   const hurdleLeftovers = leftovers.filter((id) => !placed.has(id));
 
-  // A real crossword needs at least two interlocking words; if fewer placed,
-  // drop the crossword for this block and let Hurdle take its leftovers.
-  if (placedIds.length < 2) return { item: null, hurdleLeftovers: leftovers };
+  if (placedIds.length < 2) return { item: null, pool, hurdleLeftovers: leftovers };
 
   const item: CrosswordContentItem = {
     id: `x-b${block}`,
@@ -136,31 +122,61 @@ function buildBlockCrossword(block: number): BlockCross {
     cols: layout.cols,
     entries: layout.entries.map((e) => ({ wordId: e.wordId, row: e.row, col: e.col, dir: e.dir })),
     requires: [...new Set(placedIds)],
-    level: levelForRequires(placedIds),
+    level: levelForRequiresLang(placedIds, ctx.idToSet),
   };
-  return { item, hurdleLeftovers };
+  return { item, pool, hurdleLeftovers };
 }
 
-// Precompute once at load (memoized), like the cipher session.
-const BY_BLOCK: BlockCross[] = [];
-for (let b = 0; b < BLOCK_COUNT; b++) BY_BLOCK[b] = buildBlockCrossword(b);
-
-/** The block's single crossword puzzle (null if it has none). */
-export function crosswordItemsForBlock(block: number): CrosswordContentItem | null {
-  return BY_BLOCK[block]?.item ?? null;
+function ctxFor(pack: LangPack): LangCtx {
+  const v = vocabFor(pack.code);
+  return {
+    code: pack.code,
+    byId: v.byId,
+    idToSet: v.idToSet,
+    sets: v.sets,
+    toUpper: pack.toUpper,
+    cipherBlocks: cipherBlocksForLang(pack.code),
+  };
 }
 
-/** How many crossword rounds a block's Practice session has (0 or 1). */
-export function crosswordRoundsForBlock(block: number): number {
-  return BY_BLOCK[block]?.item ? 1 : 0;
+function buildLang(pack: LangPack): BlockCross[] {
+  const ctx = ctxFor(pack);
+  const blockCount = Math.floor(ctx.sets.length / B);
+  const out: BlockCross[] = [];
+  for (let b = 0; b < blockCount; b++) out[b] = buildBlockCrossword(ctx, b);
+  return out;
 }
 
-/** Cipher-uncovered words the block's crossword couldn't place (→ Hurdle). */
-export function crosswordLeftoverWordsForBlock(block: number): string[] {
-  return BY_BLOCK[block]?.hurdleLeftovers ?? [];
+const BY_LANG = new Map<string, BlockCross[]>(LANGS.map((l) => [l.code, buildLang(l)]));
+
+/** Cipher-uncovered words a language's block crossword couldn't place. */
+export function crosswordLeftoverForLang(code: string, block: number): string[] {
+  return BY_LANG.get(code)?.[block]?.hurdleLeftovers ?? [];
 }
 
-/** Flat pool of every block's crossword (used by free Recap eligibility). */
-export const CROSSWORDS: CrosswordContentItem[] = BY_BLOCK
+let activeBlocks: BlockCross[] = BY_LANG.get(getActiveCode()) ?? [];
+export let CROSSWORDS: CrosswordContentItem[] = activeBlocks
   .map((b) => b.item)
   .filter((x): x is CrosswordContentItem => x !== null);
+
+onLanguageChange((code) => {
+  activeBlocks = BY_LANG.get(code) ?? [];
+  CROSSWORDS = activeBlocks.map((b) => b.item).filter((x): x is CrosswordContentItem => x !== null);
+});
+
+/** The pool a block's crossword draws from (active language; used by tests). */
+export function crosswordWordsForBlock(block: number): string[] {
+  return activeBlocks[block]?.pool ?? [];
+}
+/** The block's single crossword puzzle (null if it has none). */
+export function crosswordItemsForBlock(block: number): CrosswordContentItem | null {
+  return activeBlocks[block]?.item ?? null;
+}
+/** How many crossword rounds a block's Practice session has (0 or 1). */
+export function crosswordRoundsForBlock(block: number): number {
+  return activeBlocks[block]?.item ? 1 : 0;
+}
+/** Cipher-uncovered words the block's crossword couldn't place → Hurdle). */
+export function crosswordLeftoverWordsForBlock(block: number): string[] {
+  return activeBlocks[block]?.hurdleLeftovers ?? [];
+}

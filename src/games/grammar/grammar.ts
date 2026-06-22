@@ -3,11 +3,11 @@
  * article ending letter by letter; there are no numbers, so the ending must
  * be recalled, not deduced.
  */
-import { toUpperDE } from '../fill-in-the-blanks/cipher';
+import { toUpperActive } from '../../content/lang/alphabet';
 
 /** The ending as an array of single uppercase letters (slots to fill). */
 export function endingLetters(ending: string): string[] {
-  return [...toUpperDE(ending)];
+  return [...toUpperActive(ending)];
 }
 
 /** Does `typed` match the ending letter at `index`? */
@@ -18,10 +18,9 @@ export function isEndingLetterCorrect(
 ): boolean {
   const letters = endingLetters(ending);
   if (index < 0 || index >= letters.length) return false;
-  return letters[index] === toUpperDE(typed);
+  return letters[index] === toUpperActive(typed);
 }
 
 /** The full article (stem + ending), uppercased. */
 export function fullArticle(stem: string, ending: string): string {
-  return toUpperDE(stem + ending);
-}
+  return toUpperActive(stem 
