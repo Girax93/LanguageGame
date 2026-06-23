@@ -6,6 +6,19 @@ import { LevelStage } from '../games/_shared/LevelStage';
 import { CrosswordBoard } from '../games/crossword/components/CrosswordBoard';
 import { challengeCrossword } from '../content/challenges';
 import { MenuScreen, type MenuItem } from '../components/ui/MenuScreen';
+import { Home } from './Home';
+import {
+  BookIcon,
+  TargetIcon,
+  RepeatIcon,
+  SunIcon,
+  KeyIcon,
+  GrammarIcon,
+  GridIcon,
+  TilesIcon,
+  TrophyIcon,
+} from '../components/ui/icons';
+import { peekLearnedCount } from '../state/storage';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { Statistics } from './Statistics';
 import { Store } from './Store';
@@ -161,39 +174,93 @@ export function App() {
   const recapUnlocked = masteredSets >= 2;
   const completedChallenges = [...(state.challengesDone ?? [])].sort((a, b) => a - b);
 
-  const mainItems: MenuItem[] = [
-    { icon: '📖', label: 'Learn', sublabel: 'Acquire words in a language', onClick: () => navigate('languages') },
-    { icon: '📈', label: 'Statistics', sublabel: 'Words learned and level progress', onClick: () => navigate('statistics') },
-    { icon: '🛒', label: 'Store', sublabel: 'Premium and extras', onClick: () => navigate('store') },
-    { icon: '⚙️', label: 'Settings', sublabel: 'Account, subscription, reset', onClick: () => navigate('settings') },
-  ];
   const openLanguage = (code: string) => {
     switchLanguage(code);
     navigate('lang-menu');
   };
+  // Per-language word counts for the language cards. The active language reads
+  // live state; the other is peeked from its own (saved) namespace.
+  const deCount = language === 'de' ? state.learnedWords.length : peekLearnedCount('de');
+  const noCount = language === 'no' ? state.learnedWords.length : peekLearnedCount('no');
   const languageItems: MenuItem[] = [
-    { icon: '🇩🇪', label: 'German', sublabel: 'Beginner · A1', onClick: () => openLanguage('de') },
-    { icon: '🇳🇴', label: 'Norwegian', sublabel: 'Bokmål · A1', onClick: () => openLanguage('no') },
+    {
+      icon: '🇩🇪',
+      label: 'German',
+      sublabel: deCount > 0 ? `A1 · ${deCount} words learned` : 'Beginner · A1',
+      onClick: () => openLanguage('de'),
+    },
+    {
+      icon: '🇳🇴',
+      label: 'Norwegian',
+      sublabel: noCount > 0 ? `A1 · ${noCount} words learned` : 'Bokmål · A1',
+      onClick: () => openLanguage('no'),
+    },
   ];
   const langTitle = language === 'no' ? 'Norwegian' : 'German';
+
+  // The home "Continue" card: the single next real action for the active
+  // language, computed from the same progression signals the menus use.
+  let continueItem: MenuItem;
+  if (recapDueNow) {
+    continueItem = {
+      icon: <SunIcon />,
+      label: 'Daily Recap',
+      sublabel: 'Keep your words fresh to keep going',
+      badge: 'Required',
+      emphasis: true,
+      onClick: () => navigate('daily-recap-grammar'),
+    };
+  } else if (mustPractice) {
+    continueItem = {
+      icon: <TargetIcon />,
+      label: `Practice ${langTitle}`,
+      sublabel: 'Clear this block to unlock the next words',
+      emphasis: true,
+      onClick: () => navigate('practice'),
+    };
+  } else if (curIdx !== null) {
+    continueItem = {
+      icon: <BookIcon />,
+      label: `Continue ${langTitle}`,
+      sublabel: 'Pick up the next words',
+      emphasis: true,
+      onClick: () => navigate('learn'),
+    };
+  } else if (recapUnlocked) {
+    continueItem = {
+      icon: <RepeatIcon />,
+      label: `Review ${langTitle}`,
+      sublabel: 'Mixed recap of everything you know',
+      emphasis: true,
+      onClick: () => navigate('recap'),
+    };
+  } else {
+    continueItem = {
+      icon: <BookIcon />,
+      label: `Continue ${langTitle}`,
+      sublabel: 'Pick up the next words',
+      emphasis: true,
+      onClick: () => navigate('learn'),
+    };
+  }
 
   // When the daily recap is due, it's the only way forward — Learn/Practice/Recap lock.
   const langMenuItems: MenuItem[] = recapDueNow
     ? [
         {
-          icon: '☀️',
+          icon: <SunIcon />,
           label: 'Daily Recap',
           sublabel: 'Keep your words fresh to keep going',
           badge: 'Required',
           onClick: () => navigate('daily-recap-grammar'),
         },
-        { icon: '📖', label: 'Learn', sublabel: 'Finish your daily recap first', badge: 'Locked', locked: true },
-        { icon: '🎯', label: 'Practice', sublabel: 'Finish your daily recap first', badge: 'Locked', locked: true },
-        { icon: '🔁', label: 'Recap', sublabel: 'Finish your daily recap first', badge: 'Locked', locked: true },
+        { icon: <BookIcon />, label: 'Learn', sublabel: 'Finish your daily recap first', badge: 'Locked', locked: true },
+        { icon: <TargetIcon />, label: 'Practice', sublabel: 'Finish your daily recap first', badge: 'Locked', locked: true },
+        { icon: <RepeatIcon />, label: 'Recap', sublabel: 'Finish your daily recap first', badge: 'Locked', locked: true },
       ]
     : [
         {
-          icon: '📖',
+          icon: <BookIcon />,
           label: 'Learn',
           sublabel: mustPractice ? 'Finish Practice to unlock the next words' : 'Pick up the next words',
           status: learnStatus,
@@ -202,7 +269,7 @@ export function App() {
           onClick: mustPractice ? () => navigate('practice') : () => navigate('learn'),
         },
         {
-          icon: '🎯',
+          icon: <TargetIcon />,
           label: 'Practice',
           sublabel: practiceUnlocked ? 'Drill the new words to advance' : 'Learn a set to unlock practice',
           status: !practiceUnlocked || !hasPractice ? undefined : practiceComplete ? '✓' : `${pDoneCount}/${pTotalTarget}`,
@@ -212,7 +279,7 @@ export function App() {
           onClick: practiceUnlocked ? () => navigate('practice') : undefined,
         },
         {
-          icon: '🔁',
+          icon: <RepeatIcon />,
           label: 'Recap',
           sublabel: recapUnlocked
             ? 'Mixed review of everything you know'
@@ -222,13 +289,22 @@ export function App() {
           locked: !recapUnlocked,
           onClick: recapUnlocked ? () => navigate('recap') : undefined,
         },
-        // DEV/TESTING: trigger the daily recap without waiting 24h.
-        { icon: '🔧', label: 'Dev: trigger daily recap', sublabel: 'Testing only', onClick: () => forceRecapDue() },
+        // DEV/TESTING: trigger the daily recap without waiting 24h. Dev builds only.
+        ...(import.meta.env.DEV
+          ? [
+              {
+                icon: '🔧',
+                label: 'Dev: trigger daily recap',
+                sublabel: 'Testing only',
+                onClick: () => forceRecapDue(),
+              },
+            ]
+          : []),
       ];
 
   const practiceItems: MenuItem[] = [
     {
-      icon: '🔡',
+      icon: <KeyIcon />,
       label: 'Letter Cipher',
       sublabel: 'Decode sentences built from this block’s new words',
       status: !hasPractice ? undefined : pCipherDone ? (practiceComplete ? 'Completed' : 'Done ✓') : `${pcCount}/${pcTarget}`,
@@ -237,7 +313,7 @@ export function App() {
       onClick: hasPractice && !pCipherDone ? () => navigate('fill-in-the-blanks') : undefined,
     },
     {
-      icon: '🧠',
+      icon: <GrammarIcon />,
       label: 'Grammar',
       sublabel: 'A few der / die / das drills to clear this block',
       status: !hasPractice ? undefined : pGrammarDone ? (practiceComplete ? 'Completed' : 'Done ✓') : `${pgCount}/${pTarget}`,
@@ -246,7 +322,7 @@ export function App() {
       onClick: hasPractice && !pGrammarDone ? () => navigate('grammar') : undefined,
     },
     {
-      icon: '🧩',
+      icon: <GridIcon />,
       label: 'Crossword',
       sublabel: 'Fit this block’s leftover words into a grid',
       status: !hasPractice || !pxTarget ? undefined : pCrosswordDone ? (practiceComplete ? 'Completed' : 'Done ✓') : `${pxCount}/${pxTarget}`,
@@ -260,7 +336,7 @@ export function App() {
   // alongside the others.
   if (!hasPractice || phTarget > 0) {
     practiceItems.push({
-      icon: '🟩',
+      icon: <TilesIcon />,
       label: 'Hurdle',
       sublabel: 'Spell the word the other games missed',
       status: !hasPractice ? undefined : pHurdleDone ? (practiceComplete ? 'Completed' : 'Done ✓') : `${phCount}/${phTarget}`,
@@ -286,11 +362,11 @@ export function App() {
   ) : undefined;
 
   const recapItems: MenuItem[] = [
-    { icon: '🔡', label: 'Letter Cipher', sublabel: 'Decode sentences from everything you know', onClick: () => navigate('recap-cipher') },
-    { icon: '🧠', label: 'Grammar', sublabel: 'Articles across everything you know', onClick: () => navigate('recap-grammar') },
-    { icon: '🟩', label: 'Hurdle', sublabel: 'Spell any word you’ve learned', onClick: () => navigate('recap-hurdle') },
+    { icon: <KeyIcon />, label: 'Letter Cipher', sublabel: 'Decode sentences from everything you know', onClick: () => navigate('recap-cipher') },
+    { icon: <GrammarIcon />, label: 'Grammar', sublabel: 'Articles across everything you know', onClick: () => navigate('recap-grammar') },
+    { icon: <TilesIcon />, label: 'Hurdle', sublabel: 'Spell any word you’ve learned', onClick: () => navigate('recap-hurdle') },
     ...completedChallenges.map((b) => ({
-      icon: '🏆',
+      icon: <TrophyIcon />,
       label: `Challenge — sets ${b * 2 + 1}–${b * 2 + 2}`,
       sublabel: 'Replay this block’s crossword',
       onClick: () => {
@@ -429,7 +505,18 @@ export function App() {
       );
       break;
     default:
-      screen = <MenuScreen items={mainItems} />;
+      screen = (
+        <Home
+          langName={langTitle}
+          streak={state.streak}
+          wordsLearned={state.learnedWords.length}
+          continueItem={continueItem}
+          onLanguages={() => navigate('languages')}
+          onStatistics={() => navigate('statistics')}
+          onStore={() => navigate('store')}
+          onSettings={() => navigate('settings')}
+        />
+      );
   }
 
   const pinned =
