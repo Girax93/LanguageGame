@@ -23,4 +23,5 @@ export function isEndingLetterCorrect(
 
 /** The full article (stem + ending), uppercased. */
 export function fullArticle(stem: string, ending: string): string {
-  return toUpperActive(stem 
+  return toUpperActive(stem + ending);
+}
