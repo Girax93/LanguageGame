@@ -4,7 +4,7 @@ Guidance for working on this codebase. Read this first.
 
 ## What this is
 
-LanguageGame is a **calm, minimal German language‑learning web app** (mobile‑first). The
+LanguageGame is a **calm, minimal language‑learning web app** (mobile‑first). The
 player learns small sets of words, then practises them through four game modes —
 letter ciphers, grammar (article) drills, crosswords, and a Wordle‑style speller (Hurdle) — gated by a structured
 progression system. The aesthetic is deliberately warm, quiet, and uncluttered:
@@ -16,6 +16,39 @@ solid fills only, no gradients or glows, generous whitespace, a serif display fa
   (native projects are generated locally with `npx cap add`, git‑ignored).
 - **All progress is client‑side** in `localStorage`. There is no backend.
 - **Store / Subscription / Account are demo stubs** — no real billing or auth. Keep them stubs unless asked.
+
+## Languages: multi-language architecture (German + Norwegian)
+
+The app ships **two course languages** — German (`de`, the default) and Norwegian Bokmål (`no`) —
+chosen from the in-app **language menu** (Home → Learn). Norwegian was added without touching the
+games: everything below the content layer is shared and language-agnostic.
+
+- **Language packs: `src/content/lang/`.** `types.ts` is the `LangPack` interface (code, name, flag,
+  level, lemmas, alphabet + keyboard rows, `toUpper`/`isLetter`, `withArticle`/`withArticleEn`,
+  `generateCipherDrafts`, `grammarItems`, `clues`). `registry.ts` is the single source of truth for
+  which language is active — `LANGS` (menu order), `getActiveCode()`/`getActiveLang()`,
+  `setActiveContentLanguage(code)`, `onLanguageChange(fn)`. `alphabet.ts` exposes
+  `toUpperActive`/`isLetterActive`/`activeAlphabet`/`activeKeyboardRows` — **all boards use these**,
+  not German-specific helpers (`toUpperDE`/`isLetterDE` remain as back-compat aliases = the active
+  versions). `de/` and `no/` each hold `alphabet.ts`, `grammar.ts`, `cluesData.ts`, `index.ts`; `no/`
+  also has `lemmas.no.ts` (2000 Norwegian lemmas) and `cipher.ts` (its sentence generator).
+- **Content modules dispatch on the active language.** `vocab.ts`, `cipherItems.ts`, `crosswords.ts`,
+  `hurdleItems.ts`, `grammarItems.ts`, `clues.ts` precompute per language and re-point their
+  `export let SETS / GRAMMAR_ITEMS / CROSSWORDS / CLUES / …` **live bindings** inside an
+  `onLanguageChange` subscriber. Default is German, so the app boots exactly as before; games import
+  the live bindings and never branch on language.
+- **Progress is isolated per language.** `storage.ts` namespaces saves as `languagegames:player:${code}`
+  and stores the active choice in `languagegames:lang`. `PlayerContext.switchLanguage(code)` saves the
+  language being left, flips the content layer, loads the other's state. **Reset is per-language:** the
+  Reset-progress screen has a button per language (active one marked) **plus "Reset everything"** —
+  `resetProgress(code | 'all')` → `clearPlayerState` / `clearAllPlayerState`.
+- **Norwegian specifics.** Genders are **en/ei/et** (masc./fem./neut.), mirroring der/die/das; keyboard
+  is QWERTY + Æ/Ø/Å; the copula is always `er` and present tense is person-invariant. Crossword clues
+  are authored in `lang/no/cluesData.ts` (Bokmål definition + English). Norwegian invariants live in
+  `tests/content.no.mts`.
+- **Adding a language:** create `src/content/lang/<code>/` (lemmas + cipher generator + alphabet +
+  grammar + clues + `index.ts` exporting the `LangPack`), register it in `LANGS`, and add a
+  `tests/content.<code>.mts` suite that calls `setActiveContentLanguage('<code>')` first.
 
 ## Tech stack
 
@@ -35,6 +68,7 @@ See `package.json` for the canonical scripts. Typically:
 - `npm run build` — production build (no typecheck, see above)
 - Content/logic tests run under Node's type stripping:
   `node --experimental-strip-types --import ./tests/loader.mjs tests/content.invariants.mts`
+  (German) — and the same with `tests/content.no.mts` (Norwegian).
   (`tests/loader.mjs` + `tests/hooks.mjs` resolve TS imports). These assert content invariants
   — e.g. every vocab word has cipher/grammar coverage, every clue has DE+EN, gating chains are
   reachable. Extend them when you add content.
@@ -93,7 +127,7 @@ pass** — e.g. a file that landed truncated/corrupted in a commit makes esbuild
   here as route states, not separate files). `Account`, `Store`, `Subscription`, `Statistics`,
   `ResetProgress` are screens; `routes.ts` defines routes. **Back is tree‑based:** a `PARENT` map +
   `pathTo()` mean the top‑left back button always goes to the menu the current page *belongs to*
-  (a game → its Practice/Recap menu → German menu → …), never to a previously‑visited page or a game.
+  (a game → its Practice/Recap menu → language menu → …), never to a previously‑visited page or a game.
 - `src/components/ui/` — shared kit: `Button`, `Hearts` (lives), `FocusPips` (focus dots, used
   outside games), `ProgressBar`, `TopBar`, `MenuScreen`, `icons`. `ConfirmDialog` is one level up.
 - `src/content/` — the actual learning material:
@@ -153,10 +187,13 @@ its grid of **tries** (`triesFor(word) = max(5, letters+3)`, no cap) via `LevelS
 recapIntervalMs: 24*60*60*1000 }`. A **block = 2 sets = 10 words**. The cycle is **LEARN →
 PRACTICE → ADVANCE**, one block at a time:
 1. **Learn** the 2 sets (10 words) — each word masters at `masteryThreshold` (2) correct in a row.
-2. **Practice** the block: complete `practiceRounds` (3) grammar drills. Progress is a per‑block
-   count in `state.practiceCounts`, shown as **X/3**; partial progress persists. The session is
-   `practiceNounsForBlock`, which pads with the most‑recently‑learned nouns so even noun‑sparse
-   blocks still gate.
+2. **Practice** the block: grammar drills over the block's **distinct learned nouns** —
+   `practiceNounsForBlock` (no padding, no repeats), so a one‑noun block is **one** drill and a
+   three‑noun block is three. The target is `grammarRoundsForBlock` (distinct nouns, capped at
+   `practiceRounds`); progress is `state.practiceCounts`, shown as **X/N** (partial progress
+   persists). `blockPracticeDone(s, sets, block)` compares the count to that target and is
+   **stable** — a finished block never re‑locks as later nouns are learned; a nounless block has
+   target 0 (grammar auto‑passes, the other games gate it).
 3. **Advance:** the next sets unlock. Finishing a block's practice shows a **"Block complete!"**
    screen with two buttons — **Learn more words** (→ next set) and **Recap** (→ recap mode).
 
@@ -171,7 +208,7 @@ hurdleSessionDone`. Recap mode replays learned material full‑pool without driv
 and **locks Learn / Practice / Recap** until the player finishes a recap (`recordRecapDone` stamps
 `state.lastRecapAt`). The Daily Recap screen runs a bounded **grammar** review (game `scope:
 'daily'`) today, with Letter Cipher + Crossword shown as **"Soon"** placeholders. A dev button
-**"🔧 Dev: trigger daily recap"** on the German menu (`forceRecapDue`) forces it without waiting.
+**"🔧 Dev: trigger daily recap"** on the language menu (`forceRecapDue`) forces it without waiting.
 
 **Dev Skip.** Every learn/exercise card shows a small **Skip ⏭** button (`SkipButton`, exported from
 `_shared/LevelStage.tsx`) that clears the round as a success. Boards render it directly above their
@@ -309,6 +346,9 @@ Designer idea to build later:
 
 ## Repo state notes
 
+- **German + Norwegian both shipped** — the app is multi-language now (see *Languages* above).
+  A stray `tests/_clues_probe.mts` may exist locally from a clue-list probe; it is uncommitted and
+  safe to delete.
 - The stale orphan / scratch files previously listed here have all been deleted — nothing left to clean.
 - If the local `.git` history drifts from `main` (e.g. after Composio pushes that the dev machine
   hasn't pulled yet), realign git on the dev machine with `git fetch && git reset --hard origin/main`
