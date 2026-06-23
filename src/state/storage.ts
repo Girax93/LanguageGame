@@ -60,3 +60,20 @@ export function clearPlayerState(code: string): void {
     /* ignore */
   }
 }
+
+/** Clear EVERY language's saved progress (all `languagegames:player*` keys),
+ *  including the pre-multilanguage legacy save. The active-language choice
+ *  (`languagegames:lang`) is left untouched. */
+export function clearAllPlayerState(): void {
+  try {
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(PREFIX)) keys.push(k);
+    }
+    for (const k of keys) localStorage.removeItem(k);
+    localStorage.removeItem(LEGACY_KEY);
+  } catch {
+    /* ignore */
+  }
+}

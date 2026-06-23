@@ -9,6 +9,7 @@ import {
   germanWithArticle, englishWithArticle, answerMatches,
 } from '../src/content/vocab';
 import { LEMMAS_NO } from '../src/content/lang/no/lemmas.no';
+import { CLUES_NO } from '../src/content/lang/no/cluesData';
 import { GRAMMAR_ITEMS } from '../src/content/grammarItems';
 import { CIPHER_ITEMS, cipherItemsForBlock, cipherRoundsForBlock } from '../src/content/cipherItems';
 import { CROSSWORDS, crosswordWordsForBlock, crosswordItemsForBlock, crosswordRoundsForBlock } from '../src/content/crosswords';
@@ -112,7 +113,7 @@ if (ALL_WORDS !== LEMMAS_NO) fail('all-words-not-no');
   if (currentBlock(s, SETS) !== 0) fail('g:block-before');
   if (practiceNounsForBlock(s, SETS, 0).length === 0) fail('g:empty-session');
   for (let k = 0; k < PROGRESSION.practiceRounds; k++) s = recordPracticeDrill(s, 0);
-  if (!blockPracticeDone(s, 0)) fail('g:grammar-flag');
+  if (!blockPracticeDone(s, SETS, 0)) fail('g:grammar-flag');
   for (let k = 0; k < cipherRoundsForBlock(0); k++) s = recordCipherRound(s, 0);
   if (!cipherSessionDone(s, 0)) fail('g:cipher-flag');
   for (let k = 0; k < crosswordRoundsForBlock(0); k++) s = recordCrosswordRound(s, 0);
@@ -121,6 +122,19 @@ if (ALL_WORDS !== LEMMAS_NO) fail('all-words-not-no');
   if (!hurdleSessionDone(s, 0)) fail('g:hurdle-flag');
   if (!isBlockComplete(s, SETS, 0)) fail('g:incomplete-after-practice');
   if (currentBlock(s, SETS) !== 1) fail('g:block-after', currentBlock(s, SETS));
+}
+// (g2) grammar session = the block's DISTINCT learned nouns, never padded with
+// repeats; doing exactly that many drills completes the grammar gate. (Block 0
+// has a single noun → one drill, not three.)
+{
+  const B = PROGRESSION.setsPerBlock;
+  const g = st({ learnedWords: learnedThrough(B - 1) });
+  const pool = practiceNounsForBlock(g, SETS, 0);
+  if (pool.length < 1 || pool.length > PROGRESSION.practiceRounds) fail('g2:pool-bounds', pool.length);
+  if (new Set(pool).size !== pool.length) fail('g2:pool-repeats', pool);
+  let gg = g;
+  for (let k = 0; k < pool.length; k++) gg = recordPracticeDrill(gg, 0);
+  if (!blockPracticeDone(gg, SETS, 0)) fail('g2:not-done-after-distinct', pool.length);
 }
 // (h) display helpers: "en mann" / "a man"
 {
@@ -198,6 +212,23 @@ if (ALL_WORDS !== LEMMAS_NO) fail('all-words-not-no');
     }
   }
   console.log(`hurdle words total = ${totalH}`);
+}
+// (n) early-block crossword words carry a real NO + EN definition (not the literal answer).
+{
+  let checked = 0;
+  for (let b = 0; b <= 3; b++) {
+    const item = crosswordItemsForBlock(b);
+    if (!item) continue;
+    for (const e of item.entries) {
+      const w = wordById(e.wordId)!;
+      const c = CLUES_NO[e.wordId];
+      if (!c || !c.de || !c.en) { fail('n:missing-clue', `${b}:${e.wordId}=${w.de}`); continue; }
+      if (c.de.toLowerCase() === w.de.toLowerCase()) fail('n:literal-de', `${e.wordId}:${c.de}`);
+      if (c.en.toLowerCase() === (w.en ?? '').toLowerCase()) fail('n:literal-en', `${e.wordId}:${c.en}`);
+      checked++;
+    }
+  }
+  console.log(`NO crossword clues checked = ${checked}`);
 }
 // switch back to German and confirm the live bindings flip back
 setActiveContentLanguage('de');

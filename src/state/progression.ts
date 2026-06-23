@@ -11,7 +11,7 @@
 import { PROGRESSION } from './progressionConfig';
 import type { PlayerState } from './types';
 import type { VocabSet, VocabWord } from '../content/vocab';
-import { wordById, ALL_WORDS } from '../content/vocab';
+import { wordById } from '../content/vocab';
 import { cipherRoundsForBlock } from '../content/cipherItems';
 import { crosswordRoundsForBlock } from '../content/crosswords';
 import { hurdleRoundsForBlock } from '../content/hurdleItems';
@@ -108,7 +108,7 @@ export function isBlockComplete(s: PlayerState, sets: VocabSet[], block: number)
   // (cipherSessionDone), and the crossword over the leftovers (crosswordSessionDone).
   return (
     isBlockLearned(s, sets, block) &&
-    blockPracticeDone(s, block) &&
+    blockPracticeDone(s, sets, block) &&
     cipherSessionDone(s, block) &&
     crosswordSessionDone(s, block) &&
     hurdleSessionDone(s, block)
@@ -185,29 +185,29 @@ export function isRecapEligible(item: { requires: string[] }, s: PlayerState): b
 }
 
 // Per-block Practice gate
-/** The nouns a block's grammar session drills: the block's own (learned) nouns,
- *  padded with the most-recently-learned nouns when the block has fewer than
- *  `n` (so noun-sparse blocks still get a real session). */
-export function practiceNounsForBlock(s: PlayerState, sets: VocabSet[], block: number, n = 3): string[] {
+/** The nouns a block's grammar session drills: the block's own learned nouns,
+ *  distinct and in order, capped at `n`. A noun-sparse block simply gets a
+ *  shorter session (down to a single drill) — we never repeat a noun to pad the
+ *  count, and an article drill only ever covers what the player is now learning. */
+export function practiceNounsForBlock(s: PlayerState, sets: VocabSet[], block: number, n = PROGRESSION.practiceRounds): string[] {
   const learned = new Set(s.learnedWords);
-  const target = blockNouns(sets, block).map((w) => w.id).filter((id) => learned.has(id));
-  if (target.length >= n) return target;
-  const have = new Set(target);
-  const recent = ALL_WORDS
-    .filter((w) => w.gender && learned.has(w.id) && !have.has(w.id))
-    .sort((a, b) => b.order - a.order);
-  for (const w of recent) {
-    if (target.length >= n) break;
-    target.push(w.id);
-    have.add(w.id);
-  }
-  return target;
+  return blockNouns(sets, block)
+    .map((w) => w.id)
+    .filter((id) => learned.has(id))
+    .slice(0, n);
 }
 export function practiceCount(s: PlayerState, block: number): number {
   return (s.practiceCounts ?? {})[block] ?? 0;
 }
-export function blockPracticeDone(s: PlayerState, block: number): boolean {
-  return practiceCount(s, block) >= PROGRESSION.practiceRounds;
+/** Grammar drills a block's Practice session requires = its distinct learned
+ *  nouns (≤ practiceRounds). Stable once the block is learned, so a completed
+ *  block never un-completes as later nouns are learned. 0 ⇒ the grammar part
+ *  auto-passes (a nounless block is gated by the other Practice games). */
+export function grammarRoundsForBlock(s: PlayerState, sets: VocabSet[], block: number): number {
+  return practiceNounsForBlock(s, sets, block).length;
+}
+export function blockPracticeDone(s: PlayerState, sets: VocabSet[], block: number): boolean {
+  return practiceCount(s, block) >= grammarRoundsForBlock(s, sets, block);
 }
 /** Completed cipher Practice sentences for a block. */
 export function cipherRoundCount(s: PlayerState, block: number): number {

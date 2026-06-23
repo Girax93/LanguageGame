@@ -3,7 +3,6 @@ import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { GRAMMAR_ITEMS, type GrammarContentItem } from '../../content/grammarItems';
 import { isItemEligible, currentBlock, practiceNounsForBlock, practiceCount, isBlockComplete } from '../../state/progression';
-import { PROGRESSION } from '../../state/progressionConfig';
 import { SETS } from '../../content/vocab';
 import { shuffle } from '../../lib/array';
 import { LevelStage } from '../_shared/LevelStage';
@@ -30,11 +29,10 @@ export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, onPr
     if (scope === 'recap') return shuffle(eligible);
     if (scope === 'daily') return shuffle(eligible).slice(0, 5);
     const byNoun = new Map(GRAMMAR_ITEMS.map((g) => [g.requires[0], g]));
+    // The block's distinct learned nouns, minus those already drilled this
+    // session. No wrap-around → a single-noun block shows ONE drill, not three.
     const pool = practiceNounsForBlock(state, SETS, block);
-    const count = practiceCount(state, block);
-    const remaining = Math.max(0, PROGRESSION.practiceRounds - count);
-    const ids: string[] = [];
-    for (let i = 0; i < remaining && pool.length; i++) ids.push(pool[(count + i) % pool.length]);
+    const ids = pool.slice(practiceCount(state, block));
     return ids.map((id) => byNoun.get(id)).filter((g): g is GrammarContentItem => !!g);
     // Session is fixed when the screen opens; each drill updates the count, not the items.
     // eslint-disable-next-line react-hooks/exhaustive-deps

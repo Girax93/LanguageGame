@@ -66,6 +66,27 @@ mounted. So a fresh chat is set up correctly:
   verified before pushing — see the test command under Commands above.
 - `npm install` / `npm run dev` / `npm run build` are run on the **dev machine** (Windows), not the sandbox.
 
+### Verifying Vercel deploys (READ THIS before/after any push)
+
+The production build is `vite build` (esbuild). **It can fail where `tsc` and the content tests
+pass** — e.g. a file that landed truncated/corrupted in a commit makes esbuild abort with
+`Expected ")" but found end of file`. So a green local check does **not** guarantee a green deploy.
+
+- **After every push, confirm the deploy.** Check the GitHub deployment status via Composio
+  (`GITHUB_LIST_DEPLOYMENTS` → newest, then `GITHUB_LIST_DEPLOYMENT_STATUSES` → `state` is
+  `success` / `failure`). A `failure` means Vercel keeps serving the previous build.
+- **If it failed (or you can't get the exact error), ASK Ari to paste the Vercel build-error
+  email.** He receives it within ~2 minutes and it names the exact `file:line`. **Do NOT spend
+  significant effort reverse-engineering a build failure before asking** — one wrong guess once cost
+  ~1.5 days. Ask first.
+- **Reproduce the real build in the Composio remote sandbox** (it has working npm, unlike the
+  mounted workspace sandbox): rebuild the repo from GitHub blobs (`GITHUB_GET_A_TREE` recursive →
+  `GITHUB_GET_A_BLOB` each), `npm install`, `npx vite build`. This gives the authoritative error.
+- **Commit byte-exact.** Provide real file bytes (read from disk/sandbox → base64); never
+  hand-transcribe large base64 (that truncation is what broke `grammar.ts`). After committing,
+  verify the returned `blob_sha` matches the source file's git-blob sha. `GITHUB_COMMIT_MULTIPLE_FILES`
+  uses `message` (not `commit_message`) + `upserts:[{path,content,encoding}]`.
+
 ## Directory map
 
 - `src/app/` — `App.tsx` is the router + screen shell (Home, Practice, Progress, Settings live

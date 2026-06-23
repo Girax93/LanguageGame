@@ -13,6 +13,7 @@ import {
   loadPlayerState,
   savePlayerState,
   clearPlayerState,
+  clearAllPlayerState,
   loadActiveLanguage,
   saveActiveLanguage,
 } from './storage';
@@ -61,7 +62,8 @@ interface PlayerContextValue {
   recordGrammarNoun: (id: string | undefined) => void;
   buyFocus: () => void;
   setSubscribed: (value: boolean) => void;
-  resetProgress: () => void;
+  /** Reset progress for one language code (e.g. 'de' | 'no') or 'all'. */
+  resetProgress: (target: string) => void;
 }
 
 const PlayerCtx = createContext<PlayerContextValue | null>(null);
@@ -116,9 +118,15 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       recordGrammarNoun: (id) => setState((s) => addGrammarNoun(s, id)),
       buyFocus: () => setState((s) => buyFocusRefill(s, Date.now())),
       setSubscribed: (v) => setState((s) => setSubscribedPure(s, v, Date.now())),
-      resetProgress: () => {
-        clearPlayerState(language);
-        setState(defaultPlayerState(Date.now(), ECONOMY.focusStart));
+      resetProgress: (target) => {
+        if (target === 'all') {
+          clearAllPlayerState();
+          setState(defaultPlayerState(Date.now(), ECONOMY.focusStart));
+        } else {
+          clearPlayerState(target);
+          // Only the live (active) language needs its in-memory state refreshed.
+          if (target === language) setState(defaultPlayerState(Date.now(), ECONOMY.focusStart));
+        }
       },
     }),
     [state, now, language],

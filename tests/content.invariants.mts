@@ -16,7 +16,7 @@ import {
   isItemEligible, isRecapEligible, grammarNounId,
   availableSetCount, masteredSetCount, currentLearnSetIndex,
   isSetMastered, isBlockComplete, currentBlock, blockCount,
-  blockNouns, practiceNounsForBlock, blockPracticeDone, practiceCount, recordPracticeDrill,
+  blockNouns, practiceNounsForBlock, grammarRoundsForBlock, blockPracticeDone, practiceCount, recordPracticeDrill,
   cipherSessionDone, cipherRoundCount, recordCipherRound,
   crosswordSessionDone, crosswordRoundCount, recordCrosswordRound,
   hurdleSessionDone, hurdleRoundCount, recordHurdleRound,
@@ -144,7 +144,7 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   if (practiceNounsForBlock(s, SETS, 0).length === 0) fail('g:empty-session-block0');
   for (let k = 0; k < PROGRESSION.practiceRounds; k++) s = recordPracticeDrill(s, 0);
   if (practiceCount(s, 0) !== PROGRESSION.practiceRounds) fail('g:count', practiceCount(s, 0));
-  if (!blockPracticeDone(s, 0)) fail('g:flag');
+  if (!blockPracticeDone(s, SETS, 0)) fail('g:flag');
   // grammar alone is no longer enough — the cipher session must be done too.
   if (isBlockComplete(s, SETS, 0)) fail('g:complete-without-cipher');
   for (let k = 0; k < cipherRoundsForBlock(0); k++) s = recordCipherRound(s, 0);
@@ -182,14 +182,17 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
   // partial progress is tracked (1 drill < required) and a noun-sparse block
   // still produces a non-empty session.
   let p = st({ learnedWords: learnedThrough(B - 1) });
+  const need0 = grammarRoundsForBlock(p, SETS, 0);
   p = recordPracticeDrill(p, 0);
   if (practiceCount(p, 0) !== 1) fail('g:partial-count');
-  if (blockPracticeDone(p, 0)) fail('g:partial-done');
+  if (need0 > 1 && blockPracticeDone(p, SETS, 0)) fail('g:partial-done');
   let s2 = st({ learnedWords: SETS.slice(0, 10).flatMap((x) => x.words.map((w) => w.id)) });
   let firstNounless = -1;
   for (let b = 0; b < 5; b++) if (blockNouns(SETS, b).length === 0) { firstNounless = b; break; }
-  if (firstNounless >= 0 && practiceNounsForBlock(s2, SETS, firstNounless).length === 0)
-    fail('g:nounless-empty-session', firstNounless);
+  // A nounless block now yields an EMPTY grammar session (its grammar gate
+  // auto-passes; the other Practice games gate it) — we never pad with old nouns.
+  if (firstNounless >= 0 && practiceNounsForBlock(s2, SETS, firstNounless).length !== 0)
+    fail('g:nounless-should-be-empty', firstNounless);
 }
 
 // (h) display helpers

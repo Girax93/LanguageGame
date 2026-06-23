@@ -22,6 +22,7 @@ import {
   currentBlock,
   blockCount,
   blockPracticeDone,
+  grammarRoundsForBlock,
   practiceCount,
   cipherRoundCount,
   cipherSessionDone,
@@ -123,7 +124,7 @@ export function App() {
   // block shows "Completed" here — not the next (unlearned) block's empty 0/X.
   const practiceIdx = Math.floor(masteredSets / PROGRESSION.setsPerBlock) - 1;
   const hasPractice = practiceIdx >= 0;
-  const pTarget = PROGRESSION.practiceRounds;
+  const pTarget = hasPractice ? grammarRoundsForBlock(state, SETS, practiceIdx) : 0;
   const pgCount = hasPractice ? practiceCount(state, practiceIdx) : 0;
   const pcCount = hasPractice ? cipherRoundCount(state, practiceIdx) : 0;
   const pcTarget = hasPractice ? cipherRoundsForBlock(practiceIdx) : 0;
@@ -131,7 +132,7 @@ export function App() {
   const pxTarget = hasPractice ? crosswordRoundsForBlock(practiceIdx) : 0;
   const phCount = hasPractice ? hurdleRoundCount(state, practiceIdx) : 0;
   const phTarget = hasPractice ? hurdleRoundsForBlock(practiceIdx) : 0;
-  const pGrammarDone = hasPractice ? blockPracticeDone(state, practiceIdx) : false;
+  const pGrammarDone = hasPractice ? blockPracticeDone(state, SETS, practiceIdx) : false;
   const pCipherDone = hasPractice ? cipherSessionDone(state, practiceIdx) : false;
   const pCrosswordDone = hasPractice ? crosswordSessionDone(state, practiceIdx) : false;
   const pHurdleDone = hasPractice ? hurdleSessionDone(state, practiceIdx) : false;
