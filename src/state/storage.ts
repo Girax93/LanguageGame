@@ -45,6 +45,24 @@ export function loadPlayerState(now: number, code: string): PlayerState {
   }
 }
 
+/**
+ * Read just the learned-word count for a language WITHOUT loading/switching it —
+ * lets the language menu show "German · 120 words" for the inactive language too.
+ * Returns 0 for missing/old/corrupt saves.
+ */
+export function peekLearnedCount(code: string): number {
+  try {
+    let raw = localStorage.getItem(keyFor(code));
+    if (!raw && code === 'de') raw = localStorage.getItem(LEGACY_KEY);
+    if (!raw) return 0;
+    const parsed = JSON.parse(raw) as Partial<PlayerState>;
+    if (parsed.version !== STATE_VERSION) return 0;
+    return parsed.learnedWords?.length ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
 export function savePlayerState(s: PlayerState, code: string): void {
   try {
     localStorage.setItem(keyFor(code), JSON.stringify(s));

@@ -41,6 +41,10 @@ button {
   .card {
     @apply rounded-3xl border border-line bg-card;
   }
+  /* Featured variant — the one primary action (e.g. the home "Continue" card). */
+  .card-primary {
+    @apply rounded-3xl border-2 border-ochre bg-card;
+  }
   .eyebrow {
     @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-taupe;
   }

@@ -18,6 +18,7 @@ import {
   saveActiveLanguage,
 } from './storage';
 import { setActiveContentLanguage } from '../content/lang/registry';
+import { touchStreak } from './streak';
 import {
   applyRegen,
   recordLevelResult,
@@ -102,17 +103,20 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         setState(applyRegen(loadPlayerState(Date.now(), code), Date.now()));
       },
       answerWord: (wordId, correct) =>
-        setState((s) => recordWordAnswer(s, wordId, correct)),
+        setState((s) => touchStreak(recordWordAnswer(s, wordId, correct), Date.now())),
       recordLevel: (won, countsTowardGate = true) =>
         setState((s) =>
-          (countsTowardGate ? recordLevelResult : recordLevelResultNoGate)(s, won, Date.now()),
+          touchStreak(
+            (countsTowardGate ? recordLevelResult : recordLevelResultNoGate)(s, won, Date.now()),
+            Date.now(),
+          ),
         ),
       recordChallenge: (block) => setState((s) => recordChallengeDone(s, block)),
       recordPracticeDrill: (block) => setState((s) => applyPracticeDrill(s, block)),
       recordCipherRound: (block) => setState((s) => applyCipherRound(s, block)),
       recordCrosswordRound: (block) => setState((s) => applyCrosswordRound(s, block)),
       recordHurdleRound: (block) => setState((s) => applyHurdleRound(s, block)),
-      recordRecapDone: () => setState((s) => applyRecapDone(s, Date.now())),
+      recordRecapDone: () => setState((s) => touchStreak(applyRecapDone(s, Date.now()), Date.now())),
       forceRecapDue: () => setState((s) => applyForceRecapDue(s, Date.now())),
       recordCipherWords: (ids) => setState((s) => addCipherWords(s, ids)),
       recordGrammarNoun: (id) => setState((s) => addGrammarNoun(s, id)),

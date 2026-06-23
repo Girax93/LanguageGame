@@ -31,11 +31,17 @@ export interface PlayerState {
   lastFocusRegenAt: number;
   /** Subscription stub — when true, focus is unlimited. */
   subscribed: boolean;
+  /** Consecutive days with any activity (this language). 0 until first activity. */
+  streak: number;
+  /** Local day-index (days since epoch) of the most recent activity; -1 = never. */
+  lastActiveDay: number;
 }
 
 // Bumped to 9: the per-block Practice gate now also requires the Hurdle session
 // (hurdleCounts) alongside the grammar drills, cipher session and crossword.
 // Old saves reset.
+// (Phase 1 added `streak`/`lastActiveDay` WITHOUT a bump — they merge in from
+//  defaults for existing v9 saves, so no reset was needed.)
 export const STATE_VERSION = 9;
 
 export function defaultPlayerState(now: number, focusStart: number): PlayerState {
@@ -55,5 +61,7 @@ export function defaultPlayerState(now: number, focusStart: number): PlayerState
     focus: focusStart,
     lastFocusRegenAt: now,
     subscribed: false,
+    streak: 0,
+    lastActiveDay: -1,
   };
 }

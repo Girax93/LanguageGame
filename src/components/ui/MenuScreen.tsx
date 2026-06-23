@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
 import { TopBar } from './TopBar';
+import { LockIcon } from './icons';
 
 export interface MenuItem {
-  icon: string;
+  /** A string is rendered as an emoji (e.g. language flags); a node is a line icon. */
+  icon?: ReactNode;
   label: string;
   sublabel?: string;
   badge?: string;
@@ -12,6 +14,8 @@ export interface MenuItem {
   progress?: number;
   /** Optional low-emphasis status line next to the progress bar. */
   status?: string;
+  /** Render as the featured primary card (ochre border, slightly larger). */
+  emphasis?: boolean;
 }
 
 interface Props {
@@ -32,7 +36,7 @@ export function MenuScreen({ title, intro, items, footer, onBack, onMain }: Prop
       {intro && <p className="mb-5 -mt-1 text-taupe">{intro}</p>}
       <div className="flex flex-col gap-3">
         {items.map((item, i) => (
-          <Card key={i} item={item} />
+          <Card key={i} item={item} index={i} />
         ))}
       </div>
       {footer}
@@ -40,7 +44,29 @@ export function MenuScreen({ title, intro, items, footer, onBack, onMain }: Prop
   );
 }
 
-function Card({ item }: { item: MenuItem }) {
+/** The icon disc to the left of a card. Keeps the real icon even when locked
+ *  (just muted), so identity is preserved while reading as "not yet". */
+function IconTile({ item }: { item: MenuItem }) {
+  if (item.icon === undefined) return null;
+  const isEmoji = typeof item.icon === 'string';
+  const big = item.emphasis;
+  return (
+    <div
+      className={[
+        'flex shrink-0 items-center justify-center rounded-2xl',
+        big ? 'h-16 w-16' : 'h-14 w-14',
+        item.locked ? 'bg-sand/60 text-given' : 'bg-sand text-brown',
+      ].join(' ')}
+    >
+      <span aria-hidden className={isEmoji ? 'text-2xl' : ''}>
+        {item.icon}
+      </span>
+    </div>
+  );
+}
+
+/** A single tappable menu card. Exported so the Home screen can reuse it. */
+export function Card({ item, index = 0 }: { item: MenuItem; index?: number }) {
   const disabled = item.locked || !item.onClick;
   const hasProgress = item.progress !== undefined || item.status !== undefined;
   return (
@@ -48,21 +74,32 @@ function Card({ item }: { item: MenuItem }) {
       type="button"
       disabled={disabled}
       onClick={item.onClick}
+      style={{ animationDelay: `${index * 45}ms`, animationFillMode: 'backwards' }}
       className={[
-        'card flex items-center gap-4 p-[22px] text-left transition',
-        disabled
-          ? 'cursor-not-allowed opacity-60'
-          : 'hover:-translate-y-0.5 hover:bg-[#fdf9f1] active:scale-[0.99]',
+        item.emphasis ? 'card-primary' : 'card',
+        'flex animate-slide-up items-center gap-4 text-left transition',
+        item.emphasis ? 'p-6' : 'p-[22px]',
+        item.locked
+          ? 'cursor-not-allowed'
+          : disabled
+            ? 'cursor-not-allowed opacity-60'
+            : 'hover:-translate-y-0.5 hover:bg-[#fdf9f1] active:scale-[0.99]',
       ].join(' ')}
     >
-      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-sand text-2xl text-brown">
-        <span aria-hidden>{item.icon}</span>
-      </div>
+      <IconTile item={item} />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <h2 className="truncate font-serif text-lg font-semibold text-espresso">{item.label}</h2>
+          <h2
+            className={[
+              'truncate font-serif font-semibold text-espresso',
+              item.emphasis ? 'text-xl' : 'text-lg',
+            ].join(' ')}
+          >
+            {item.label}
+          </h2>
           {item.badge && (
-            <span className="shrink-0 rounded-full bg-sand px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-taupe">
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-sand px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-taupe">
+              {item.locked && <LockIcon size={11} className="text-taupe" />}
               {item.badge}
             </span>
           )}
