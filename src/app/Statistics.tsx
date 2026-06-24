@@ -1,5 +1,8 @@
+import { useMemo, useState } from 'react';
 import { usePlayer } from '../state/PlayerContext';
-import { SETS, ALL_WORDS } from '../content/vocab';
+import { vocabFor } from '../content/vocab';
+import { LANGS, langByCode } from '../content/lang/registry';
+import { loadPlayerState } from '../state/storage';
 import { TopBar } from '../components/ui/TopBar';
 
 interface Props {
@@ -8,19 +11,55 @@ interface Props {
 }
 
 export function Statistics({ onBack, onMain }: Props) {
-  const { state } = usePlayer();
-  const learned = state.learnedWords.length;
-  const total = ALL_WORDS.length;
+  const { state, language } = usePlayer();
+  // Which language's stats are on screen. Defaults to the active course, but the
+  // toggle lets you peek at the other language WITHOUT changing your course.
+  const [view, setView] = useState(language);
+
+  // Active language reads live state; others read their own saved namespace.
+  const viewState = useMemo(
+    () => (view === language ? state : loadPlayerState(Date.now(), view)),
+    [view, language, state],
+  );
+  const vocab = vocabFor(view);
+  const langName = langByCode(view)?.name ?? view;
+
+  const learned = viewState.learnedWords.length;
+  const total = vocab.allWords.length;
   const pct = total ? learned / total : 0;
 
   return (
     <div className="flex flex-1 flex-col animate-fade-in">
       <TopBar title="Statistics" onBack={onBack} onMain={onMain} />
 
+      {/* Language toggle — view either course's stats. */}
+      {LANGS.length > 1 && (
+        <div className="mb-5 flex gap-2">
+          {LANGS.map((l) => {
+            const selected = l.code === view;
+            return (
+              <button
+                key={l.code}
+                type="button"
+                onClick={() => setView(l.code)}
+                aria-pressed={selected}
+                className={[
+                  'flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition active:scale-[0.98]',
+                  selected ? 'bg-brown text-cream' : 'bg-sand text-taupe hover:text-espresso',
+                ].join(' ')}
+              >
+                <span aria-hidden>{l.flag}</span>
+                {l.name}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       <div className="flex flex-col gap-4">
         <section className="card p-[22px]">
           <div className="flex items-center justify-between">
-            <p className="font-serif text-lg font-semibold text-espresso">German</p>
+            <p className="font-serif text-lg font-semibold text-espresso">{langName}</p>
             <span className="text-sm tabular-nums text-taupe">
               {learned} / {total} words
             </span>
@@ -39,14 +78,14 @@ export function Statistics({ onBack, onMain }: Props) {
 
         <div className="grid grid-cols-2 gap-3">
           <Metric label="Words mastered" value={learned} />
-          <Metric label="Games cleared" value={state.levelsWon} />
+          <Metric label="Games cleared" value={viewState.levelsWon} />
         </div>
 
         <section className="card p-[22px]">
           <p className="eyebrow mb-3">Word sets</p>
           <div className="flex flex-col gap-2">
-            {SETS.map((s) => {
-              const m = s.words.filter((w) => state.learnedWords.includes(w.id)).length;
+            {vocab.sets.map((s) => {
+              const m = s.words.filter((w) => viewState.learnedWords.includes(w.id)).length;
               const done = m === s.words.length;
               return (
                 <div key={s.index} className="flex items-center justify-between text-sm">
