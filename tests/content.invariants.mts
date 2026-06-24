@@ -12,6 +12,7 @@ import { buildCrossword } from '../src/games/crossword/crossword';
 import { CLUES } from '../src/content/clues';
 import { HURDLE_ITEMS, hurdleItemsForBlock, hurdleRoundsForBlock, isHurdleWord } from '../src/content/hurdleItems';
 import { triesFor, scoreGuess, isSolved, answerLength, keyHints } from '../src/games/hurdle/hurdle';
+import { rankedDistractors, distractorTexts } from '../src/content/derive';
 import {
   isItemEligible, isRecapEligible, grammarNounId,
   availableSetCount, masteredSetCount, currentLearnSetIndex,
@@ -362,6 +363,23 @@ const fail = (label: string, detail: unknown = '') => { ok = false; console.log(
     }
   }
   console.log(`hurdleWordsTotal=${totalHurdle} blocksWithHurdle=${blocksWithHurdle}/${nb}`);
+}
+
+// (n) learn: smart distractors — close, plausible, and never the answer
+{
+  const sample = ['l-mann', 'l-frau', 'l-haus', 'l-sein-verb', 'l-haben']
+    .map((id) => wordById(id))
+    .filter((w): w is NonNullable<typeof w> => !!w);
+  for (const w of sample) {
+    const ans = englishWithArticle(w);
+    const opts = distractorTexts(w, ALL_WORDS, 3, englishWithArticle);
+    if (opts.length !== 3) fail('n:count', `${w.id}:${opts.length}`);
+    for (const o of opts) if (answerMatches(o, ans)) fail('n:matches-answer', `${w.id}:${o}`);
+    if (new Set(opts).size !== opts.length) fail('n:dupes', w.id);
+    const top = rankedDistractors(w, ALL_WORDS).slice(0, 3);
+    if (top.some((d) => d.id === w.id)) fail('n:self', w.id);
+    if (!top.every((d) => d.pos === w.pos)) fail('n:pos', `${w.id}:${top.map((d) => d.pos).join(',')}`);
+  }
 }
 
 console.log(`lemmas=${LEMMAS.length} sets=${SETS.length} blocks=${blockCount(SETS)} grammar=${GRAMMAR_ITEMS.length} crosswords=${CROSSWORDS.length} hurdlePool=${HURDLE_ITEMS.length} practiceRounds=${PROGRESSION.practiceRounds}`);
