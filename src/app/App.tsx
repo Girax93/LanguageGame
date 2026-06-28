@@ -315,7 +315,7 @@ export function App() {
     {
       icon: <GrammarIcon />,
       label: 'Grammar',
-      sublabel: 'A few der / die / das drills to clear this block',
+      sublabel: 'A few article drills to clear this block',
       status: !hasPractice ? undefined : pGrammarDone ? (practiceComplete ? 'Completed' : 'Done ✓') : `${pgCount}/${pTarget}`,
       progress: !hasPractice ? 0 : pGrammarDone ? 1 : pgCount / pTarget,
       locked: !hasPractice || pGrammarDone,
