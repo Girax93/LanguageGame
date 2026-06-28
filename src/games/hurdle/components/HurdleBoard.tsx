@@ -12,6 +12,7 @@ import {
   type TileState,
 } from '../hurdle';
 import { HurdleKeyboard } from './HurdleKeyboard';
+import { getActiveLang } from '../../../content/lang/registry';
 
 interface Props {
   item: HurdleContentItem;
@@ -101,7 +102,7 @@ export function HurdleBoard({ item, controls }: Props) {
         {showInfo && (
           <div className="w-full max-w-xs rounded-xl border border-line bg-sand/40 px-4 py-3 text-left text-sm text-taupe animate-pop-in">
             <p className="mb-1 font-serif text-base font-semibold text-espresso">How to play</p>
-            <p>Guess the hidden German word — type a word of the right length and press Enter.</p>
+            <p>Guess the hidden {getActiveLang().name} word — type a word of the right length and press Enter.</p>
             <ul className="mt-2 space-y-1">
               <li className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-sage" /> right letter, right spot</li>
               <li className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-ochre" /> right letter, wrong spot</li>

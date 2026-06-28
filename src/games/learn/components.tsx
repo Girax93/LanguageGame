@@ -13,6 +13,7 @@ import {
   type VocabWord,
 } from '../../content/vocab';
 import { exampleSentenceFor } from '../../content/derive';
+import { getActiveLang } from '../../content/lang/registry';
 import { shuffle } from '../../lib/array';
 import { Button } from '../../components/ui/Button';
 import { scrambleLetters, type Step } from './engine';
@@ -192,6 +193,7 @@ export function TypeIn({
 }) {
   const [value, setValue] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const lang = getActiveLang().name;
   const isCorrect = answerMatches(value, step.answer);
   function submit() {
     if (!submitted && value.trim()) setSubmitted(true);
@@ -199,7 +201,7 @@ export function TypeIn({
   return (
     <div className="flex flex-1 flex-col">
       <div className="mt-8 text-center">
-        <p className="eyebrow">Type it in German</p>
+        <p className="eyebrow">Type it in {lang}</p>
         <p className="mt-4 font-serif text-4xl font-semibold text-espresso">{step.prompt}</p>
       </div>
       <div className="mt-auto pt-8">
@@ -211,7 +213,7 @@ export function TypeIn({
           onKeyDown={(e) => {
             if (e.key === 'Enter') submit();
           }}
-          placeholder="Type the German word"
+          placeholder={`Type the ${lang} word`}
           autoCapitalize="off"
           autoCorrect="off"
           spellCheck={false}
@@ -357,6 +359,7 @@ export function Pairs({
   const [selR, setSelR] = useState<string | null>(null);
   const [matched, setMatched] = useState<Set<string>>(new Set());
   const [miss, setMiss] = useState(false);
+  const lang = getActiveLang().name;
 
   function resolve(l: string | null, r: string | null) {
     if (!l || !r) return;
@@ -398,7 +401,7 @@ export function Pairs({
     <div className="flex flex-1 flex-col">
       <div className="mt-8 text-center">
         <p className="eyebrow">Match the pairs</p>
-        <p className="mt-2 text-sm text-taupe">Tap a German word, then its meaning.</p>
+        <p className="mt-2 text-sm text-taupe">Tap a {lang} word, then its meaning.</p>
       </div>
       <div className="mt-auto grid grid-cols-2 gap-3 pt-8">
         <div className="flex flex-col gap-3">

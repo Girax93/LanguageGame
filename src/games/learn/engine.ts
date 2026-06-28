@@ -12,6 +12,7 @@ import {
   type VocabWord,
 } from '../../content/vocab';
 import { rankedDistractors } from '../../content/derive';
+import { getActiveLang } from '../../content/lang/registry';
 import { shuffle } from '../../lib/array';
 
 export type Step =
@@ -58,7 +59,7 @@ function choiceStep(word: VocabWord, dir: 'de-en' | 'en-de'): Step {
     kind: 'choice',
     dir,
     word,
-    label: dir === 'de-en' ? 'What does this mean?' : 'Say it in German',
+    label: dir === 'de-en' ? 'What does this mean?' : `Say it in ${getActiveLang().name}`,
     prompt,
     answer,
     options,
