@@ -1,3 +1,5 @@
+**Live app:** https://language-game-beta.vercel.app
+
 # CLAUDE.md — LanguageGame
 
 Guidance for working on this codebase. Read this first.
