@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { GRAMMAR_ITEMS, type GrammarContentItem } from '../../content/grammarItems';
@@ -48,19 +48,23 @@ export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, onPr
       onWin={scope === 'practice' ? () => recordPracticeDrill(block) : undefined}
       renderComplete={
         scope === 'practice'
-          ? () => <PracticeDone block={block} onExit={onExit} onLearn={onLearn} onRecap={onRecap} onPractice={onPractice} />
+          ? (item) => <PracticeDone item={item} block={block} onExit={onExit} onLearn={onLearn} onRecap={onRecap} onPractice={onPractice} />
           : scope === 'daily'
-            ? () => <DailyDone onContinue={onRecapDone ?? onExit} />
+            ? (item) => <DailyDone item={item} onContinue={onRecapDone ?? onExit} />
             : undefined
       }
-      renderWin={(item) => (
-        <div className="mt-3 w-full max-w-xs rounded-xl border border-line bg-sand/40 px-4 py-3 text-center">
-          <p className="font-serif text-lg font-semibold text-espresso">{`${item.before}${item.stem}${item.ending}${item.after}`}</p>
-          <p className="mt-1 text-sm text-taupe">{item.translation}</p>
-        </div>
-      )}
+      renderWin={(item) => <WinCard item={item} />}
       renderBoard={(item, controls) => <GrammarBoard item={item} controls={controls} />}
     />
+  );
+}
+
+function WinCard({ item }: { item: GrammarContentItem }) {
+  return (
+    <div className="mt-3 w-full max-w-xs rounded-xl border border-line bg-sand/40 px-4 py-3 text-center">
+      <p className="font-serif text-lg font-semibold text-espresso">{`${item.before}${item.stem}${item.ending}${item.after}`}</p>
+      <p className="mt-1 text-sm text-taupe">{item.translation}</p>
+    </div>
   );
 }
 
@@ -68,12 +72,14 @@ export function Grammar({ onExit, onOpenSettings, onMain, onLearn, onRecap, onPr
  *  completes the block; until then we send the player back to Practice (this
  *  stays correct as more Practice games are added). */
 function PracticeDone({
+  item,
   block,
   onExit,
   onLearn,
   onRecap,
   onPractice,
 }: {
+  item: GrammarContentItem;
   block: number;
   onExit: () => void;
   onLearn?: () => void;
@@ -87,6 +93,7 @@ function PracticeDone({
         onExit={onExit}
         title="Block complete!"
         body="Every practice for this block is done — the next words are unlocked."
+        reveal={<WinCard item={item} />}
         primaryLabel="Learn more words"
         onPrimary={onLearn ?? onExit}
         secondaryLabel="Recap what you’ve learned"
@@ -99,6 +106,7 @@ function PracticeDone({
       onExit={onExit}
       title="Grammar done!"
       body="Keep going — finish this block’s other practice to unlock the next words."
+      reveal={<WinCard item={item} />}
       primaryLabel="Back to Practice"
       onPrimary={onPractice ?? onExit}
     />
@@ -106,12 +114,13 @@ function PracticeDone({
 }
 
 /** Shown when the daily recap session is finished. */
-function DailyDone({ onContinue }: { onContinue: () => void }) {
+function DailyDone({ item, onContinue }: { item: GrammarContentItem; onContinue: () => void }) {
   return (
     <Done
       onExit={onContinue}
       title="Daily recap done!"
       body="Nice — your words are fresh. See you tomorrow."
+      reveal={<WinCard item={item} />}
       primaryLabel="Continue"
       onPrimary={onContinue}
     />
@@ -122,6 +131,7 @@ function Done({
   onExit,
   title,
   body,
+  reveal,
   primaryLabel,
   onPrimary,
   secondaryLabel,
@@ -130,6 +140,7 @@ function Done({
   onExit: () => void;
   title: string;
   body: string;
+  reveal?: ReactNode;
   primaryLabel: string;
   onPrimary: () => void;
   secondaryLabel?: string;
@@ -150,6 +161,7 @@ function Done({
         <div className="text-4xl text-brown">✓</div>
         <h2 className="mt-5 font-serif text-2xl font-semibold text-espresso">{title}</h2>
         <p className="mt-2 max-w-xs text-taupe">{body}</p>
+        {reveal}
         <Button className="mt-8 w-64" onClick={onPrimary}>
           {primaryLabel}
         </Button>

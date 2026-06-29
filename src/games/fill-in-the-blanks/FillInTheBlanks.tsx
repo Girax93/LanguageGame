@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { CIPHER_ITEMS, cipherItemsForBlock, type CipherContentItem } from '../../content/cipherItems';
@@ -47,15 +47,10 @@ export function FillInTheBlanks({ onExit, onOpenSettings, onMain, onLearn, onRec
       onWin={scope === 'practice' ? () => recordCipherRound(block) : undefined}
       renderComplete={
         scope === 'practice'
-          ? () => <CipherDone block={block} onExit={onExit} onLearn={onLearn} onRecap={onRecap} onPractice={onPractice} />
+          ? (item) => <CipherDone item={item} block={block} onExit={onExit} onLearn={onLearn} onRecap={onRecap} onPractice={onPractice} />
           : undefined
       }
-      renderWin={(item) => (
-        <div className="mt-3 w-full max-w-xs rounded-xl border border-line bg-sand/40 px-4 py-3 text-center">
-          <p className="font-serif text-lg font-semibold text-espresso">{item.sentence}</p>
-          <p className="mt-1 text-sm text-taupe">{item.translation}</p>
-        </div>
-      )}
+      renderWin={(item) => <WinCard item={item} />}
       renderBoard={(item, controls) => (
         <CipherBoard item={item} flags={flagsForLevel(item.level)} controls={controls} />
       )}
@@ -63,16 +58,27 @@ export function FillInTheBlanks({ onExit, onOpenSettings, onMain, onLearn, onRec
   );
 }
 
+function WinCard({ item }: { item: CipherContentItem }) {
+  return (
+    <div className="mt-3 w-full max-w-xs rounded-xl border border-line bg-sand/40 px-4 py-3 text-center">
+      <p className="font-serif text-lg font-semibold text-espresso">{item.sentence}</p>
+      <p className="mt-1 text-sm text-taupe">{item.translation}</p>
+    </div>
+  );
+}
+
 /** Shown when the block's cipher session is finished. Only the LAST remaining
  *  practice completes the block; until then we send the player back to Practice
  *  (this stays correct as more Practice games are added). */
 function CipherDone({
+  item,
   block,
   onExit,
   onLearn,
   onRecap,
   onPractice,
 }: {
+  item: CipherContentItem;
   block: number;
   onExit: () => void;
   onLearn?: () => void;
@@ -86,6 +92,7 @@ function CipherDone({
         onExit={onExit}
         title="Block complete!"
         body="Every practice for this block is done — the next words are unlocked."
+        reveal={<WinCard item={item} />}
         primaryLabel="Learn more words"
         onPrimary={onLearn ?? onExit}
         secondaryLabel="Recap what you’ve learned"
@@ -98,6 +105,7 @@ function CipherDone({
       onExit={onExit}
       title="Cipher done!"
       body="Keep going — finish this block’s other practice to unlock the next words."
+      reveal={<WinCard item={item} />}
       primaryLabel="Back to Practice"
       onPrimary={onPractice ?? onExit}
     />
@@ -108,6 +116,7 @@ function Done({
   onExit,
   title,
   body,
+  reveal,
   primaryLabel,
   onPrimary,
   secondaryLabel,
@@ -116,6 +125,7 @@ function Done({
   onExit: () => void;
   title: string;
   body: string;
+  reveal?: ReactNode;
   primaryLabel: string;
   onPrimary: () => void;
   secondaryLabel?: string;
@@ -136,6 +146,7 @@ function Done({
         <div className="text-4xl text-brown">✓</div>
         <h2 className="mt-5 font-serif text-2xl font-semibold text-espresso">{title}</h2>
         <p className="mt-2 max-w-xs text-taupe">{body}</p>
+        {reveal}
         <Button className="mt-8 w-64" onClick={onPrimary}>
           {primaryLabel}
         </Button>
