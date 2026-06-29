@@ -5,6 +5,7 @@ import { canStartLevel, timeToNextFocusMs } from '../../state/focus';
 import { Button } from '../../components/ui/Button';
 import { Hearts } from '../../components/ui/Hearts';
 import { ChevronLeft, HomeIcon } from '../../components/ui/icons';
+import { CompleteScreen, type CompleteSpec } from './CompleteScreen';
 
 /** A board reports outcomes through these; LevelStage owns lives + flow. */
 export interface BoardControls {
@@ -24,9 +25,12 @@ interface Props<T> {
   /** Fired once when the LAST item in the set is solved (the session is done). */
   onComplete?: () => void;
   renderWin?: (item: T) => ReactNode;
-  /** Replaces the final win screen when the whole session is cleared. Receives
-   *  the just-solved item so the screen can still reveal it. */
-  renderComplete?: (item: T) => ReactNode;
+  /** The end-of-session screen's message + buttons for the LAST item; the shared
+   *  flow adds the layout, the reveal, and the word-summary. Omit for modes with
+   *  no completion screen (e.g. recap). */
+  completeSpec?: (item: T) => CompleteSpec;
+  /** Content word-ids an item covers, for the end-of-session word-summary. */
+  wordsForItem?: (item: T) => string[];
   renderBoard: (item: T, controls: BoardControls) => ReactNode;
   /** Lives (tries) for an item; defaults to ECONOMY.livesPerLevel. Lets a game
    *  vary the number per item (e.g. Hurdle scales tries by word length). */
@@ -51,7 +55,8 @@ export function LevelStage<T extends { id: string }>({
   onWin,
   onComplete,
   renderWin,
-  renderComplete,
+  completeSpec,
+  wordsForItem,
   renderBoard,
   livesForItem,
   renderHud,
@@ -90,7 +95,7 @@ export function LevelStage<T extends { id: string }>({
     if (item) onWin?.(item);
     if (isLast) {
       onComplete?.();
-      if (renderComplete) setPhase('win');
+      if (completeSpec) setPhase('win');
       else onExit();
     } else {
       goNext();
@@ -132,7 +137,12 @@ export function LevelStage<T extends { id: string }>({
     );
   }
   if (phase === 'win') {
-    if (isLast && renderComplete && item) return <>{renderComplete(item)}</>;
+    if (isLast && completeSpec && item) {
+      const words = wordsForItem ? [...new Set(items.flatMap((it) => wordsForItem(it)))] : undefined;
+      return (
+        <CompleteScreen spec={completeSpec(item)} reveal={renderWin?.(item)} words={words} onExit={onExit} />
+      );
+    }
     return (
       <Centered onBack={onExit} icon="✓" title="Level won" body="Success is free — no focus spent."
         extra={item ? renderWin?.(item) : undefined}
