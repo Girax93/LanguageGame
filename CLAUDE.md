@@ -98,8 +98,16 @@ mounted. So a fresh chat is set up correctly:
   fresh chat reads correct, current files with no sync. Syncing is therefore **optional/cosmetic**:
   run `git fetch; git reset --hard origin/main` on the dev machine only for a clean `git
   status`/history or before running `npm run dev`/`build` locally.
+- **Bash mount reads file-tool *edits* stale/truncated.** A file changed in-chat with Edit/Write
+  reads correctly via the Read tool, but the workspace **bash** mount serves a truncated snapshot
+  (cut at the last edit site; fresh whole-file Writes read fine). So `tsc`/`node`/`grep` in bash on
+  an edited file lie. **Don't verify or base64 edited files from bash** — commit content from the
+  Read-tool view (edit context). Tests that only `import type` a file never parse it, so a green
+  content-test run does not prove an edited type file is syntactically valid.
 - **Tests run in the sandbox** with no `node_modules` (Node type‑stripping), so content/logic is
-  verified before pushing — see the test command under Commands above.
+  verified before pushing — see the test command under Commands above. (`node_modules` from the
+  Windows dev machine IS mounted, but its native binaries are win32 — `vite build` / esbuild / rollup
+  can't run in the Linux sandbox; `tsc` is pure JS but see the bash-staleness caveat above.)
 - `npm install` / `npm run dev` / `npm run build` are run on the **dev machine** (Windows), not the sandbox.
 
 ### Verifying Vercel deploys (READ THIS before/after any push)
@@ -118,47 +126,48 @@ pass** — e.g. a file that landed truncated/corrupted in a commit makes esbuild
 - **Reproduce the real build in the Composio remote sandbox** (it has working npm, unlike the
   mounted workspace sandbox): rebuild the repo from GitHub blobs (`GITHUB_GET_A_TREE` recursive →
   `GITHUB_GET_A_BLOB` each), `npm install`, `npx vite build`. This gives the authoritative error.
-- **Commit byte-exact.** Provide real file bytes (read from disk/sandbox → base64); never
-  hand-transcribe large base64 (that truncation is what broke `grammar.ts`). After committing,
-  verify the returned `blob_sha` matches the source file's git-blob sha. `GITHUB_COMMIT_MULTIPLE_FILES`
-  uses `message` (not `commit_message`) + `upserts:[{path,content,encoding}]`.
+- **Commit byte-exact.** Provide real file bytes from the Read-tool/edit context (NOT bash, which is
+  stale for edited files) as utf-8 `content`; never hand-transcribe large base64 (that truncation is
+  what broke `grammar.ts`). After committing, verify the returned `blob_sha`. `GITHUB_COMMIT_MULTIPLE_FILES`
+  uses `message` (not `commit_message`) + `upserts:[{path,content,encoding}]`. A big multi-file change
+  can go in a few buildable chunks (providers before consumers) so each commit still builds.
 
 ## Directory map
 
 - `src/app/` — `App.tsx` is the router + screen shell (Home, Practice, Progress, Settings live
   here as route states, not separate files). `Account`, `Store`, `Subscription`, `Statistics` (per-language stats — a flag toggle peeks at the other language without switching your course),
-  `ResetProgress` are screens; `routes.ts` defines routes. **Back is tree‑based:** a `PARENT` map +
+  `ResetProgress`, `BlockWords` (this block's words reminder + review screen), `FocusPool` (the focus-pool screen) are screens; `routes.ts` defines routes. **Back is tree‑based:** a `PARENT` map +
   `pathTo()` mean the top‑left back button always goes to the menu the current page *belongs to*
   (a game → its Practice/Recap menu → language menu → …), never to a previously‑visited page or a game.
 - `src/components/ui/` — shared kit: `Button`, `Hearts` (lives), `FocusPips` (focus dots, used
-  outside games), `ProgressBar`, `TopBar`, `MenuScreen` (per-item icons, emphasis + lock states), `icons` (line-icon set). `ConfirmDialog` is one level up.
+  outside games), `ProgressBar`, `TopBar`, `MenuScreen` (per-item icons, emphasis + lock states, optional `banner` slot above the items), `icons` (line-icon set). `ConfirmDialog` is one level up.
 - `src/content/` — the actual learning material:
   - `vocab.ts` — `SETS` of words (each word has an id, gender for nouns, `en`, filler/scaffold tags).
   - `cipherItems.ts` — sentence cryptograms; `grammarItems.ts` — article drills.
-  - `crosswords.ts` — GENERATES one interlocking crossword per block from its leftover words (see Curriculum); `challenges.ts` — old per‑block challenge crossword (dormant/unwired).
+  - `crosswords.ts` — GENERATES one interlocking crossword per block from its leftover words (see Curriculum); `buildFocusCrossword(wordIds)` builds a one-off grid from an arbitrary id set (focus pool); `challenges.ts` — old per‑block challenge crossword (dormant/unwired).
   - `clues.ts` — `CLUES: Record<lemmaId, {de, en}>` (short parallel German + English DEFINITIONS, not literal glosses) and `clueFor(lemmaId, lang)`; authored for early‑block (0–20) crossword words, English‑gloss fallback beyond.
   - `hurdleItems.ts` — GENERATES the per‑block Hurdle word list (`hurdleItemsForBlock`, up to 3 of the block's spellable words) + `HURDLE_ITEMS` flat pool for Recap.
   - `derive.ts` — helpers that derive data from the sets.
 - `src/games/` — one folder per mode, each exposes a default game component via `registry.ts`:
   - `_shared/LevelStage.tsx` — the shared focus‑gated level flow (owns lives, win/lose screens,
-    `renderBoard` / `onWin` / `renderWin`, plus optional `livesForItem` / `renderHud` / `loseTitle` /
-    `renderLoseExtra` for variable‑tries games like Hurdle). It also composes the END-of-session screen: a game passes `completeSpec` (title/body/buttons) + `wordsForItem`, and LevelStage injects the reveal (`renderWin`) and a "words you practiced" summary. All games render their board through this.
+    `renderBoard` / `onWin` / `onLose` / `renderWin`, plus optional `livesForItem` / `renderHud` / `loseTitle` /
+    `renderLoseExtra` for variable‑tries games like Hurdle). `onLose(item)` mirrors `onWin` and is used for focus-pool capture. It also composes the END-of-session screen: a game passes `completeSpec` (title/body/buttons) + `wordsForItem`, and LevelStage injects the reveal (`renderWin`) and a "words you practiced" summary. All games render their board through this.
   - `_shared/CompleteScreen.tsx` — the ONE shared end-of-session screen (`CompleteSpec`, `RevealCard`, `WordSummary`). Games no longer carry their own done/reveal components, so a completion fix/feature lands once for every game + language. **Don't re-add per-game Done screens.**
   - `fill-in-the-blanks/` — letter‑cipher game (`cipher.ts`, `CipherBoard`, German `Keyboard`).
   - `grammar/` — article drill (`grammar.ts`, `GrammarBoard`).
   - `crossword/` — `Crossword` (recap/practice), `ChallengeCrossword` (the block capstone),
-    `components/CrosswordBoard` (zoom/pan grid, German keyboard, left clue drawer),
+    `components/CrosswordBoard` (zoom/pan grid, German keyboard, left clue drawer, favors button),
     `crossword.ts` (build/layout), `generate.ts` (procedural generator).
   - `hurdle/` — Wordle‑style speller: `hurdle.ts` (pure `triesFor` / `scoreGuess` / `keyHints`),
     `Hurdle.tsx` (practice/recap shell), `components/HurdleBoard` + `HurdleKeyboard` (QWERTZ + Enter/⌫).
-  - `learn/` — the Learn (study new words) flow: `engine.ts` builds varied micro-exercises (`Step` = `intro`, `choice` w/ `variedDistractors`, `type`, `scramble`, `gender`, `pairs`) chosen by familiarity, with an `exampleSentenceFor` example sentence (from `content/derive.ts`) on the intro card; `components.tsx` renders them, `Learn.tsx` is the shell.
-  - `types.ts` — `GameProps` (`onExit`, `onMain`, `onOpenSettings`, `onPractice`, `scope`).
+  - `learn/` — the Learn (study new words) flow: `engine.ts` builds varied micro-exercises (`Step` = `intro`, `choice` w/ `variedDistractors`, `type`, `scramble`, `gender`, `pairs`) chosen by familiarity, with an `exampleSentenceFor` example sentence (from `content/derive.ts`) on the intro card; `components.tsx` renders them, `Learn.tsx` is the shell (optional `studyIds` prop overrides the next-set list with an explicit word list — the focus-pool "learn again" refresher).
+  - `types.ts` — `GameProps` (`onExit`, `onMain`, `onOpenSettings`, `onPractice`, `scope`). `GameScope = 'practice' | 'recap' | 'daily' | 'focus'`.
 - `src/state/` — all the logic, kept pure and React‑free where possible so it can be unit‑tested:
   - `types.ts` — `PlayerState` + `defaultPlayerState` + `STATE_VERSION`.
   - `storage.ts` — load/save to localStorage, merging saved state over defaults.
-  - `PlayerContext.tsx` — React context exposing `state`, `now`, `recordLevel`, `recordChallenge`, etc.
+  - `PlayerContext.tsx` — React context exposing `state`, `now`, `recordLevel`, `recordChallenge`, `addFocusMisses`, `recordFocusOutcome`, `clearFocusWord`, etc.
   - `economyConfig.ts` (`ECONOMY`), `progressionConfig.ts` (`PROGRESSION`), `difficulty.ts`,
-    `focus.ts` (focus/lives math), `progression.ts` (gating), `profile.ts`.
+    `focus.ts` (focus/lives math), `progression.ts` (gating + focus-pool helpers), `profile.ts`.
   - `streak.ts` — pure daily-streak math (`dayIndex`, `touchStreak` = consecutive-days counter); `PlayerContext` calls it on activity. `state.streak` / `state.lastActiveDay` merged in with **no** STATE_VERSION bump.
 - `src/lib/array.ts` — `shuffle`, `sampleExcluding`.
 - `src/index.css` — Tailwind layers + CSS variable mirror of the theme + component classes
@@ -225,8 +234,9 @@ are in `learnedWords`. This is how puzzles are kept to words the player actually
 
 ### Crossword specifics
 - `Crossword.tsx` is the **bounded per‑block Practice game** (`scope:'practice'`, frozen block,
-  `recordCrosswordRound`, Block‑complete done‑screen) and also a free Recap pool (`scope:'recap'`,
-  the `CROSSWORDS` flat list). It's the third gate part (see Curriculum).
+  `recordCrosswordRound`, Block‑complete done‑screen), a free Recap pool (`scope:'recap'`,
+  the `CROSSWORDS` flat list), and a **focus** session (`scope:'focus'`, a one-off grid generated from
+  the focus pool via `buildFocusCrossword`). It's the third gate part (see Curriculum).
 - `generate.ts` — deterministic generator (seeded LCG), only allows **perpendicular** crossings (a
   `cellDir` bitmask prevents collinear overlaps that broke numbering). The block crossword uses
   `generateConnectedLayout` → ONE connected component; a leftover it can't interlock is left unplaced
@@ -236,7 +246,11 @@ are in `learnedWords`. This is how puzzles are kept to words the player actually
   terracotta shake = wrong, plus the dev **Skip** button above the keyboard. Clues are in a
   **floating left drawer** that slides out from the screen edge (inset top/bottom, rounded, no dim
   backdrop); a tiny edge nub opens it. Clues are **German DEFINITIONS by default with a DE/EN
-  toggle** (`clueFor`, sourced from `clues.ts`) — not the literal translation. The native/EN clue toggle now sits in the **top bar** too (it replaced the old *Fit* button — the grid auto-fits on open) as well as in the drawer header; a Norwegian course shows NO/EN.
+  toggle** (`clueFor`, sourced from `clues.ts`) — not the literal translation. The native/EN clue toggle now sits in the **top bar** too as well as in the drawer header; a Norwegian course shows NO/EN.
+- **Favors (reveal a letter).** The clue bar has a ✨ button that fills the next empty cell of the
+  focused word. `favorsLeft` is per puzzle: **3** in practice/focus, **∞** in recap/daily; it resets
+  per puzzle because the board remounts on retry/next (LevelStage's `key`). The board also takes a
+  `scope` prop and an `onProgress(solved, unsolved)` callback (entry wordIds) for the focus pool.
 
 ### Hurdle specifics
 - `Hurdle.tsx` is the **bounded per‑block Practice game** (`scope:'practice'`, frozen block,
@@ -280,44 +294,67 @@ clue rules described above where they conflict.)
   `cipherRoundsForBlock`, capped at `MAX_SENTENCES = 4`). The generator only emits provably‑correct
   constructions (nominative article+noun, predicate adjectives, `sein` + 3rd‑person‑singular verbs
   from `forms[0]`, locative/PP predicates, questions) and only joins **two complete, valid clauses**
-  with a conjunction — "Der Mann ist gut **und** die Frau ist schön." (und) or "… **aber** … nicht
-  …" (a real contrast). NO noun‑list enumeration and NO chaining of unrelated clauses (both read as
+  with a conjunction. NO noun‑list enumeration and NO chaining of unrelated clauses (both read as
   non‑sequiturs — Ari flagged these). **Predicate adjectives must fit their subject**
-  (`ADJ_PERSON_ONLY` / `ADJ_ABSTRACT_ONLY`, everything else universal): a person is never "klar", a
-  thing never "müde", and abstract adjectives (richtig/klar/wahr/…) appear only as "Das ist klar."
-  — never on a noun. Cipher no longer forces 100% coverage: it makes ~3 good sentences covering
-  ~6/10 of a block's new words; **whatever it can't place naturally is left to the crossword**.
+  (`ADJ_PERSON_ONLY` / `ADJ_ABSTRACT_ONLY`, everything else universal). Cipher no longer forces 100%
+  coverage: it makes ~3 good sentences covering ~6/10 of a block's new words; **whatever it can't
+  place naturally is left to the crossword**. NOTE: in practice/focus the cipher now also renders
+  non-current-block (non-article) words as inert context — see the focus-pool section below.
 - **Crossword is GENERATED per block** (`crosswords.ts`): it picks up the block's **leftover words**
   the cipher didn't cover (mostly short function words), pads them with a couple of the block's nouns,
   and builds **ONE connected grid** via `generateConnectedLayout` (`crosswordWordsForBlock` /
   `crosswordItemsForBlock` + `buildCrossword`). Any leftover it can't interlock is reported by
-  `crosswordLeftoverWordsForBlock` and handed to Hurdle. Clues come from `clueFor` (DE+EN
-  definitions). Once prepositions move into Grammar (planned), they drop out of the pool automatically.
+  `crosswordLeftoverWordsForBlock` and handed to Hurdle. Clues come from `clueFor` (DE+EN definitions).
 - **Hurdle is GENERATED per block** (`hurdleItems.ts`): Practice drills only the cipher‑uncovered
   words the **crossword couldn't place** (`crosswordLeftoverWordsForBlock`, single token of ≥2 German
   letters) — usually 0–1, so most blocks have no Practice Hurdle. `HURDLE_ITEMS` is the flat pool
-  (any learned word) for Recap. Each puzzle is one **hidden** word guessed Wordle‑style with **no
-  clue** (an info tile explains the rules; the word + meaning show only on finish). Together cipher +
-  crossword + Hurdle practise every block word at least once.
+  (any learned word) for Recap. Together cipher + crossword + Hurdle practise every block word.
 - **The per‑block gate requires the Practice games that have content**: grammar drills
-  (`blockPracticeDone`, X/3) + cipher session (`cipherSessionDone`, `state.cipherCounts`) + the block
-  crossword (`crosswordSessionDone`, `state.crosswordCounts`, one puzzle) + the Hurdle session
-  (`hurdleSessionDone`, `state.hurdleCounts`) **when it has a straggler** (usually it doesn't, so the
-  Hurdle target is 0 and that part auto‑passes). So `isBlockComplete = isBlockLearned &&
-  blockPracticeDone && cipherSessionDone && crosswordSessionDone && hurdleSessionDone`. App's Practice
-  menu shows the active games with a combined X/total (the Hurdle card only appears when there's a
-  straggler word); each game's done‑screen branches on `isBlockComplete`.
+  (`blockPracticeDone`, X/3) + cipher session (`cipherSessionDone`) + the block crossword
+  (`crosswordSessionDone`) + the Hurdle session (`hurdleSessionDone`) **when it has a straggler**.
+  So `isBlockComplete = isBlockLearned && blockPracticeDone && cipherSessionDone &&
+  crosswordSessionDone && hurdleSessionDone`.
 - Articles `der/die/das` are their own early entries glossed "the (masc./fem./neut.)".
 - `STATE_VERSION = 9` (old saves reset). `tests/content.invariants.mts` asserts the lemma‑dataset
-  + gating invariants — sets/lookups, generated grammar drills, generated **cipher** coverage
-  (1..4 sensible sentences/block; requires real + eligible; unique ids; avg ≥5/10), generated
-  **crossword** (every block's puzzle is ONE connected component; placed words eligible + drawn from
-  the pool; no letter conflicts; round count 0/1), **crossword clues** (every early‑block (0–20)
-  crossword word has a real DE+EN clue that isn't the literal answer), generated **Hurdle** (tries
-  `max(5, len+3)` no cap; `scoreGuess` incl. duplicate handling; Hurdle = the crossword's leftover
-  stragglers, disjoint from cipher + crossword, and cipher + crossword + Hurdle cover every spellable
-  block word), the per‑block Practice gate (grammar + cipher + crossword + Hurdle), and the daily
-  recap (`recapDue`/`lastRecapAt`).
+  + gating invariants. (Game/board files are React/TSX and live outside the content tests.)
+
+## Focus pool · practice reminder · favors · cipher block‑only (shipped)
+
+Four player‑facing additions, all language‑agnostic:
+
+- **Practice word reminder (Feature 1).** The Practice screen shows a `BlockWordsBanner`
+  (`src/app/BlockWords.tsx`) listing the practised block's words; tapping it opens the
+  `block-words` route — a full list (article form + gloss + gender). Uses the block already
+  shown on Practice (`practiceIdx`). `MenuScreen` gained a `banner` slot.
+- **Crossword favors (Feature 2).** `CrosswordBoard` takes a `scope` prop and keeps a per‑puzzle
+  `favorsLeft` (3 in practice/focus, ∞ in recap/daily). The ✨ button (in the clue bar) reveals the
+  next empty cell of the focused word; favors reset per puzzle. The board also reports solved/unsolved
+  word ids via `onProgress` (focus pool).
+- **Cipher block‑only participation (Feature 3).** `buildPuzzle` accepts a `participates(word)`
+  predicate; non‑participating words render as inert `'plain'` cells (shown as context, no slot, no
+  number, excluded from the win/keyboard). `CipherBoard` builds the predicate by **surface‑matching**
+  each word against the scope's participating lemmas + a fixed article‑surface set (`buildParticipation`,
+  using `wordById` + `verb3sg`). `FillInTheBlanks` passes `participatingLemmaIds`: practice → this
+  block's words, focus → focus‑pool words, recap → undefined (all participate). Articles (`pos:'art'`)
+  always participate but never pool. Net effect: a practice/focus cipher only makes the current‑block /
+  focus words decodable; earlier scaffolding (ist/und/earlier nouns) is given context. Early blocks
+  therefore read sparse — that's intended.
+- **Focus pool (Feature 4).** `PlayerState.focusPool: Record<wordId, streak>` (additive, **no**
+  STATE_VERSION bump; per‑language via existing namespacing). On a **failed** practice game the
+  *uncompleted* words are captured (cipher/crossword report unsolved content words via `onProgress` →
+  `LevelStage.onLose` → `addFocusMisses`; Hurdle adds its one word; **grammar never captures**). A word
+  leaves the pool after **2 correct‑in‑a‑row** in a focus game (`recordFocusOutcome`, threshold =
+  `masteryThreshold`). New `'focus'` `GameScope`: every game filters its pool to focus words; the
+  Crossword focus puzzle is generated on the fly from the pool (`buildFocusCrossword` in `crosswords.ts`).
+  The **Focus Pool** screen (`src/app/FocusPool.tsx`, route `focus-pool` under the language menu) lists
+  the words (+ re‑mastery `n/2`, with a remove ✕ = `clearFocusWord`), a "Learn these words" refresher
+  (`Learn` gained an optional `studyIds` override → `focus-learn`), and only the focus games that have
+  content for the current pool (`focus-cipher`/`-grammar`/`-crossword`/`-hurdle`). Focus words also
+  appear in normal Recap (they're learned). State helpers live in `progression.ts`
+  (`focusWordIds`/`focusPoolSize`/`addFocusMisses`/`recordFocusOutcome`/`clearFocusWord`); context
+  actions on `PlayerContext`.
+
+`LevelStage` gained an `onLose(item)` hook (mirrors `onWin`) used for pool capture / focus re‑mastery.
 
 ## Planned next (agreed with Ari, not built yet)
 
@@ -330,6 +367,9 @@ clue rules described above where they conflict.)
   drill ONE specific blocking lemma on demand (the current Hurdle cycles a block/pool, not a chosen word).
 - Possible cipher follow‑up: declarative `oder` is intentionally excluded (reads oddly) — it could
   return inside a question frame ("Ist das der Mann oder das Kind?").
+- **Focus-pool follow-ups** (idea, not built): a single "Start focus session" runner that sequences the
+  applicable games back-to-back (today the Focus Pool screen offers them as separate entries, like Recap);
+  and optional extra weighting of focus words inside normal Recap.
 
 ## Planned: in‑game glossary & wiki (TODO — not built yet)
 
@@ -340,11 +380,7 @@ Designer idea to build later:
   mean, e.g. "masc. = masculine".
 - Each term is **clickable** and opens an in‑game **wiki** page explaining the
   concept, with cross‑links to related pages.
-- Example: tapping **masc.** opens an *Articles* page:
-  > Every noun has a gender — **der** = masculine, **die** = feminine, **das** =
-  > neuter. These are core building blocks for the biggest German grammar rules;
-  > many words change their ending because of gender, such as **nouns** (link) and
-  > **articles** (ein/eine) (link).
+- Example: tapping **masc.** opens an *Articles* page explaining gender (der/die/das).
 - Goal: learners look up grammar terms without leaving the game. Once it exists,
   glosses can safely use short abbreviations because the glossary explains them.
 
@@ -352,8 +388,9 @@ Designer idea to build later:
 
 - **German + Norwegian both shipped** — the app is multi-language now (see *Languages* above).
   A stray `tests/_clues_probe.mts` may exist locally from a clue-list probe; it is uncommitted and
-  safe to delete.
-- The stale orphan / scratch files previously listed here have all been deleted — nothing left to clean.
+  safe to delete. (The focus‑pool session also left scratch probes `tests/_cipher_probe.mjs`,
+  `tests/_cipher_participation_probe.mts`, `tests/_chk.mts`, `tests/_rx.mts`, `tests/_t.mts` — all
+  uncommitted and safe to delete.)
 - If the local `.git` history drifts from `main` (e.g. after Composio pushes that the dev machine
   hasn't pulled yet), realign git on the dev machine with `git fetch; git reset --hard origin/main`
   (or re‑clone). File contents track `main`.
