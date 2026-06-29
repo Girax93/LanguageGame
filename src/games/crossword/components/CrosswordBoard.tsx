@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import type { CrosswordContentItem } from '../../../content/crosswords';
+import type { GameScope } from '../../types';
 import { SkipButton, type BoardControls } from '../../_shared/LevelStage';
 import { toUpperActive, isLetterActive } from '../../../content/lang/alphabet';
 import { getActiveCode } from '../../../content/lang/registry';
@@ -10,6 +11,10 @@ import { clueFor } from '../../../content/clues';
 interface Props {
   item: CrosswordContentItem;
   controls: BoardControls;
+  /** Favors are limited (3 per puzzle) in practice/focus, unlimited in recap. */
+  scope?: GameScope;
+  /** Reports solved/unsolved word ids (for the focus pool). */
+  onProgress?: (solved: string[], unsolved: string[]) => void;
 }
 
 // Natural (zoom = 1) cell pitch in CSS px. The grid is rendered at this fixed
@@ -24,7 +29,7 @@ interface View {
   y: number;
 }
 
-export function CrosswordBoard({ item, controls }: Props) {
+export function CrosswordBoard({ item, controls, scope = 'practice', onProgress }: Props) {
   const built = useMemo(() => buildCrossword(item), [item.id]);
 
   const [entered, setEntered] = useState<Record<string, string>>({});
@@ -33,6 +38,11 @@ export function CrosswordBoard({ item, controls }: Props) {
   const [wrong, setWrong] = useState<string | null>(null);
   const [showClues, setShowClues] = useState(false);
   const [lang, setLang] = useState<'de' | 'en'>('de');
+  // Favors: pay one to reveal a letter of the focused word. 3 per puzzle in
+  // practice/focus; unlimited in recap. Resets per puzzle (the board remounts
+  // on retry / next item via LevelStage's key).
+  const favorsUnlimited = scope === 'recap' || scope === 'daily';
+  const [favorsLeft, setFavorsLeft] = useState(() => (favorsUnlimited ? Infinity : 3));
   // The "native" clue side adapts to the active course language.
   const nativeCode = getActiveCode();
   const nativeLabel = nativeCode === 'no' ? 'NO' : 'DE';
@@ -40,7 +50,7 @@ export function CrosswordBoard({ item, controls }: Props) {
   const downTitle = lang === 'de' ? (nativeCode === 'no' ? 'Loddrett' : 'Senkrecht') : 'Down';
   const done = useRef(false);
 
-  // ── zoom / pan ───────────────────────────────────────────────
+  // ── zoom / pan ───────────────────────────────
   const viewportRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<View>({ zoom: 1, x: 0, y: 0 });
   const viewRef = useRef(view);
@@ -267,7 +277,7 @@ export function CrosswordBoard({ item, controls }: Props) {
     return () => vp.removeEventListener('wheel', onWheel);
   }, [clampPan]);
 
-  // ── puzzle logic ─────────────────────────────────────────────
+  // ── puzzle logic ────────────────────────────
   const sageCells = useMemo(() => {
     const s = new Set<string>();
     for (const e of built.entries) {
@@ -330,6 +340,45 @@ export function CrosswordBoard({ item, controls }: Props) {
     },
     [active, entered, built, controls, advanceFrom],
   );
+
+  // Pay a favor to reveal one letter of the focused word (its first empty cell;
+  // if it's already full, the first empty cell of any unsolved word).
+  const revealFavor = useCallback(() => {
+    if (done.current) return;
+    if (!favorsUnlimited && favorsLeft <= 0) return;
+    let key = selectedEntry?.cells.find((k) => !entered[k]);
+    let inSelected = !!key;
+    if (!key) {
+      for (const e of built.entries) {
+        const k = e.cells.find((c) => !entered[c]);
+        if (k) { key = k; setSelEntry(e.index); inSelected = false; break; }
+      }
+    }
+    if (!key) return;
+    const cell = built.cells.get(key);
+    if (!cell) return;
+    const next = { ...entered, [key]: cell.answer };
+    setEntered(next);
+    setActive(key);
+    if (!favorsUnlimited) setFavorsLeft((f) => f - 1);
+    if (Object.keys(next).length === built.total) {
+      done.current = true;
+      controls.onSolved();
+      return;
+    }
+    if (inSelected) advanceFrom(key, next);
+  }, [favorsUnlimited, favorsLeft, selectedEntry, entered, built, controls, advanceFrom]);
+
+  // Report solved/unsolved word ids (for the focus pool's re-mastery tracking).
+  useEffect(() => {
+    if (!onProgress) return;
+    const solved: string[] = [];
+    const unsolved: string[] = [];
+    for (const e of built.entries) {
+      (e.cells.every((k) => entered[k]) ? solved : unsolved).push(e.wordId);
+    }
+    onProgress([...new Set(solved)], [...new Set(unsolved)]);
+  }, [entered, built, onProgress]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -399,6 +448,16 @@ export function CrosswordBoard({ item, controls }: Props) {
             EN
           </button>
         </div>
+        <button
+          type="button"
+          onClick={revealFavor}
+          disabled={!favorsUnlimited && favorsLeft <= 0}
+          aria-label="Use a favor to reveal a letter of the current word"
+          title="Reveal a letter of the word you're solving"
+          className="shrink-0 rounded-full bg-ochre/20 px-3 py-1.5 text-xs font-semibold text-brown transition hover:bg-ochre/30 disabled:opacity-40"
+        >
+          ✨ {favorsUnlimited ? '∞' : favorsLeft}
+        </button>
         <button
           type="button"
           onClick={() => setShowClues((s) => !s)}
