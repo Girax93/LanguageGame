@@ -40,7 +40,7 @@ export function CrosswordBoard({ item, controls }: Props) {
   const downTitle = lang === 'de' ? (nativeCode === 'no' ? 'Loddrett' : 'Senkrecht') : 'Down';
   const done = useRef(false);
 
-  // ── zoom / pan ────────────────────────────────────────────────────────────
+  // ── zoom / pan ───────────────────────────────────────────────
   const viewportRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<View>({ zoom: 1, x: 0, y: 0 });
   const viewRef = useRef(view);
@@ -267,7 +267,7 @@ export function CrosswordBoard({ item, controls }: Props) {
     return () => vp.removeEventListener('wheel', onWheel);
   }, [clampPan]);
 
-  // ── puzzle logic ──────────────────────────────────────────────────────────
+  // ── puzzle logic ─────────────────────────────────────────────
   const sageCells = useMemo(() => {
     const s = new Set<string>();
     for (const e of built.entries) {
@@ -381,14 +381,24 @@ export function CrosswordBoard({ item, controls }: Props) {
             </>
           )}
         </p>
-        <button
-          type="button"
-          onClick={fitView}
-          aria-label="Fit puzzle to screen"
-          className="shrink-0 rounded-full bg-sand px-3 py-1.5 text-xs font-semibold text-brown transition hover:bg-[#ddcdb2]"
-        >
-          Fit
-        </button>
+        <div className="flex shrink-0 overflow-hidden rounded-full bg-sand text-xs font-semibold" role="group" aria-label="Clue language">
+          <button
+            type="button"
+            onClick={() => setLang('de')}
+            aria-pressed={lang === 'de'}
+            className={`px-3 py-1.5 transition ${lang === 'de' ? 'bg-brown text-cream' : 'text-brown'}`}
+          >
+            {nativeLabel}
+          </button>
+          <button
+            type="button"
+            onClick={() => setLang('en')}
+            aria-pressed={lang === 'en'}
+            className={`px-3 py-1.5 transition ${lang === 'en' ? 'bg-brown text-cream' : 'text-brown'}`}
+          >
+            EN
+          </button>
+        </div>
         <button
           type="button"
           onClick={() => setShowClues((s) => !s)}
