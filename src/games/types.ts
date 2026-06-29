@@ -3,8 +3,10 @@ import type { ComponentType } from 'react';
 /** How a game scopes its puzzle pool.
  *  - practice: the current block's gating session.
  *  - recap: everything learned (free review, does not gate).
- *  - daily: a short bounded review for the forced daily recap. */
-export type GameScope = 'practice' | 'recap' | 'daily';
+ *  - daily: a short bounded review for the forced daily recap.
+ *  - focus: only the player's "focus pool" words (missed in failed Practice
+ *    games); covers just those words and drives their re-mastery. */
+export type GameScope = 'practice' | 'recap' | 'daily' | 'focus';
 
 /**
  * Props passed to every game's root component. Games read/update player

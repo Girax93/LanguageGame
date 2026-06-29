@@ -35,14 +35,20 @@ export interface PlayerState {
   streak: number;
   /** Local day-index (days since epoch) of the most recent activity; -1 = never. */
   lastActiveDay: number;
+  /** Practice "focus pool": word ids the player missed in a FAILED Practice game,
+   *  mapped to their re-mastery streak (consecutive-correct in a focus session).
+   *  A word leaves the pool once the streak reaches `masteryThreshold`. Articles
+   *  and grammar drills never add to it. Per language (namespaced storage). */
+  focusPool: Record<string, number>;
 }
 
 // Bumped to 9: the per-block Practice gate now also requires the Hurdle session
 // (hurdleCounts) alongside the grammar drills, cipher session and crossword.
 // Old saves reset.
 // (Phase 1 added `streak`/`lastActiveDay` WITHOUT a bump — they merge in from
-//  defaults for existing v9 saves, so no reset was needed.)
-export const STATE_VERSION = 9;
+//  defaults for existing v9 saves, so no reset was needed. `focusPool` was added
+//  the same way — additive, backfilled from defaults, so still no bump.)
+export const STATE_VERSION = 9; // focusPool added additively (no bump)
 
 export function defaultPlayerState(now: number, focusStart: number): PlayerState {
   return {
@@ -63,5 +69,6 @@ export function defaultPlayerState(now: number, focusStart: number): PlayerState
     subscribed: false,
     streak: 0,
     lastActiveDay: -1,
+    focusPool: {},
   };
 }
