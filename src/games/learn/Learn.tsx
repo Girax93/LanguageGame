@@ -13,10 +13,12 @@ import { IntroCard, Choice, TypeIn, Scramble, Gender, Pairs } from './components
 
 const PAIRS_EVERY = 5; // insert a matching round roughly every N exercises
 
-export function Learn({ onExit, onMain, onPractice }: GameProps) {
+export function Learn({ onExit, onMain, onPractice, studyIds }: GameProps & { studyIds?: string[] }) {
   const { state, answerWord } = usePlayer();
-  const study = wordsToStudy(state, SETS);
-  const setIdx = currentLearnSetIndex(state, SETS);
+  // `studyIds` (focus pool "learn again") overrides the normal next-set study list
+  // with an explicit word list — a refresher over already-learned words.
+  const study = studyIds ?? wordsToStudy(state, SETS);
+  const setIdx = studyIds ? null : currentLearnSetIndex(state, SETS);
   const currentSet = setIdx !== null ? SETS[setIdx] : null;
   const knownIds = useMemo(() => new Set(state.learnedWords), [state.learnedWords]);
 
@@ -87,7 +89,7 @@ export function Learn({ onExit, onMain, onPractice }: GameProps) {
         >
           <ChevronLeft />
         </button>
-        <h2 className="eyebrow">{currentSet ? `Learn · Set ${currentSet.index + 1}` : 'Learn'}</h2>
+        <h2 className="eyebrow">{studyIds ? 'Review' : currentSet ? `Learn · Set ${currentSet.index + 1}` : 'Learn'}</h2>
         <div className="flex items-center gap-1.5">
           {combo >= 2 && (
             <span className="flex items-center gap-0.5 rounded-full bg-sand px-2 py-0.5 text-xs font-semibold tabular-nums text-ochre animate-pop-in">

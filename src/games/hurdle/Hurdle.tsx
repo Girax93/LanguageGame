@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { HURDLE_ITEMS, hurdleItemsForBlock, type HurdleContentItem } from '../../content/hurdleItems';
-import { isItemEligible, currentBlock, hurdleRoundCount, isBlockComplete } from '../../state/progression';
+import { isItemEligible, currentBlock, hurdleRoundCount, isBlockComplete, focusWordIds } from '../../state/progression';
 import { SETS, wordById, germanWithArticle } from '../../content/vocab';
 import { shuffle } from '../../lib/array';
 import { LevelStage } from '../_shared/LevelStage';
@@ -19,17 +19,21 @@ import { triesFor } from './hurdle';
  * - RECAP: free spelling across everything learned (does not gate).
  */
 export function Hurdle({ onExit, onOpenSettings, onMain, onLearn, onRecap, onPractice, scope = 'practice' }: GameProps) {
-  const { state, recordHurdleRound } = usePlayer();
+  const { state, recordHurdleRound, addFocusMisses, recordFocusOutcome } = usePlayer();
   // Frozen at mount so the completion screen labels the block just practiced.
   const [block] = useState(() => currentBlock(state, SETS));
 
   const items: HurdleContentItem[] = useMemo(() => {
     if (scope === 'recap') return shuffle(HURDLE_ITEMS.filter((i) => isItemEligible(i, state)));
+    if (scope === 'focus') {
+      const focus = new Set(focusWordIds(state));
+      return shuffle(HURDLE_ITEMS.filter((i) => isItemEligible(i, state) && focus.has(i.wordId)));
+    }
     return hurdleItemsForBlock(block)
       .filter((i) => isItemEligible(i, state))
       .slice(hurdleRoundCount(state, block));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.learnedWords, scope, block]);
+  }, [state.learnedWords, state.focusPool, scope, block]);
 
   return (
     <LevelStage
@@ -42,7 +46,20 @@ export function Hurdle({ onExit, onOpenSettings, onMain, onLearn, onRecap, onPra
       renderHud={(remaining, total) => <TriesLeft remaining={remaining} total={total} />}
       loseTitle="Out of tries"
       renderLoseExtra={(it) => <WordReveal item={it} />}
-      onWin={scope === 'practice' ? () => recordHurdleRound(block) : undefined}
+      onWin={
+        scope === 'practice'
+          ? () => recordHurdleRound(block)
+          : scope === 'focus'
+            ? (it) => recordFocusOutcome([it.wordId], [])
+            : undefined
+      }
+      onLose={
+        scope === 'practice'
+          ? (it) => addFocusMisses([it.wordId])
+          : scope === 'focus'
+            ? (it) => recordFocusOutcome([], [it.wordId])
+            : undefined
+      }
       wordsForItem={(it) => it.requires}
       completeSpec={
         scope === 'practice'

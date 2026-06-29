@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { SETS } from '../../content/vocab';
 import {
   CROSSWORDS,
   crosswordItemsForBlock,
+  buildFocusCrossword,
   type CrosswordContentItem,
 } from '../../content/crosswords';
 import {
@@ -12,6 +13,7 @@ import {
   currentBlock,
   crosswordSessionDone,
   isBlockComplete,
+  focusWordIds,
 } from '../../state/progression';
 import { shuffle } from '../../lib/array';
 import { LevelStage } from '../_shared/LevelStage';
@@ -27,18 +29,28 @@ import { ChevronLeft } from '../../components/ui/icons';
  * - RECAP: free play across every block's crossword (does not gate).
  */
 export function Crossword({ onExit, onOpenSettings, onMain, onLearn, onRecap, onPractice, scope = 'practice' }: GameProps) {
-  const { state, recordCrosswordRound } = usePlayer();
+  const { state, recordCrosswordRound, addFocusMisses, recordFocusOutcome } = usePlayer();
   // Frozen at mount so the completion screen labels the block just practiced.
   const [block] = useState(() => currentBlock(state, SETS));
 
   const items: CrosswordContentItem[] = useMemo(() => {
     if (scope === 'recap') return shuffle(CROSSWORDS.filter((p) => isItemEligible(p, state)));
+    if (scope === 'focus') {
+      const it = buildFocusCrossword(focusWordIds(state));
+      return it ? [it] : [];
+    }
     const it = crosswordItemsForBlock(block);
     if (!it || !isItemEligible(it, state) || crosswordSessionDone(state, block)) return [];
     return [it];
     // Session is fixed when the screen opens; the solve updates the count, not the items.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.learnedWords, scope, block]);
+  }, [state.learnedWords, state.focusPool, scope, block]);
+
+  // Latest solved/unsolved word ids from the board (focus-pool plumbing).
+  const progress = useRef<{ solved: string[]; unsolved: string[] }>({ solved: [], unsolved: [] });
+  const onProgress = useCallback((solved: string[], unsolved: string[]) => {
+    progress.current = { solved, unsolved };
+  }, []);
 
   return (
     <LevelStage
@@ -47,13 +59,28 @@ export function Crossword({ onExit, onOpenSettings, onMain, onLearn, onRecap, on
       onOpenSettings={onOpenSettings}
       onMain={onMain}
       countsTowardGate={scope === 'practice'}
-      onWin={scope === 'practice' ? () => recordCrosswordRound(block) : undefined}
+      onWin={
+        scope === 'practice'
+          ? () => recordCrosswordRound(block)
+          : scope === 'focus'
+            ? (it) => recordFocusOutcome(it.requires, [])
+            : undefined
+      }
+      onLose={
+        scope === 'practice'
+          ? () => addFocusMisses(progress.current.unsolved)
+          : scope === 'focus'
+            ? () => recordFocusOutcome([], progress.current.unsolved)
+            : undefined
+      }
       renderComplete={
         scope === 'practice'
           ? () => <CrosswordDone block={block} onExit={onExit} onLearn={onLearn} onRecap={onRecap} onPractice={onPractice} />
           : undefined
       }
-      renderBoard={(item, controls) => <CrosswordBoard item={item} controls={controls} />}
+      renderBoard={(item, controls) => (
+        <CrosswordBoard item={item} controls={controls} scope={scope} onProgress={onProgress} />
+      )}
     />
   );
 }

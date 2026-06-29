@@ -26,6 +26,9 @@ import { Settings } from './Settings';
 import { Account } from './Account';
 import { Subscription } from './Subscription';
 import { ResetProgress } from './ResetProgress';
+import { BlockWords, BlockWordsBanner } from './BlockWords';
+import { FocusPool } from './FocusPool';
+import { Learn } from '../games/learn/Learn';
 import { usePlayer } from '../state/PlayerContext';
 import { SETS } from '../content/vocab';
 import { PROGRESSION } from '../state/progressionConfig';
@@ -34,6 +37,7 @@ import {
   masteredSetCount,
   currentBlock,
   blockCount,
+  blockWords,
   blockPracticeDone,
   grammarRoundsForBlock,
   practiceCount,
@@ -44,6 +48,8 @@ import {
   hurdleRoundCount,
   hurdleSessionDone,
   recapDue,
+  focusWordIds,
+  focusPoolSize,
 } from '../state/progression';
 import { cipherRoundsForBlock } from '../content/cipherItems';
 import { crosswordRoundsForBlock } from '../content/crosswords';
@@ -60,8 +66,10 @@ const PARENT: Partial<Record<Route, Route>> = {
   learn: 'lang-menu',
   practice: 'lang-menu',
   recap: 'lang-menu',
+  'focus-pool': 'lang-menu',
   'daily-recap': 'lang-menu',
   'daily-recap-grammar': 'lang-menu',
+  'block-words': 'practice',
   'fill-in-the-blanks': 'practice',
   grammar: 'practice',
   crossword: 'practice',
@@ -71,6 +79,11 @@ const PARENT: Partial<Record<Route, Route>> = {
   'recap-crossword': 'recap',
   'recap-hurdle': 'recap',
   'recap-challenge': 'recap',
+  'focus-learn': 'focus-pool',
+  'focus-cipher': 'focus-pool',
+  'focus-grammar': 'focus-pool',
+  'focus-crossword': 'focus-pool',
+  'focus-hurdle': 'focus-pool',
   challenge: 'practice',
   statistics: 'main',
   store: 'main',
@@ -172,6 +185,7 @@ export function App() {
 
   const practiceUnlocked = masteredSets >= 1;
   const recapUnlocked = masteredSets >= 2;
+  const focusN = focusPoolSize(state);
   const completedChallenges = [...(state.challengesDone ?? [])].sort((a, b) => a - b);
 
   const openLanguage = (code: string) => {
@@ -289,6 +303,18 @@ export function App() {
           locked: !recapUnlocked,
           onClick: recapUnlocked ? () => navigate('recap') : undefined,
         },
+        // Focus pool: appears once you can recap, or as soon as you've missed a word.
+        ...(recapUnlocked || focusN > 0
+          ? [
+              {
+                icon: '◎',
+                label: 'Focus Pool',
+                sublabel: focusN > 0 ? 'Drill the words you’ve missed' : 'Words you miss in Practice gather here',
+                status: focusN > 0 ? `${focusN} ${focusN === 1 ? 'word' : 'words'}` : undefined,
+                onClick: () => navigate('focus-pool'),
+              },
+            ]
+          : []),
         // DEV/TESTING: trigger the daily recap without waiting 24h. Dev builds only.
         ...(import.meta.env.DEV
           ? [
@@ -396,7 +422,25 @@ export function App() {
                 : 'Clear this block’s practice games to unlock the next words.'
           }
           items={practiceItems}
+          banner={
+            hasPractice ? (
+              <BlockWordsBanner
+                words={blockWords(SETS, practiceIdx)}
+                onOpen={() => navigate('block-words')}
+              />
+            ) : undefined
+          }
           footer={practiceFooter}
+          onBack={back}
+          onMain={requestMain}
+        />
+      );
+      break;
+    case 'block-words':
+      screen = (
+        <BlockWords
+          words={hasPractice ? blockWords(SETS, practiceIdx) : []}
+          blockLabel="Refresh these before you practise — they’re what this block drills."
           onBack={back}
           onMain={requestMain}
         />
@@ -470,6 +514,47 @@ export function App() {
       ) : null;
       break;
     }
+    case 'focus-pool':
+      screen = <FocusPool onBack={back} onMain={requestMain} onOpen={navigate} />;
+      break;
+    case 'focus-learn':
+      screen = (
+        <Learn
+          onExit={back}
+          onMain={requestMain}
+          onPractice={() => navigate('focus-pool')}
+          studyIds={focusWordIds(state)}
+        />
+      );
+      break;
+    case 'focus-cipher': {
+      const Game = getGame('fill-in-the-blanks')?.component;
+      screen = Game ? (
+        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="focus" />
+      ) : null;
+      break;
+    }
+    case 'focus-grammar': {
+      const Game = getGame('grammar')?.component;
+      screen = Game ? (
+        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="focus" />
+      ) : null;
+      break;
+    }
+    case 'focus-crossword': {
+      const Game = getGame('crossword')?.component;
+      screen = Game ? (
+        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="focus" />
+      ) : null;
+      break;
+    }
+    case 'focus-hurdle': {
+      const Game = getGame('hurdle')?.component;
+      screen = Game ? (
+        <Game onExit={back} onOpenSettings={() => navigate('settings')} onMain={requestMain} scope="focus" />
+      ) : null;
+      break;
+    }
     case 'daily-recap-grammar': {
       const Game = getGame('grammar')?.component;
       screen = Game ? (
@@ -495,7 +580,7 @@ export function App() {
             onOpenSettings={() => navigate('settings')}
             onMain={requestMain}
             countsTowardGate={false}
-            renderBoard={(item, controls) => <CrosswordBoard item={item} controls={controls} />}
+            renderBoard={(item, controls) => <CrosswordBoard item={item} controls={controls} scope="recap" />}
           />
         ) : null;
       break;
@@ -527,6 +612,10 @@ export function App() {
     route === 'recap-cipher' ||
     route === 'recap-grammar' ||
     route === 'recap-hurdle' ||
+    route === 'focus-cipher' ||
+    route === 'focus-grammar' ||
+    route === 'focus-crossword' ||
+    route === 'focus-hurdle' ||
     route === 'daily-recap-grammar' ||
     route === 'recap-challenge' ||
     route === 'challenge';
