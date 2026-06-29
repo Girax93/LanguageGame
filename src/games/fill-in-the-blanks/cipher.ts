@@ -7,12 +7,13 @@ import { toUpperActive, isLetterActive, activeAlphabet } from '../../content/lan
 // Back-compat aliases (some board components still import these names):
 export { toUpperActive as toUpperDE, isLetterActive as isLetterDE };
 
-export type CellKind = 'letter' | 'punct';
+export type CellKind = 'letter' | 'punct' | 'plain';
 
 export interface Cell {
   kind: CellKind;
   char: string;
-  /** Slot index for letters (0-based, sentence-wide); -1 for punctuation. */
+  /** Slot index for decodable letters (0-based, sentence-wide); -1 for
+   *  punctuation and for 'plain' (inert, non-participating) words. */
   slot: number;
 }
 
@@ -35,11 +36,15 @@ function shuffledNumbers(n: number, rng: () => number): number[] {
 export interface BuildOptions {
   givenCount?: number;
   rng?: () => number;
+  /** Per-word participation test (on the raw, upper-cased word). A word that
+   *  returns false is rendered inert: shown as plain context text with no slot,
+   *  no number and no decoding. Omit ⇒ every word participates (default). */
+  participates?: (wordText: string) => boolean;
 }
 
 /** Build a fully-described puzzle from a raw sentence (active-language alphabet). */
 export function buildPuzzle(rawSentence: string, options: BuildOptions = {}): Puzzle {
-  const { givenCount = 2, rng = Math.random } = options;
+  const { givenCount = 2, rng = Math.random, participates } = options;
   const upper = toUpperActive(rawSentence).trim();
 
   const ALPHABET = activeAlphabet();
@@ -55,6 +60,12 @@ export function buildPuzzle(rawSentence: string, options: BuildOptions = {}): Pu
 
   for (const wordStr of upper.split(/\s+/)) {
     if (wordStr === '') continue;
+    // A non-participating word is inert: one 'plain' context cell (the whole
+    // word), contributing no slots/numbers so it can't be decoded or give hints.
+    if (participates && !participates(wordStr)) {
+      words.push([{ kind: 'plain', char: wordStr, slot: -1 }]);
+      continue;
+    }
     const cells: Cell[] = [];
     for (const ch of wordStr) {
       if (isLetterActive(ch)) {

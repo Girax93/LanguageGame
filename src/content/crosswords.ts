@@ -180,3 +180,27 @@ export function crosswordRoundsForBlock(block: number): number {
 export function crosswordLeftoverWordsForBlock(block: number): string[] {
   return activeBlocks[block]?.hurdleLeftovers ?? [];
 }
+
+/** Build a one-off crossword from an ARBITRARY set of (active-language) word ids
+ *  — used by the focus pool. Places whatever interlocks (≥2 words); returns null
+ *  if too few placeable/interlocking words. */
+export function buildFocusCrossword(wordIds: string[], seed = 1): CrosswordContentItem | null {
+  const code = getActiveCode();
+  const pack = LANGS.find((l) => l.code === code);
+  if (!pack) return null;
+  const ctx = ctxFor(pack);
+  const placeable = [...new Set(wordIds)].filter((id) => isPlaceable(ctx, id));
+  if (placeable.length < 2) return null;
+  const words = placeable.map((id) => ({ id, surface: ctx.toUpper(ctx.byId.get(id)!.de) }));
+  const layout = generateConnectedLayout(words, 9000 + seed, 60, new Set());
+  const placedIds = layout.entries.map((e) => e.wordId);
+  if (placedIds.length < 2) return null;
+  return {
+    id: `x-focus-${seed}`,
+    rows: layout.rows,
+    cols: layout.cols,
+    entries: layout.entries.map((e) => ({ wordId: e.wordId, row: e.row, col: e.col, dir: e.dir })),
+    requires: [...new Set(placedIds)],
+    level: levelForRequiresLang(placedIds, ctx.idToSet),
+  };
+}

@@ -291,3 +291,63 @@ export function recordChallengeDone(s: PlayerState, block: number): PlayerState 
   if (isChallengeDone(s, block)) return s;
   return { ...s, challengesDone: [...(s.challengesDone ?? []), block] };
 }
+
+// --- Focus pool ---------------------------------------------------------------
+// Words the player missed in a FAILED Practice game land here (cipher/crossword
+// leave their *uncompleted* words; Hurdle leaves its one word; grammar never
+// adds). Each maps to a re-mastery streak: a word leaves the pool after
+// `masteryThreshold` consecutive-correct answers in a focus session.
+
+/** The word ids currently in the focus pool (order = insertion order of keys). */
+export function focusWordIds(s: PlayerState): string[] {
+  return Object.keys(s.focusPool ?? {});
+}
+export function focusPoolSize(s: PlayerState): number {
+  return focusWordIds(s).length;
+}
+export function isInFocusPool(s: PlayerState, id: string): boolean {
+  return (s.focusPool ?? {})[id] !== undefined;
+}
+/** Add missed words to the focus pool (resetting their streak to 0). Only
+ *  learned words are admitted; ids already present are reset (re-missed). */
+export function addFocusMisses(s: PlayerState, ids: string[]): PlayerState {
+  const learned = new Set(s.learnedWords);
+  const cur = s.focusPool ?? {};
+  const pool = { ...cur };
+  let changed = false;
+  for (const id of ids) {
+    if (!id || !learned.has(id)) continue;
+    if (pool[id] !== 0) { pool[id] = 0; changed = true; }
+  }
+  return changed ? { ...s, focusPool: pool } : s;
+}
+/** Record a focus-session outcome: `solved` words advance their re-mastery
+ *  streak (leaving the pool at `masteryThreshold`); `unsolved` words reset to 0.
+ *  Ids not in the pool are ignored. */
+export function recordFocusOutcome(s: PlayerState, solved: string[], unsolved: string[]): PlayerState {
+  const cur = s.focusPool ?? {};
+  const pool = { ...cur };
+  let changed = false;
+  for (const id of unsolved) {
+    if (pool[id] !== undefined && pool[id] !== 0) { pool[id] = 0; changed = true; }
+  }
+  for (const id of solved) {
+    if (pool[id] === undefined) continue;
+    const v = (pool[id] ?? 0) + 1;
+    if (v >= PROGRESSION.masteryThreshold) delete pool[id];
+    else pool[id] = v;
+    changed = true;
+  }
+  return changed ? { ...s, focusPool: pool } : s;
+}
+/** Manually clear one word (or all) from the focus pool. */
+export function clearFocusWord(s: PlayerState, id: string): PlayerState {
+  if ((s.focusPool ?? {})[id] === undefined) return s;
+  const pool = { ...s.focusPool };
+  delete pool[id];
+  return { ...s, focusPool: pool };
+}
+export function clearFocusPool(s: PlayerState): PlayerState {
+  if (focusPoolSize(s) === 0) return s;
+  return { ...s, focusPool: {} };
+}

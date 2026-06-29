@@ -37,6 +37,9 @@ import {
   forceRecapDue as applyForceRecapDue,
   addCipherWords,
   addGrammarNoun,
+  addFocusMisses as applyFocusMisses,
+  recordFocusOutcome as applyFocusOutcome,
+  clearFocusWord as applyClearFocusWord,
 } from './progression';
 
 // Pick the saved language and align the content layer BEFORE any state loads.
@@ -61,6 +64,12 @@ interface PlayerContextValue {
   forceRecapDue: () => void;
   recordCipherWords: (ids: string[]) => void;
   recordGrammarNoun: (id: string | undefined) => void;
+  /** Add words missed in a failed Practice game to the focus pool. */
+  addFocusMisses: (ids: string[]) => void;
+  /** Record a focus-session result: solved words advance, unsolved reset. */
+  recordFocusOutcome: (solved: string[], unsolved: string[]) => void;
+  /** Manually remove one word from the focus pool. */
+  clearFocusWord: (id: string) => void;
   buyFocus: () => void;
   setSubscribed: (value: boolean) => void;
   /** Reset progress for one language code (e.g. 'de' | 'no') or 'all'. */
@@ -120,6 +129,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       forceRecapDue: () => setState((s) => applyForceRecapDue(s, Date.now())),
       recordCipherWords: (ids) => setState((s) => addCipherWords(s, ids)),
       recordGrammarNoun: (id) => setState((s) => addGrammarNoun(s, id)),
+      addFocusMisses: (ids) => setState((s) => applyFocusMisses(s, ids)),
+      recordFocusOutcome: (solved, unsolved) =>
+        setState((s) => applyFocusOutcome(s, solved, unsolved)),
+      clearFocusWord: (id) => setState((s) => applyClearFocusWord(s, id)),
       buyFocus: () => setState((s) => buyFocusRefill(s, Date.now())),
       setSubscribed: (v) => setState((s) => setSubscribedPure(s, v, Date.now())),
       resetProgress: (target) => {
