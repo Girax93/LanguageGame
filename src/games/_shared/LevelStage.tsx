@@ -24,8 +24,9 @@ interface Props<T> {
   /** Fired once when the LAST item in the set is solved (the session is done). */
   onComplete?: () => void;
   renderWin?: (item: T) => ReactNode;
-  /** Replaces the final win screen when the whole session is cleared. */
-  renderComplete?: () => ReactNode;
+  /** Replaces the final win screen when the whole session is cleared. Receives
+   *  the just-solved item so the screen can still reveal it. */
+  renderComplete?: (item: T) => ReactNode;
   renderBoard: (item: T, controls: BoardControls) => ReactNode;
   /** Lives (tries) for an item; defaults to ECONOMY.livesPerLevel. Lets a game
    *  vary the number per item (e.g. Hurdle scales tries by word length). */
@@ -131,7 +132,7 @@ export function LevelStage<T extends { id: string }>({
     );
   }
   if (phase === 'win') {
-    if (isLast && renderComplete) return <>{renderComplete()}</>;
+    if (isLast && renderComplete && item) return <>{renderComplete(item)}</>;
     return (
       <Centered onBack={onExit} icon="✓" title="Level won" body="Success is free — no focus spent."
         extra={item ? renderWin?.(item) : undefined}

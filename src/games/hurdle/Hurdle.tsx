@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import type { GameProps } from '../types';
 import { usePlayer } from '../../state/PlayerContext';
 import { HURDLE_ITEMS, hurdleItemsForBlock, type HurdleContentItem } from '../../content/hurdleItems';
@@ -49,7 +49,7 @@ export function Hurdle({ onExit, onOpenSettings, onMain, onLearn, onRecap, onPra
       onWin={scope === 'practice' ? () => recordHurdleRound(block) : undefined}
       renderComplete={
         scope === 'practice'
-          ? () => <HurdleDone block={block} onExit={onExit} onLearn={onLearn} onRecap={onRecap} onPractice={onPractice} />
+          ? (item) => <HurdleDone item={item} block={block} onExit={onExit} onLearn={onLearn} onRecap={onRecap} onPractice={onPractice} />
           : undefined
       }
       renderWin={(it) => <WinCard item={it} />}
@@ -88,14 +88,17 @@ function WordReveal({ item }: { item: HurdleContentItem }) {
 }
 
 /** Shown when the block's Hurdle session is finished. Only the LAST remaining
- *  practice completes the block; until then we send the player back to Practice. */
+ *  practice completes the block; until then we send the player back to Practice.
+ *  Either way we reveal the word just solved (it was hidden during play). */
 function HurdleDone({
+  item,
   block,
   onExit,
   onLearn,
   onRecap,
   onPractice,
 }: {
+  item: HurdleContentItem;
   block: number;
   onExit: () => void;
   onLearn?: () => void;
@@ -109,6 +112,7 @@ function HurdleDone({
         onExit={onExit}
         title="Block complete!"
         body="Every practice for this block is done — the next words are unlocked."
+        reveal={<WinCard item={item} />}
         primaryLabel="Learn more words"
         onPrimary={onLearn ?? onExit}
         secondaryLabel="Recap what you’ve learned"
@@ -121,6 +125,7 @@ function HurdleDone({
       onExit={onExit}
       title="Hurdle done!"
       body="Keep going — finish this block’s other practice to unlock the next words."
+      reveal={<WinCard item={item} />}
       primaryLabel="Back to Practice"
       onPrimary={onPractice ?? onExit}
     />
@@ -131,6 +136,7 @@ function Done({
   onExit,
   title,
   body,
+  reveal,
   primaryLabel,
   onPrimary,
   secondaryLabel,
@@ -139,6 +145,7 @@ function Done({
   onExit: () => void;
   title: string;
   body: string;
+  reveal?: ReactNode;
   primaryLabel: string;
   onPrimary: () => void;
   secondaryLabel?: string;
@@ -159,6 +166,7 @@ function Done({
         <div className="text-4xl text-brown">✓</div>
         <h2 className="mt-5 font-serif text-2xl font-semibold text-espresso">{title}</h2>
         <p className="mt-2 max-w-xs text-taupe">{body}</p>
+        {reveal}
         <Button className="mt-8 w-64" onClick={onPrimary}>
           {primaryLabel}
         </Button>
