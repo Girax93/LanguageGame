@@ -3,19 +3,82 @@ import type { CipherContentItem } from '../../../content/cipherItems';
 import type { DifficultyFlags } from '../../../state/difficulty';
 import { type BoardControls, SkipButton } from '../../_shared/LevelStage';
 import { buildPuzzle, initialFilled, keyStateFor, toUpperDE, isLetterDE } from '../cipher';
+import { wordById } from '../../../content/vocab';
+import { verb3sg } from '../../../content/generateCipher';
 import { Keyboard } from './Keyboard';
+
+// Article surface forms that ALWAYS participate (a noun phrase's article stays
+// decodable even when it's an earlier-block word) — definite + indefinite, the
+// inflections the generators emit, across German + Norwegian.
+const ARTICLE_SURFACES = new Set([
+  'der', 'die', 'das', 'den', 'dem', 'des',
+  'ein', 'eine', 'einen', 'einem', 'eines', 'einer',
+  'en', 'ei', 'et',
+]);
+
+/** Lowercased letters only (matches buildPuzzle's per-letter view). */
+function normSurface(s: string): string {
+  return s.toLowerCase().replace(/[^\p{L}]/gu, '');
+}
+
+interface Participation {
+  /** Surfaces (normalised) that participate in the cipher for this scope. */
+  surfaces: Set<string>;
+  /** Reportable content surface -> lemma id (articles excluded). */
+  surfaceToLemma: Map<string, string>;
+}
+/** Work out which on-screen words participate (decodable) vs are inert context.
+ *  `participatingLemmaIds` undefined ⇒ everything participates (recap). */
+function buildParticipation(item: CipherContentItem, participatingLemmaIds?: Set<string>): Participation {
+  const surfaces = new Set<string>(ARTICLE_SURFACES);
+  const surfaceToLemma = new Map<string, string>();
+  if (!participatingLemmaIds) return { surfaces, surfaceToLemma };
+  for (const id of item.requires) {
+    if (!participatingLemmaIds.has(id)) continue;
+    const w = wordById(id);
+    if (!w) continue;
+    const reportable = w.pos !== 'art'; // articles never pool / report
+    const add = (form?: string | null) => {
+      const n = normSurface(form ?? '');
+      if (!n) return;
+      surfaces.add(n);
+      if (reportable && !surfaceToLemma.has(n)) surfaceToLemma.set(n, id);
+    };
+    add(w.de);
+    if (w.pos === 'verb') add(verb3sg(w));
+  }
+  return { surfaces, surfaceToLemma };
+}
 
 interface Props {
   item: CipherContentItem;
   flags: DifficultyFlags;
   controls: BoardControls;
+  /** Lemma ids whose words participate (decodable). Undefined ⇒ all (recap). */
+  participatingLemmaIds?: Set<string>;
+  /** Reports solved/unsolved content word ids (for the focus pool). */
+  onProgress?: (solved: string[], unsolved: string[]) => void;
 }
 
-export function CipherBoard({ item, flags, controls }: Props) {
-  const puzzle = useMemo(
-    () => buildPuzzle(item.sentence, { givenCount: flags.footholds }),
+export function CipherBoard({ item, flags, controls, participatingLemmaIds, onProgress }: Props) {
+  const participation = useMemo(
+    () => buildParticipation(item, participatingLemmaIds),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [item.id],
+    [item.id, participatingLemmaIds],
+  );
+  const puzzle = useMemo(
+    () =>
+      buildPuzzle(item.sentence, {
+        givenCount: flags.footholds,
+        participates: participatingLemmaIds
+          ? (w) => {
+              const n = normSurface(w);
+              return !n || participation.surfaces.has(n);
+            }
+          : undefined,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [item.id, participatingLemmaIds, participation],
   );
   const total = puzzle.slotLetters.length;
 
@@ -115,6 +178,21 @@ export function CipherBoard({ item, flags, controls }: Props) {
     return () => window.removeEventListener('keydown', onKey);
   }, [pressLetter]);
 
+  // Report solved/unsolved content words (for the focus pool re-mastery + capture).
+  useEffect(() => {
+    if (!onProgress) return;
+    const solved: string[] = [];
+    const unsolved: string[] = [];
+    for (const cells of puzzle.words) {
+      const letters = cells.filter((c) => c.kind === 'letter');
+      if (letters.length === 0) continue;
+      const id = participation.surfaceToLemma.get(normSurface(cells.map((c) => c.char).join('')));
+      if (!id) continue; // article / unmapped — never pooled
+      (letters.every((c) => filled.has(c.slot)) ? solved : unsolved).push(id);
+    }
+    onProgress([...new Set(solved)], [...new Set(unsolved)]);
+  }, [filled, puzzle, participation, onProgress]);
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto py-2">
@@ -136,7 +214,13 @@ export function CipherBoard({ item, flags, controls }: Props) {
                     onClick={() => selectSlot(cell.slot)}
                   />
                 ) : (
-                  <span key={ci} className="px-0.5 pb-6 font-serif text-2xl font-semibold text-espresso">
+                  <span
+                    key={ci}
+                    className={[
+                      'px-0.5 pb-6 font-serif text-2xl font-semibold',
+                      cell.kind === 'plain' ? 'text-taupe' : 'text-espresso',
+                    ].join(' ')}
+                  >
                     {cell.char}
                   </span>
                 ),

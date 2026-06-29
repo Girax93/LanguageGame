@@ -22,6 +22,8 @@ interface Props {
   title?: string;
   intro?: string;
   items: MenuItem[];
+  /** Optional content rendered above the items (e.g. a reminder banner). */
+  banner?: ReactNode;
   /** Optional content rendered below the items (e.g. a completion panel). */
   footer?: ReactNode;
   onBack?: () => void;
@@ -29,11 +31,12 @@ interface Props {
 }
 
 /** A calm list-of-cards menu, reused for every menu level. */
-export function MenuScreen({ title, intro, items, footer, onBack, onMain }: Props) {
+export function MenuScreen({ title, intro, items, banner, footer, onBack, onMain }: Props) {
   return (
     <div className="flex flex-1 flex-col animate-fade-in">
       <TopBar title={title} onBack={onBack} onMain={onMain} />
       {intro && <p className="mb-5 -mt-1 text-taupe">{intro}</p>}
+      {banner}
       <div className="flex flex-col gap-3">
         {items.map((item, i) => (
           <Card key={i} item={item} index={i} />

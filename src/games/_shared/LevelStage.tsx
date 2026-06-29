@@ -22,6 +22,9 @@ interface Props<T> {
   onMain?: () => void;
   countsTowardGate?: boolean;
   onWin?: (item: T) => void;
+  /** Fired when an item is FAILED (out of lives/tries). Used to capture missed
+   *  words into the focus pool / drive focus re-mastery. */
+  onLose?: (item: T) => void;
   /** Fired once when the LAST item in the set is solved (the session is done). */
   onComplete?: () => void;
   renderWin?: (item: T) => ReactNode;
@@ -53,6 +56,7 @@ export function LevelStage<T extends { id: string }>({
   onMain,
   countsTowardGate = true,
   onWin,
+  onLose,
   onComplete,
   renderWin,
   completeSpec,
@@ -80,6 +84,7 @@ export function LevelStage<T extends { id: string }>({
   function handleResult(won: boolean) {
     recordLevel(won, countsTowardGate);
     if (won && item) onWin?.(item);
+    if (!won && item) onLose?.(item);
     if (won && isLast) onComplete?.();
     setPhase(won ? 'win' : 'lose');
   }
