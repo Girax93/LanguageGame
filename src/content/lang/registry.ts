@@ -7,9 +7,10 @@
 import type { LangPack } from './types';
 import { de } from './de/index';
 import { no } from './no/index';
+import { fr } from './fr/index';
 
 /** All registered language packs (order = language-menu order). */
-export const LANGS: LangPack[] = [de, no];
+export const LANGS: LangPack[] = [de, no, fr];
 
 const BY_CODE = new Map<string, LangPack>(LANGS.map((l) => [l.code, l]));
 
