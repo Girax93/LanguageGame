@@ -1,5 +1,5 @@
 import type { TileState } from '../hurdle';
-import { activeKeyboardRows } from '../../../content/lang/alphabet';
+import { activeKeyboardRows, activeAlphabet } from '../../../content/lang/alphabet';
 import { ChevronLeft } from '../../../components/ui/icons';
 
 type KeyHint = TileState | 'idle';
@@ -20,11 +20,20 @@ interface Props {
 }
 
 export function HurdleKeyboard({ onLetter, onEnter, onDelete, hints, canSubmit }: Props) {
-  // QWERTY-style layout for the active language (German QWERTZ, Norwegian + Æ/Ø/Å).
-  const LETTER_ROWS = activeKeyboardRows();
+  // Active-language layout (German QWERTZ, Norwegian QWERTY+Æ/Ø/Å, French QWERTY +
+  // a top accent row). Render every row but the LAST as plain letter rows; the
+  // final (short) row carries Enter/⌫. Any alphabet letter missing from the layout
+  // is appended so it stays typable — mirrors the cipher Keyboard's fallback. For
+  // German/Norwegian (3 rows) this is identical to the previous 2-rows-then-Enter
+  // layout; it just also supports French's 4th row.
+  const rows = activeKeyboardRows().map((r) => [...r]);
+  const missing = activeAlphabet().filter((l) => !rows.flat().includes(l));
+  if (missing.length) rows.push(missing);
+  const plainRows = rows.slice(0, -1);
+  const lastRow = rows[rows.length - 1] ?? [];
   return (
     <div className="select-none space-y-1.5">
-      {LETTER_ROWS.slice(0, 2).map((row, r) => (
+      {plainRows.map((row, r) => (
         <div key={r} className="flex justify-center gap-1">
           {row.map((letter) => (
             <LetterKey key={letter} letter={letter} hint={hints[letter] ?? 'idle'} onClick={onLetter} />
@@ -44,7 +53,7 @@ export function HurdleKeyboard({ onLetter, onEnter, onDelete, hints, canSubmit }
         >
           Enter
         </button>
-        {LETTER_ROWS[2].map((letter) => (
+        {lastRow.map((letter) => (
           <LetterKey key={letter} letter={letter} hint={hints[letter] ?? 'idle'} onClick={onLetter} />
         ))}
         <button

@@ -31,6 +31,7 @@ import { FocusPool } from './FocusPool';
 import { Learn } from '../games/learn/Learn';
 import { usePlayer } from '../state/PlayerContext';
 import { SETS } from '../content/vocab';
+import { LANGS, getActiveLang } from '../content/lang/registry';
 import { PROGRESSION } from '../state/progressionConfig';
 import {
   currentLearnSetIndex,
@@ -193,24 +194,19 @@ export function App() {
     navigate('lang-menu');
   };
   // Per-language word counts for the language cards. The active language reads
-  // live state; the other is peeked from its own (saved) namespace.
-  const deCount = language === 'de' ? state.learnedWords.length : peekLearnedCount('de');
-  const noCount = language === 'no' ? state.learnedWords.length : peekLearnedCount('no');
-  const languageItems: MenuItem[] = [
-    {
-      icon: '🇩🇪',
-      label: 'German',
-      sublabel: deCount > 0 ? `A1 · ${deCount} words learned` : 'Beginner · A1',
-      onClick: () => openLanguage('de'),
-    },
-    {
-      icon: '🇳🇴',
-      label: 'Norwegian',
-      sublabel: noCount > 0 ? `A1 · ${noCount} words learned` : 'Bokmål · A1',
-      onClick: () => openLanguage('no'),
-    },
-  ];
-  const langTitle = language === 'no' ? 'Norwegian' : 'German';
+  // live state; the others are peeked from their own (saved) namespace. Built
+  // from the registry so every registered pack (German, Norwegian, French, …)
+  // shows up automatically.
+  const languageItems: MenuItem[] = LANGS.map((l) => {
+    const count = language === l.code ? state.learnedWords.length : peekLearnedCount(l.code);
+    return {
+      icon: l.flag,
+      label: l.name,
+      sublabel: count > 0 ? `A1 · ${count} words learned` : l.level,
+      onClick: () => openLanguage(l.code),
+    };
+  });
+  const langTitle = getActiveLang().name;
 
   // The home "Continue" card: the single next real action for the active
   // language, computed from the same progression signals the menus use.
