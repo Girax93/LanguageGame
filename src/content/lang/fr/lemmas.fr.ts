@@ -174,7 +174,7 @@ f-sans|sans|without|prep|||||function
 f-mari|mari|husband|noun|m|maris||family|neutral
 f-difficile|difficile|difficult / hard|adj|||||function
 f-parce-que|parce que|because|conj|||||function
-f-yeux|yeux|eyes|noun|m|yeux||body|neutral
+f-oeil|oeil|eye|noun|m|yeux||body|neutral
 f-aider|aider|to help|verb|||aide, aidait, aidé|function|neutral
 f-cinq|cinq|five|num|||||numbers
 f-quel|quel|which / what|adj|||||question
