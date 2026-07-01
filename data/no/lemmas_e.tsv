@@ -1,0 +1,277 @@
+n-gangsti|gangsti|footpath|noun|m|gangstier||travel,city,nature|neutral
+n-gardin|gardin|curtain|noun|n|gardiner||home|neutral
+n-frist|frist|deadline|noun|m|frister||time,work|neutral
+n-nyse|nyse|to sneeze|verb|||nyser, nyste, nyst|body,health|neutral
+n-trenge-2|behøve|to need|verb|||behøver, behøvde, behøvd|function|formal
+n-pirkete|pirkete|fussy|adj||||feelings|colloquial
+n-snar|kjapp|quick|adj||||function|colloquial
+n-sulten-2|matlysten|hungry|adj||||food|neutral
+n-real|real|decent|adj||||people,feelings|colloquial
+n-vente-2|avvente|to await|verb|||avventer, avventet, avventet|function|formal
+n-spennende-2|gøy|fun|adj||||feelings|colloquial
+n-stol|stol|chair|noun|m|stoler||home|neutral
+n-dyne-2|pledd|blanket|noun|n|pledd||home|neutral
+n-handkle-2|serviett|napkin|noun|m|servietter||home,food|neutral
+n-bestikk|bestikk|cutlery|noun|n|bestikk||home,food|neutral
+n-panne-2|stekepanne|frying pan|noun|f|stekepanner||home,food|neutral
+n-kjele-2|kasserolle|saucepan|noun|f|kasseroller||home,food|neutral
+n-vaskemaskin|vaskemaskin|washing machine|noun|m|vaskemaskiner||home|neutral
+n-stoevsuger|støvsuger|vacuum cleaner|noun|m|støvsugere||home|neutral
+n-kost-2|feiekost|broom|noun|m|feiekoster||home|neutral
+n-boette-2|søppelbøtte|trash can|noun|f|søppelbøtter||home|neutral
+n-soeppel|søppel|garbage|noun|n|||home|neutral
+n-skuff-2|skuffeseksjon|drawer|noun|m|skuffeseksjoner||home|neutral
+n-handduk|håndduk|hand cloth|noun|m|håndduker||home|neutral
+n-saks|saks|scissors|noun|f|sakser||home,work|neutral
+n-lim|lim|glue|noun|n|||home,work|neutral
+n-traad-2|sytråd|sewing thread|noun|m|sytråder||home,clothing|neutral
+n-naal|nål|needle|noun|f|nåler||home,clothing|neutral
+n-knapp-2|trykknapp|button|noun|m|trykknapper||clothing|neutral
+n-handske|skinnhanske|leather glove|noun|m|skinnhansker||clothing|neutral
+n-vott-2|ullvott|wool mitten|noun|m|ullvotter||clothing|neutral
+n-sokk-2|ullsokk|wool sock|noun|m|ullsokker||clothing|neutral
+n-stoevel-2|gummistøvel|rubber boot|noun|m|gummistøvler||clothing|neutral
+n-sandal|sandal|sandal|noun|m|sandaler||clothing|neutral
+n-tøffel|tøffel|slipper|noun|m|tøfler||clothing,home|neutral
+n-shorts|shorts|shorts|noun|m|shorts||clothing|colloquial
+n-vest|vest|vest|noun|m|vester||clothing|neutral
+n-blusen|bluse|blouse|noun|f|bluser||clothing|neutral
+n-singlet|singlet|undershirt|noun|m|singleter||clothing|colloquial
+n-truse|truse|underpants|noun|f|truser||clothing|neutral
+n-bh|bh|bra|noun|m|bh-er||clothing|colloquial
+n-knapphull|knapphull|buttonhole|noun|n|knapphull||clothing|neutral
+n-lommebok|lommebok|wallet|noun|f|lommebøker||money,shopping|neutral
+n-mynt|mynt|coin|noun|m|mynter||money|neutral
+n-seddel|seddel|banknote|noun|m|sedler||money|neutral
+n-bankkort|bankkort|bank card|noun|n|bankkort||money,shopping|neutral
+n-pris-2|kostnad|cost|noun|m|kostnader||money|neutral
+n-melk-2|kakao|cocoa|noun|m|||food|neutral
+n-juice-2|appelsinjuice|orange juice|noun|m|||food|colloquial
+n-vatn|drikkevann|drinking water|noun|n|||food|neutral
+n-smoer-2|margarin|margarine|noun|n|||food|neutral
+n-yoghurt|yoghurt|yogurt|noun|m|yoghurter||food|neutral
+n-kesam|kesam|quark|noun|m|||food|neutral
+n-fløte|fløte|cream|noun|m|||food|neutral
+n-mel-2|hvetemel|wheat flour|noun|n|||food|neutral
+n-gjær|gjær|yeast|noun|m|||food|neutral
+n-deig|deig|dough|noun|m|deiger||food|neutral
+n-bolle|bolle|bun|noun|m|boller||food|neutral
+n-kavring|kavring|rusk|noun|m|kavringer||food|neutral
+n-knekkebroed|knekkebrød|crispbread|noun|n|knekkebrød||food|neutral
+n-skive|brødskive|slice of bread|noun|f|brødskiver||food|neutral
+n-paalegg|pålegg|sandwich topping|noun|n|pålegg||food|neutral
+n-brunost|brunost|brown cheese|noun|m|brunoster||food|neutral
+n-leverpostei|leverpostei|liver pâté|noun|m|leverposteier||food|neutral
+n-makrell|makrell|mackerel|noun|m|makreller||food,animals|neutral
+n-torsk|torsk|cod|noun|m|torsker||food,animals|neutral
+n-reker-2|kokte-reker|cooked shrimp|noun|f|reker||food|neutral
+n-biff|biff|steak|noun|m|biffer||food|neutral
+n-kjoettdeig|kjøttdeig|minced meat|noun|m|||food|neutral
+n-kjøttkake|kjøttkake|meatball|noun|f|kjøttkaker||food|neutral
+n-bacon|bacon|bacon|noun|n|||food|colloquial
+n-egg-2|kokt-egg|boiled egg|noun|n|egg||food|neutral
+n-omelett|omelett|omelette|noun|m|omeletter||food|neutral
+n-vaffel|vaffel|waffle|noun|m|vafler||food|neutral
+n-pannekake|pannekake|pancake|noun|f|pannekaker||food|neutral
+n-grøt|grøt|porridge|noun|m|||food|neutral
+n-havregryn|havregryn|oats|noun|n|havregryn||food|neutral
+n-mysli|mysli|muesli|noun|m|||food|colloquial
+n-sukker-2|melis|powdered sugar|noun|n|||food|neutral
+n-kanel|kanel|cinnamon|noun|m|||food|neutral
+n-krydder|krydder|spice|noun|n|krydder||food|neutral
+n-eddik|eddik|vinegar|noun|m|||food|neutral
+n-sennep|sennep|mustard|noun|m|||food|neutral
+n-ketchup|ketchup|ketchup|noun|m|||food|colloquial
+n-majones|majones|mayonnaise|noun|m|||food|neutral
+n-dressing|dressing|dressing|noun|m|dressinger||food|colloquial
+n-saus|saus|sauce|noun|m|sauser||food|neutral
+n-buljong|buljong|broth|noun|m|buljonger||food|neutral
+n-erter|ert|pea|noun|f|erter||food|neutral
+n-bønner|bønne|bean|noun|f|bønner||food|neutral
+n-mais|mais|corn|noun|m|||food|neutral
+n-brokkoli|brokkoli|broccoli|noun|m|||food|neutral
+n-blomkaal|blomkål|cauliflower|noun|m|||food|neutral
+n-kaal|kål|cabbage|noun|m|||food|neutral
+n-spinat|spinat|spinach|noun|m|||food|neutral
+n-sopp-2|sjampinjong|button mushroom|noun|m|sjampinjonger||food|neutral
+n-paprika|paprika|bell pepper|noun|m|paprikaer||food|neutral
+n-purre|purre|leek|noun|m|||food|neutral
+n-selleri|selleri|celery|noun|m|||food|neutral
+n-sitron|sitron|lemon|noun|m|sitroner||food|neutral
+n-fersken|fersken|peach|noun|m|ferskener||food|neutral
+n-plomme|plomme|plum|noun|f|plommer||food|neutral
+n-aprikos|aprikos|apricot|noun|m|aprikoser||food|neutral
+n-kirsebær|kirsebær|cherry|noun|n|kirsebær||food|neutral
+n-bringebær|bringebær|raspberry|noun|n|bringebær||food|neutral
+n-blaabaer|blåbær|blueberry|noun|n|blåbær||food|neutral
+n-melon|melon|melon|noun|m|meloner||food|neutral
+n-ananas|ananas|pineapple|noun|m|ananaser||food|neutral
+n-kokosnoett|kokosnøtt|coconut|noun|f|kokosnøtter||food|neutral
+n-mandel|mandel|almond|noun|m|mandler||food|neutral
+n-rosin|rosin|raisin|noun|m|rosiner||food|neutral
+n-sjokoladebit|sjokoladebit|chocolate piece|noun|m|sjokoladebiter||food|colloquial
+n-bolledeig|kjeks-2|biscuit|noun|m|kjeks||food|neutral
+n-iskrem|iskrem|ice cream|noun|m|iskremer||food|colloquial
+n-pudding|pudding|pudding|noun|m|puddinger||food|colloquial
+n-snop|snop|sweets|noun|n|||food|colloquial
+n-tyggegummi|tyggegummi|chewing gum|noun|m|||food|colloquial
+n-chips|chips|chips|noun|m|chips||food|colloquial
+n-popcorn|popcorn|popcorn|noun|n|||food|colloquial
+n-brus-2|leskedrikk|soft drink|noun|m|leskedrikker||food|neutral
+n-kaffekopp|kaffekopp|coffee cup|noun|m|kaffekopper||food,home|neutral
+n-tepose|tepose|tea bag|noun|m|teposer||food|neutral
+n-sugeroer|sugerør|straw|noun|n|sugerør||food|neutral
+n-tannkrem|tannkrem|toothpaste|noun|m|||body,health|neutral
+n-saape-2|håndsåpe|hand soap|noun|f|håndsåper||body,home|neutral
+n-sjampo|sjampo|shampoo|noun|m|||body|neutral
+n-kam|kam|comb|noun|m|kammer||body|neutral
+n-borste|hårbørste|hairbrush|noun|m|hårbørster||body|neutral
+n-barberhoevel|barberhøvel|razor|noun|m|barberhøvler||body|neutral
+n-speil-2|veggspeil|wall mirror|noun|n|veggspeil||home|neutral
+n-deodorant|deodorant|deodorant|noun|m|deodoranter||body|neutral
+n-parfyme|parfyme|perfume|noun|m|parfymer||body|neutral
+n-leppestift|leppestift|lipstick|noun|m|leppestifter||body|neutral
+n-neglelakk|neglelakk|nail polish|noun|m|||body|neutral
+n-bleie|bleie|diaper|noun|f|bleier||family,health|neutral
+n-toalettpapir|toalettpapir|toilet paper|noun|n|||home|neutral
+n-lommetørkle|lommetørkle|handkerchief|noun|n|lommetørkler||home,health|neutral
+n-pinne|pinne|stick|noun|m|pinner||nature|neutral
+n-grein-2|kvist|twig|noun|m|kvister||nature|neutral
+n-bringe-2|frakte|to transport|verb|||frakter, fraktet, fraktet|travel,work|neutral
+n-rope-2|skrike|to scream|verb|||skriker, skrek, skreket|communication|neutral
+n-hviske-2|mumle|to mumble|verb|||mumler, mumlet, mumlet|communication|neutral
+n-prate-2|skravle|to chat|verb|||skravler, skravlet, skravlet|communication|colloquial
+n-svare-2|besvare|to answer|verb|||besvarer, besvarte, besvart|communication|formal
+n-fortelle-2|berette|to recount|verb|||beretter, berettet, berettet|communication|formal
+n-spørre-2|forhøre|to interrogate|verb|||forhører, forhørte, forhørt|communication|formal
+n-nikke-2|samtykke|to consent|verb|||samtykker, samtykket, samtykket|communication|formal
+n-vinke-2|signalisere|to signal|verb|||signaliserer, signaliserte, signalisert|communication|formal
+n-lytte-2|høre-etter|to listen|verb|||hører etter, hørte etter, hørt etter|communication|neutral
+n-stirre-2|glane|to gawk|verb|||glaner, glante, glant|communication|colloquial
+n-titte-2|skotte|to glance|verb|||skotter, skottet, skottet|communication|colloquial
+n-leke-2|tulle|to fool around|verb|||tuller, tullet, tullet|feelings|colloquial
+n-le-2|fnise|to giggle|verb|||fniser, fniste, fnist|feelings|neutral
+n-graate-2|hulke|to sob|verb|||hulker, hulket, hulket|feelings|neutral
+n-smile-2|flire|to grin|verb|||flirer, flirte, flirt|feelings|colloquial
+n-savne-2|lengte-etter|to long for|verb|||lengter etter, lengtet etter, lengtet etter|feelings|neutral
+n-elske-2|forguder|to adore|verb|||forguder, forgudet, forgudet|feelings|neutral
+n-hate-2|avsky|to detest|verb|||avskyr, avskydde, avskydd|feelings|formal
+n-frykte-2|grue|to dread|verb|||gruer, gruet, gruet|feelings|neutral
+n-roere|berøre|to touch|verb|||berører, berørte, berørt|feelings|neutral
+n-trøste-2|oppmuntre|to encourage|verb|||oppmuntrer, oppmuntret, oppmuntret|feelings|neutral
+n-skremme-2|forskrekke|to startle|verb|||forskrekker, forskrekket, forskrekket|feelings|neutral
+n-hjelpe-2|bistå|to assist|verb|||bistår, bisto, bistått|work,society|formal
+n-passe-3|ivareta|to look after|verb|||ivaretar, ivaretok, ivaretatt|work|formal
+n-ordne-2|fikse-2|to fix|verb|||fikser, fikset, fikset|work|colloquial
+n-skaffe-2|anskaffe|to acquire|verb|||anskaffer, anskaffet, anskaffet|work,shopping|formal
+n-velge-2|utvelge|to select|verb|||utvelger, utvalgte, utvalgt|function|formal
+n-prøve-2|teste|to test|verb|||tester, testet, testet|function|neutral
+n-bruke-2|benytte|to use|verb|||benytter, benyttet, benyttet|function|formal
+n-lage-2|tilberede|to prepare food|verb|||tilbereder, tilberedte, tilberedt|food|formal
+n-koke-2|fordampe|to evaporate|verb|||fordamper, fordampet, fordampet|nature|formal
+n-steke-2|grille|to grill|verb|||griller, grillet, grillet|food|neutral
+n-bake-2|kjevle|to roll out dough|verb|||kjevler, kjevlet, kjevlet|food|neutral
+n-skjære-2|hakke|to chop|verb|||hakker, hakket, hakket|food|neutral
+n-smake-2|prøvesmake|to taste|verb|||prøvesmaker, prøvesmakte, prøvesmakt|food|neutral
+n-helle-2|tømme|to empty|verb|||tømmer, tømte, tømt|home|neutral
+n-fylle-2|etterfylle|to refill|verb|||etterfyller, etterfylte, etterfylt|home|neutral
+n-blande-2|røre-sammen|to mix|verb|||rører sammen, rørte sammen, rørt sammen|food|neutral
+n-vaske-3|skure|to scrub|verb|||skurer, skurte, skurt|home|neutral
+n-pusse-2|polere|to polish|verb|||polerer, polerte, polert|home|neutral
+n-rydde-2|sortere|to sort|verb|||sorterer, sorterte, sortert|home|neutral
+n-feie-2|koste-2|to sweep|verb|||koster, kostet, kostet|home|neutral
+n-henge-2|opphenge|to hang up|verb|||opphenger, opphengte, opphengt|home|formal
+n-binde-2|knyte|to tie|verb|||knyter, knytte, knytt|function|neutral
+n-feste-2|montere|to mount|verb|||monterer, monterte, montert|work|formal
+n-skru-3|stramme|to tighten|verb|||strammer, strammet, strammet|work|neutral
+n-loese|løsne|to loosen|verb|||løsner, løsnet, løsnet|function|neutral
+n-banke-2|dunke|to thump|verb|||dunker, dunket, dunket|function|colloquial
+n-rive-2|slite|to wear out|verb|||sliter, slet, slitt|function|neutral
+n-bøye-2|krumme|to curve|verb|||krummer, krummet, krummet|function|neutral
+n-slepe|slepe|to tow|verb|||sleper, slepte, slept|function,travel|neutral
+n-dytte-2|skubbe|to push|verb|||skubber, skubbet, skubbet|function|colloquial
+n-gripe-2|fatte|to grasp|verb|||fatter, fattet, fattet|function|neutral
+n-slippe-2|sleppe|to release|verb|||slepper, slapp, sloppet|function|colloquial
+n-kaste-2|slenge|to fling|verb|||slenger, slengte, slengt|function|colloquial
+n-fange-2|fakke|to catch|verb|||fakker, fakket, fakket|function|colloquial
+n-jage-2|forfølge|to pursue|verb|||forfølger, forfulgte, forfulgt|function|formal
+n-gjemme-2|skjule-seg|to hide oneself|verb|||skjuler seg, skjulte seg, skjult seg|function|neutral
+n-flykte-2|rømme-2|to flee|verb|||rømmer, rømte, rømt|society|neutral
+n-falle-2|ramle|to tumble|verb|||ramler, ramlet, ramlet|function|colloquial
+n-gli-2|skli|to slide|verb|||sklir, skled, sklidd|function|neutral
+n-krype-2|åle|to crawl|verb|||åler, ålte, ålt|function|neutral
+n-klatre-2|klyve|to climb|verb|||klyver, kløv, kløvet|sport,nature|neutral
+n-hoppe-2|sprette|to bounce|verb|||spretter, sprettet, sprettet|sport|colloquial
+n-løpe-2|jogge|to jog|verb|||jogger, jogget, jogget|sport|colloquial
+n-svømme-2|bade|to bathe|verb|||bader, badet, badet|sport,nature|neutral
+n-sykle-2|trå|to pedal|verb|||trår, trådde, trådd|sport,travel|neutral
+n-padle|padle|to paddle|verb|||padler, padlet, padlet|sport,travel|neutral
+n-kjøre-2|rate|to steer|verb|||styrer, styrte, styrt|travel|neutral
+n-parkere-2|stanse|to stop|verb|||stanser, stanset, stanset|travel|neutral
+n-reise-2|dra-avgaarde|to set off|verb|||drar avgårde, dro avgårde, dratt avgårde|travel|colloquial
+n-ankomme-2|nå-frem|to arrive|verb|||når frem, nådde frem, nådd frem|travel|neutral
+n-pakke|pakke|to pack|verb|||pakker, pakket, pakket|travel|neutral
+n-tørr-2|uttørket|parched|adj||||nature,weather|neutral
+n-vaat-2|gjennomvåt|soaking wet|adj||||weather|neutral
+n-glatt-2|sleip|slippery|adj||||function|neutral
+n-myk-2|bløt|soft|adj||||function|neutral
+n-hard-2|stiv|stiff|adj||||function|neutral
+n-skarp-2|hvass|sharp|adj||||function|neutral
+n-spiss-2|spisset|pointed|adj||||function|neutral
+n-rund-2|sirkelrund|circular|adj||||abstract|neutral
+n-flat-2|jevn|even|adj||||function|neutral
+n-bratt-2|steil|steep|adj||||nature|neutral
+n-dyp-2|bunnløs|bottomless|adj||||nature|neutral
+n-trang-2|smal-2|narrow|adj||||function|neutral
+n-tom-2|ledig-2|vacant|adj||||function|neutral
+n-full-2|stappfull|crammed|adj||||function|colloquial
+n-skitten-2|grisete|filthy|adj||||home|colloquial
+n-ren-2|nyvasket|freshly washed|adj||||home|neutral
+n-fersk-2|nyplukket|freshly picked|adj||||food|neutral
+n-raaten-2|muggen|moldy|adj||||food|neutral
+n-soet-2|sukkersøt|sugary|adj||||food|neutral
+n-sur-2|besk|bitter-sour|adj||||food|neutral
+n-deilig-2|nydelig|lovely|adj||||feelings,food|neutral
+n-varm-2|lunken|lukewarm|adj||||weather|neutral
+n-kald-2|iskald|ice-cold|adj||||weather|neutral
+n-kjølig-2|sval|cool|adj||||weather|neutral
+n-mild-2|lun|mild|adj||||weather|neutral
+n-solrik-2|skyfri|cloudless|adj||||weather|neutral
+n-trist-2|nedfor|down|adj||||feelings|colloquial
+n-redd-2|skvetten|jumpy|adj||||feelings|colloquial
+n-rolig-2|avslappet|relaxed|adj||||feelings|neutral
+n-sliten-2|utslitt|exhausted|adj||||feelings,body|neutral
+n-modig-2|tapper|valiant|adj||||feelings|neutral
+n-snill-2|godslig|good-natured|adj||||feelings,people|neutral
+n-slem-2|ekkel|nasty|adj||||feelings|colloquial
+n-klok-2|fornuftig|sensible|adj||||abstract|neutral
+n-dum-2|tåpelig|foolish|adj||||abstract|neutral
+n-kjedelig-2|ensformig|monotonous|adj||||feelings|neutral
+n-morsom-2|underholdende|entertaining|adj||||feelings|neutral
+n-billig-2|rimelig|inexpensive|adj||||money,shopping|neutral
+n-dyr-2|kostbar|costly|adj||||money,shopping|neutral
+n-tung-2|massiv|massive|adj||||function|neutral
+n-rask-2|hurtig|swift|adj||||function|neutral
+n-treig-2|langsom|slow|adj||||function|neutral
+n-tidlig-2|grytidlig|very early|adj||||time|colloquial
+n-sen-2|forsinket|delayed|adj||||time|neutral
+n-vanleg|alminnelig|ordinary|adj||||abstract|neutral
+n-rar-2|underlig|peculiar|adj||||abstract|neutral
+n-ekte-2|autentisk|authentic|adj||||abstract|formal
+n-falsk-2|uekte|fake|adj||||abstract|neutral
+n-snart-2|straks-2|immediately|adv||||time|neutral
+n-ofte-2|hyppig|frequently|adv||||time|neutral
+n-sjelden-2|nesten-aldri|hardly ever|adv||||time|neutral
+n-vanligvis-2|som-regel|as a rule|adv||||time|neutral
+n-plutselig-2|brått|abruptly|adv||||time|neutral
+n-endelig-2|omsider|at last|adv||||time|neutral
+n-altfor-2|svaert-for|excessively|adv||||function|neutral
+n-ganske-2|nokså|fairly|adv||||function|neutral
+n-knapt-2|så-vidt|barely|adv||||function|neutral
+n-overalt-2|allesteds|everywhere|adv||||function|formal
+n-stadig-2|gjentatte-ganger|repeatedly|adv||||time|neutral
+n-heldigvis-2|gudskjelov|thankfully|adv||||feelings|colloquial
+n-dessverre-2|beklageligvis|regrettably|adv||||feelings|formal
+n-faktisk-2|egentlig-2|actually|adv||||abstract|neutral
+n-temmelig-2|relativt|relatively|adv||||function|neutral
+n-omtrent-2|noenlunde|approximately|adv||||numbers|neutral

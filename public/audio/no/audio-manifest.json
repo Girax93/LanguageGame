@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "lang": "no",
+  "updated": "2026-07-01T18:43:19.950Z",
+  "takes": {
+    "n-jeg": [
+      {
+        "person": "ari",
+        "take": 1,
+        "file": "ari/words/jeg-ari-1.wav"
+      },
+      {
+        "person": "ari",
+        "take": 2,
+        "file": "ari/words/jeg-ari-2.wav"
+      }
+    ],
+    "n-vaere": [
+      {
+        "person": "ari",
+        "take": 1,
+        "file": "ari/words/være-ari-1.wav"
+      }
+    ],
+    "n-du": [
+      {
+        "person": "ari",
+        "take": 1,
+        "file": "ari/words/du-ari-1.wav"
+      }
+    ]
+  }
+}

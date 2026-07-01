@@ -1,0 +1,543 @@
+n-folk|folk|people / folk|noun|n|folk||people,society|neutral
+n-menneske|menneske|human being|noun|n|mennesker||people|neutral
+n-person|person|person|noun|m|personer||people|neutral
+n-kropp|kropp|body|noun|m|kropper||body|neutral
+n-foreldre|foreldre|parents|noun|m|foreldre||family,people|neutral
+n-bror|bror|brother|noun|m|brødre||family,people|neutral
+n-soester|søster|sister|noun|f|søstre||family,people|neutral
+n-soenn|sønn|son|noun|m|sønner||family,people|neutral
+n-datter|datter|daughter|noun|f|døtre||family,people|neutral
+n-bestefar|bestefar|grandfather|noun|m|bestefedre||family,people|neutral
+n-bestemor|bestemor|grandmother|noun|f|bestemødre||family,people|neutral
+n-fetter|fetter|male cousin|noun|m|fettere||family,people|neutral
+n-kusine|kusine|female cousin|noun|f|kusiner||family,people|neutral
+n-onkel|onkel|uncle|noun|m|onkler||family,people|neutral
+n-tante|tante|aunt|noun|f|tanter||family,people|neutral
+n-nevoe|nevø|nephew|noun|m|nevøer||family,people|neutral
+n-niese|niese|niece|noun|f|nieser||family,people|neutral
+n-mamma|mamma|mum|noun|f|mammaer||family,people|colloquial
+n-pappa|pappa|dad|noun|m|pappaer||family,people|colloquial
+n-baby|baby|baby|noun|m|babyer||family,people|neutral
+n-unge|unge|kid / young one|noun|m|unger||family,people|colloquial
+n-tvilling|tvilling|twin|noun|m|tvillinger||family,people|neutral
+n-ektefelle|ektefelle|spouse|noun|m|ektefeller||family,people|formal
+n-ektemann|ektemann|husband|noun|m|ektemenn||family,people|neutral
+n-kone|kone|wife|noun|f|koner||family,people|neutral
+n-kjaereste|kjæreste|partner / sweetheart|noun|m|kjærester||family,people|neutral
+n-forlovede|forlovede|fiancé(e)|noun|m|forlovede||family,people|neutral
+n-svigermor|svigermor|mother-in-law|noun|f|svigermødre||family,people|neutral
+n-svigerfar|svigerfar|father-in-law|noun|m|svigerfedre||family,people|neutral
+n-slekt|slekt|family / kin|noun|f|slekter||family,people|neutral
+n-slektning|slektning|relative|noun|m|slektninger||family,people|neutral
+n-par|par|couple / pair|noun|n|par||family,people|neutral
+n-ekteskap|ekteskap|marriage|noun|n|ekteskap||family,society|neutral
+n-bryllup|bryllup|wedding|noun|n|bryllup||family,society|neutral
+n-skilsmisse|skilsmisse|divorce|noun|m|skilsmisser||family,society|neutral
+n-enke|enke|widow|noun|f|enker||family,people|neutral
+n-foedsel|fødsel|birth|noun|m|fødsler||family,body|neutral
+n-doed|død|death|noun|m|||family,abstract|neutral
+n-voksen|voksen|adult|noun|m|voksne||people|neutral
+n-tenaaring|tenåring|teenager|noun|m|tenåringer||people|neutral
+n-ungdom|ungdom|youth / young person|noun|m|ungdommer||people|neutral
+n-eldre|eldre|elderly people|noun|m|eldre||people|neutral
+n-gjeng|gjeng|gang / crowd|noun|m|gjenger||people,society|colloquial
+n-fyr|fyr|guy / bloke|noun|m|fyrer||people|colloquial
+n-dame|dame|lady|noun|f|damer||people|neutral
+n-herre|herre|gentleman|noun|m|herrer||people|neutral
+n-gjest|gjest|guest|noun|m|gjester||people,society|neutral
+n-nabo|nabo|neighbour|noun|m|naboer||people,society|neutral
+n-kjenning|kjenning|acquaintance|noun|m|kjenninger||people,society|neutral
+n-bekjent|bekjent|acquaintance / known person|noun|m|bekjente||people,society|neutral
+n-fremmed|fremmed|stranger|noun|m|fremmede||people,society|neutral
+n-medlem|medlem|member|noun|n|medlemmer||people,society|neutral
+n-leder|leder|leader|noun|m|ledere||people,work|neutral
+n-sjef|sjef|boss|noun|m|sjefer||people,work|neutral
+n-konge|konge|king|noun|m|konger||people,society|neutral
+n-dronning|dronning|queen|noun|f|dronninger||people,society|neutral
+n-prins|prins|prince|noun|m|prinser||people,society|neutral
+n-prinsesse|prinsesse|princess|noun|f|prinsesser||people,society|neutral
+n-folkemengde|folkemengde|crowd|noun|f|folkemengder||people,society|neutral
+n-befolkning|befolkning|population|noun|f|befolkninger||people,society|neutral
+n-samfunn|samfunn|society|noun|n|samfunn||society|neutral
+n-borger|borger|citizen|noun|m|borgere||people,society|neutral
+n-innbygger|innbygger|inhabitant|noun|m|innbyggere||people,society|neutral
+n-utlending|utlending|foreigner|noun|m|utlendinger||people,society|neutral
+n-flyktning|flyktning|refugee|noun|m|flyktninger||people,society|neutral
+n-innvandrer|innvandrer|immigrant|noun|m|innvandrere||people,society|neutral
+n-publikum|publikum|audience|noun|n|publikum||people,society|neutral
+n-gruppe|gruppe|group|noun|f|grupper||people,society|neutral
+n-lag|lag|team|noun|n|lag||people,sport|neutral
+n-individ|individ|individual|noun|n|individer||people|formal
+n-hode|hode|head|noun|n|hoder||body|neutral
+n-haar|hår|hair|noun|n|hår||body|neutral
+n-ansikt|ansikt|face|noun|n|ansikter||body|neutral
+n-panne|panne|forehead|noun|f|panner||body|neutral
+n-oere|øre|ear|noun|n|ører||body|neutral
+n-nese|nese|nose|noun|f|neser||body|neutral
+n-munn|munn|mouth|noun|m|munner||body|neutral
+n-leppe|leppe|lip|noun|f|lepper||body|neutral
+n-tann|tann|tooth|noun|f|tenner||body|neutral
+n-tunge|tunge|tongue|noun|f|tunger||body|neutral
+n-kinn|kinn|cheek|noun|n|kinn||body|neutral
+n-hake|hake|chin|noun|m|haker||body|neutral
+n-hals|hals|neck / throat|noun|m|halser||body|neutral
+n-nakke|nakke|nape / back of neck|noun|m|nakker||body|neutral
+n-skulder|skulder|shoulder|noun|f|skuldre||body|neutral
+n-arm|arm|arm|noun|m|armer||body|neutral
+n-albue|albue|elbow|noun|m|albuer||body|neutral
+n-finger|finger|finger|noun|m|fingrer||body|neutral
+n-tommel|tommel|thumb|noun|m|tomler||body|neutral
+n-negl|negl|nail|noun|m|negler||body|neutral
+n-bryst|bryst|chest / breast|noun|n|bryst||body|neutral
+n-mage|mage|stomach / belly|noun|m|mager||body|neutral
+n-rygg|rygg|back|noun|m|rygger||body|neutral
+n-hofte|hofte|hip|noun|f|hofter||body|neutral
+n-ben|ben|leg / bone|noun|n|ben||body|neutral
+n-laar|lår|thigh|noun|n|lår||body|neutral
+n-kne|kne|knee|noun|n|knær||body|neutral
+n-legg|legg|calf|noun|m|legger||body|neutral
+n-ankel|ankel|ankle|noun|m|ankler||body|neutral
+n-fot|fot|foot|noun|m|føtter||body|neutral
+n-taa|tå|toe|noun|f|tær||body|neutral
+n-hud|hud|skin|noun|f|huder||body|neutral
+n-blod|blod|blood|noun|n|||body|neutral
+n-hjerte|hjerte|heart|noun|n|hjerter||body|neutral
+n-hjerne|hjerne|brain|noun|m|hjerner||body|neutral
+n-lunge|lunge|lung|noun|f|lunger||body|neutral
+n-muskel|muskel|muscle|noun|m|muskler||body|neutral
+n-knokkel|knokkel|bone / knuckle|noun|m|knokler||body|neutral
+n-skjelett|skjelett|skeleton|noun|n|skjeletter||body|neutral
+n-pust|pust|breath|noun|m|||body|neutral
+n-stemme|stemme|voice|noun|f|stemmer||body,communication|neutral
+n-fang|fang|lap|noun|n|fang||body|neutral
+n-midje|midje|waist|noun|f|midjer||body|neutral
+n-helse|helse|health|noun|f|||health|neutral
+n-sykdom|sykdom|illness / disease|noun|m|sykdommer||health|neutral
+n-smerte|smerte|pain|noun|m|smerter||health,feelings|neutral
+n-feber|feber|fever|noun|m|||health|neutral
+n-forkjoelelse|forkjølelse|cold (illness)|noun|m|forkjølelser||health|neutral
+n-influensa|influensa|flu|noun|m|||health|neutral
+n-hoste|hoste|cough|noun|m|||health|neutral
+n-saar|sår|wound / sore|noun|n|sår||health,body|neutral
+n-skade|skade|injury / damage|noun|m|skader||health|neutral
+n-blaamerke|blåmerke|bruise|noun|n|blåmerker||health,body|neutral
+n-allergi|allergi|allergy|noun|m|allergier||health|neutral
+n-kreft|kreft|cancer|noun|m|||health|neutral
+n-medisin|medisin|medicine|noun|m|medisiner||health|neutral
+n-pille|pille|pill|noun|f|piller||health|neutral
+n-sproeyte|sprøyte|injection / syringe|noun|f|sprøyter||health|neutral
+n-vaksine|vaksine|vaccine|noun|m|vaksiner||health|neutral
+n-plaster|plaster|plaster / band-aid|noun|n|plaster||health|neutral
+n-bandasje|bandasje|bandage|noun|m|bandasjer||health|neutral
+n-behandling|behandling|treatment|noun|f|behandlinger||health|neutral
+n-operasjon|operasjon|operation / surgery|noun|m|operasjoner||health|neutral
+n-resept|resept|prescription|noun|m|resepter||health|neutral
+n-diagnose|diagnose|diagnosis|noun|m|diagnoser||health|neutral
+n-symptom|symptom|symptom|noun|n|symptomer||health|neutral
+n-virus|virus|virus|noun|n|virus||health|neutral
+n-bakterie|bakterie|bacterium|noun|m|bakterier||health|neutral
+n-smitte|smitte|infection / contagion|noun|m|||health|neutral
+n-sykehus|sykehus|hospital|noun|n|sykehus||health|neutral
+n-legekontor|legekontor|doctor's office|noun|n|legekontor||health|neutral
+n-apotek|apotek|pharmacy|noun|n|apotek||health|neutral
+n-pasient|pasient|patient|noun|m|pasienter||health,people|neutral
+n-lege|lege|doctor|noun|m|leger||health,work,people|neutral
+n-sykepleier|sykepleier|nurse|noun|m|sykepleiere||health,work,people|neutral
+n-tannlege|tannlege|dentist|noun|m|tannleger||health,work,people|neutral
+n-psykolog|psykolog|psychologist|noun|m|psykologer||health,work,people|neutral
+n-ambulanse|ambulanse|ambulance|noun|m|ambulanser||health|neutral
+n-helbredelse|helbredelse|recovery / healing|noun|m|helbredelser||health|formal
+n-kosthold|kosthold|diet|noun|n|kosthold||health,food|neutral
+n-trening|trening|exercise / training|noun|f|treninger||health,sport|neutral
+n-soevn|søvn|sleep|noun|m|||health,body|neutral
+n-hvile|hvile|rest|noun|m|||health|neutral
+n-foelelse|følelse|feeling / emotion|noun|m|følelser||feelings|neutral
+n-kjaerlighet|kjærlighet|love|noun|m|||feelings|neutral
+n-glede|glede|joy|noun|f|gleder||feelings|neutral
+n-lykke|lykke|happiness / luck|noun|f|||feelings|neutral
+n-sorg|sorg|grief / sorrow|noun|f|sorger||feelings|neutral
+n-frykt|frykt|fear|noun|m|||feelings|neutral
+n-redsel|redsel|terror / dread|noun|m|redsler||feelings|neutral
+n-angst|angst|anxiety|noun|m|||feelings,health|neutral
+n-sinne|sinne|anger|noun|n|||feelings|neutral
+n-raseri|raseri|rage / fury|noun|n|||feelings|neutral
+n-hat|hat|hatred|noun|n|||feelings|neutral
+n-misunnelse|misunnelse|envy|noun|m|||feelings|neutral
+n-sjalusi|sjalusi|jealousy|noun|m|||feelings|neutral
+n-skam|skam|shame|noun|f|||feelings|neutral
+n-skyld|skyld|guilt / blame|noun|f|||feelings|neutral
+n-stolthet|stolthet|pride|noun|m|||feelings|neutral
+n-haap|håp|hope|noun|n|||feelings|neutral
+n-oenske|ønske|wish|noun|n|ønsker||feelings|neutral
+n-lengsel|lengsel|longing|noun|m|lengsler||feelings|neutral
+n-savn|savn|sense of loss / missing|noun|n|savn||feelings|neutral
+n-trygghet|trygghet|safety / security (feeling)|noun|m|||feelings|neutral
+n-uro|uro|unease / restlessness|noun|m|||feelings|neutral
+n-bekymring|bekymring|worry|noun|f|bekymringer||feelings|neutral
+n-stress|stress|stress|noun|n|||feelings,health|neutral
+n-ensomhet|ensomhet|loneliness|noun|m|||feelings|neutral
+n-tristhet|tristhet|sadness|noun|m|||feelings|neutral
+n-humoer|humør|mood|noun|n|||feelings|neutral
+n-overraskelse|overraskelse|surprise|noun|m|overraskelser||feelings|neutral
+n-skuffelse|skuffelse|disappointment|noun|m|skuffelser||feelings|neutral
+n-lettelse|lettelse|relief|noun|m|lettelser||feelings|neutral
+n-spenning|spenning|excitement / tension|noun|f|spenninger||feelings|neutral
+n-ro|ro|calm / peace|noun|f|||feelings|neutral
+n-mot|mot|courage|noun|n|||feelings|neutral
+n-tillit|tillit|trust|noun|m|||feelings|neutral
+n-respekt|respekt|respect|noun|m|||feelings,society|neutral
+n-medfoelelse|medfølelse|compassion|noun|m|||feelings|neutral
+n-takknemlighet|takknemlighet|gratitude|noun|m|||feelings|neutral
+n-latter|latter|laughter|noun|m|||feelings,body|neutral
+n-graat|gråt|crying|noun|m|||feelings,body|neutral
+n-smil|smil|smile|noun|n|smil||feelings,body|neutral
+n-taare|tåre|tear|noun|f|tårer||feelings,body|neutral
+n-klem|klem|hug|noun|m|klemmer||feelings,body|colloquial
+n-kyss|kyss|kiss|noun|n|kyss||feelings,body|neutral
+n-tanke|tanke|thought|noun|m|tanker||feelings,communication|neutral
+n-droem|drøm|dream|noun|m|drømmer||feelings|neutral
+n-minne|minne|memory|noun|n|minner||feelings,abstract|neutral
+n-personlighet|personlighet|personality|noun|m|personligheter||feelings,people|neutral
+n-karakter|karakter|character|noun|m|karakterer||feelings,people|neutral
+n-vane|vane|habit|noun|m|vaner||feelings,abstract|neutral
+n-egenskap|egenskap|quality / trait|noun|m|egenskaper||feelings,abstract|neutral
+n-holdning|holdning|attitude|noun|f|holdninger||feelings,society|neutral
+n-oppfoersel|oppførsel|behaviour|noun|m|||feelings,society|neutral
+n-temperament|temperament|temperament|noun|n|temperamenter||feelings|neutral
+n-vilje|vilje|will|noun|m|||feelings,abstract|neutral
+n-taalmodighet|tålmodighet|patience|noun|m|||feelings|neutral
+n-aerlighet|ærlighet|honesty|noun|m|||feelings|neutral
+n-vennlighet|vennlighet|kindness|noun|m|||feelings|neutral
+n-sjenanse|sjenanse|shyness|noun|m|||feelings|neutral
+n-sjarm|sjarm|charm|noun|m|||feelings|neutral
+n-fornuft|fornuft|reason / common sense|noun|m|||feelings,abstract|neutral
+n-samtale|samtale|conversation|noun|m|samtaler||communication|neutral
+n-spraak|språk|language|noun|n|språk||communication|neutral
+n-tale|tale|speech|noun|m|taler||communication|neutral
+n-beskjed|beskjed|message|noun|m|beskjeder||communication|neutral
+n-melding|melding|message / notification|noun|f|meldinger||communication,technology|neutral
+n-svar|svar|answer|noun|n|svar||communication|neutral
+n-spoersmaal|spørsmål|question|noun|n|spørsmål||communication|neutral
+n-historie|historie|story / history|noun|f|historier||communication|neutral
+n-fortelling|fortelling|tale / narrative|noun|f|fortellinger||communication|neutral
+n-loegn|løgn|lie|noun|f|løgner||communication|neutral
+n-sannhet|sannhet|truth|noun|m|sannheter||communication,abstract|neutral
+n-mening|mening|meaning / opinion|noun|f|meninger||communication|neutral
+n-raad|råd|advice|noun|n|råd||communication|neutral
+n-forklaring|forklaring|explanation|noun|f|forklaringer||communication|neutral
+n-beskrivelse|beskrivelse|description|noun|m|beskrivelser||communication|neutral
+n-diskusjon|diskusjon|discussion|noun|m|diskusjoner||communication|neutral
+n-krangel|krangel|quarrel|noun|m|krangler||communication|colloquial
+n-avtale|avtale|agreement / appointment|noun|m|avtaler||communication,society|neutral
+n-loefte|løfte|promise|noun|n|løfter||communication|neutral
+n-hilsen|hilsen|greeting|noun|m|hilsener||communication|neutral
+n-uttrykk|uttrykk|expression|noun|n|uttrykk||communication|neutral
+n-setning|setning|sentence|noun|f|setninger||communication|neutral
+n-stavelse|stavelse|syllable|noun|m|stavelser||communication|neutral
+n-bokstav|bokstav|letter (of alphabet)|noun|m|bokstaver||communication|neutral
+n-tegn|tegn|sign|noun|n|tegn||communication|neutral
+n-uttale|uttale|pronunciation|noun|m|||communication|neutral
+n-aksent|aksent|accent|noun|m|aksenter||communication|neutral
+n-dialekt|dialekt|dialect|noun|m|dialekter||communication|neutral
+n-oversettelse|oversettelse|translation|noun|m|oversettelser||communication|neutral
+n-ordbok|ordbok|dictionary|noun|f|ordbøker||communication,school|neutral
+n-brev|brev|letter (mail)|noun|n|brev||communication|neutral
+n-telefon|telefon|telephone|noun|m|telefoner||communication,technology|neutral
+n-tema|tema|topic / theme|noun|n|temaer||communication|neutral
+n-kontakt|kontakt|contact|noun|m|kontakter||communication,society|neutral
+n-forhold|forhold|relationship / condition|noun|n|forhold||society,family|neutral
+n-vennskap|vennskap|friendship|noun|n|vennskap||society,feelings|neutral
+n-kjennskap|kjennskap|familiarity / knowledge of|noun|n|||society,communication|formal
+n-moete|møte|meeting|noun|n|møter||society,work|neutral
+n-fest|fest|party|noun|m|fester||society|neutral
+n-selskap|selskap|party / company|noun|n|selskaper||society|neutral
+n-besoek|besøk|visit|noun|n|besøk||society|neutral
+n-invitasjon|invitasjon|invitation|noun|m|invitasjoner||society,communication|neutral
+n-feiring|feiring|celebration|noun|f|feiringer||society|neutral
+n-tradisjon|tradisjon|tradition|noun|m|tradisjoner||society|neutral
+n-kultur|kultur|culture|noun|m|kulturer||society|neutral
+n-skikk|skikk|custom|noun|m|skikker||society|neutral
+n-regel|regel|rule|noun|m|regler||society,abstract|neutral
+n-plikt|plikt|duty|noun|f|plikter||society|neutral
+n-ansvar|ansvar|responsibility|noun|n|ansvar||society,work|neutral
+n-makt|makt|power|noun|f|makter||society|neutral
+n-konflikt|konflikt|conflict|noun|m|konflikter||society|neutral
+n-krig|krig|war|noun|m|kriger||society|neutral
+n-fred|fred|peace|noun|m|||society|neutral
+n-enighet|enighet|agreement / consensus|noun|f|||society,communication|neutral
+n-uenighet|uenighet|disagreement|noun|f|uenigheter||society,communication|neutral
+n-fellesskap|fellesskap|community / fellowship|noun|n|fellesskap||society|neutral
+n-rykte|rykte|rumour / reputation|noun|n|rykter||society,communication|neutral
+n-sladder|sladder|gossip|noun|m|||society,communication|colloquial
+n-folkeslag|folkeslag|ethnic group / people|noun|n|folkeslag||society,people|neutral
+n-generasjon|generasjon|generation|noun|m|generasjoner||society,people|neutral
+n-klasse|klasse|class|noun|m|klasser||society,school|neutral
+n-rolle|rolle|role|noun|f|roller||society,people|neutral
+n-yrke|yrke|profession / occupation|noun|n|yrker||work,society|neutral
+n-arbeider|arbeider|worker|noun|m|arbeidere||work,people|neutral
+n-kollega|kollega|colleague|noun|m|kolleger||work,people|neutral
+n-laerer|lærer|teacher|noun|m|lærere||work,school,people|neutral
+n-elev|elev|pupil|noun|m|elever||school,people|neutral
+n-student|student|student|noun|m|studenter||school,people|neutral
+n-baker|baker|baker|noun|m|bakere||work,people|neutral
+n-bonde|bonde|farmer|noun|m|bønder||work,people|neutral
+n-politi|politi|police|noun|n|||work,society,people|neutral
+n-brannmann|brannmann|firefighter|noun|m|brannmenn||work,people|neutral
+n-soldat|soldat|soldier|noun|m|soldater||work,society,people|neutral
+n-prest|prest|priest|noun|m|prester||work,society,people|neutral
+n-kokk|kokk|cook / chef|noun|m|kokker||work,food,people|neutral
+n-kunstner|kunstner|artist|noun|m|kunstnere||work,people|neutral
+n-forfatter|forfatter|author|noun|m|forfattere||work,people|neutral
+n-sanger|sanger|singer|noun|m|sangere||work,people|neutral
+n-skuespiller|skuespiller|actor|noun|m|skuespillere||work,people|neutral
+n-sjaafoer|sjåfør|driver|noun|m|sjåfører||work,people|neutral
+n-selger|selger|salesperson|noun|m|selgere||work,people|neutral
+n-direktoer|direktør|director / CEO|noun|m|direktører||work,people|neutral
+n-frisoer|frisør|hairdresser|noun|m|frisører||work,people|neutral
+n-advokat|advokat|lawyer|noun|m|advokater||work,people|neutral
+n-ingenioer|ingeniør|engineer|noun|m|ingeniører||work,people|neutral
+n-snekker|snekker|carpenter|noun|m|snekkere||work,people|neutral
+n-syn|syn|sight / vision|noun|n|syn||body|neutral
+n-hoersel|hørsel|hearing|noun|m|||body|neutral
+n-lukt|lukt|smell|noun|f|lukter||body|neutral
+n-smak|smak|taste|noun|m|smaker||body|neutral
+n-foelesans|følesans|sense of touch|noun|m|||body|formal
+n-sans|sans|sense|noun|m|sanser||body|neutral
+n-lyd|lyd|sound|noun|m|lyder||body|neutral
+n-stillhet|stillhet|silence|noun|m|||body|neutral
+n-bilde|bilde|image / picture|noun|n|bilder||communication,body|neutral
+n-blikk|blikk|gaze / look|noun|n|blikk||body|neutral
+n-utseende|utseende|appearance|noun|n|||body|neutral
+n-beroering|berøring|touch|noun|f|berøringer||body|neutral
+n-inntrykk|inntrykk|impression|noun|n|inntrykk||feelings,body|neutral
+n-mareritt|mareritt|nightmare|noun|n|mareritt||feelings|neutral
+n-psyke|psyke|psyche|noun|m|||feelings,health|formal
+n-humor|humor|humour|noun|m|||feelings|neutral
+n-vits|vits|joke|noun|m|vitser||communication|colloquial
+n-loenn|lønn|salary / wages|noun|f|lønner||work,money|neutral
+n-pleier|pleier|carer|noun|m|pleiere||health,work,people|neutral
+n-helsevesen|helsevesen|health service|noun|n|||health,society|neutral
+n-aldring|aldring|ageing|noun|f|||body,health|neutral
+n-utvikling|utvikling|development|noun|f|utviklinger||abstract,society|neutral
+n-oppvekst|oppvekst|upbringing|noun|m|||family,society|neutral
+n-barndom|barndom|childhood|noun|m|||family,time|neutral
+n-alderdom|alderdom|old age|noun|m|||body,time|neutral
+n-identitet|identitet|identity|noun|m|identiteter||people,abstract|neutral
+n-kjoenn|kjønn|sex / gender|noun|n|kjønn||people,body|neutral
+n-alder|alder|age|noun|m|aldre||people,time|neutral
+n-kallenavn|kallenavn|nickname|noun|n|kallenavn||people,communication|neutral
+n-etternavn|etternavn|surname|noun|n|etternavn||people,communication|neutral
+n-fornavn|fornavn|first name|noun|n|fornavn||people,communication|neutral
+n-smile|smile|to smile|verb|||smiler, smilte, smilt|feelings,body|neutral
+n-le|le|to laugh|verb|||ler, lo, ledd|feelings,body|neutral
+n-graate|gråte|to cry|verb|||gråter, gråt, grått|feelings,body|neutral
+n-foele|føle|to feel|verb|||føler, følte, følt|feelings,body|neutral
+n-haape|håpe|to hope|verb|||håper, håpet, håpet|feelings|neutral
+n-oenske-2|ønske|to wish|verb|||ønsker, ønsket, ønsket|feelings|neutral
+n-hate|hate|to hate|verb|||hater, hatet, hatet|feelings|neutral
+n-frykte|frykte|to fear|verb|||frykter, fryktet, fryktet|feelings|neutral
+n-glede-2|glede|to gladden / please|verb|||gleder, gledet, gledet|feelings|neutral
+n-savne|savne|to miss (someone)|verb|||savner, savnet, savnet|feelings|neutral
+n-stole|stole|to trust|verb|||stoler, stolte, stolt|feelings|neutral
+n-lengte|lengte|to long / yearn|verb|||lengter, lengtet, lengtet|feelings|neutral
+n-forstaa|forstå|to understand|verb|||forstår, forsto, forstått|communication,abstract|neutral
+n-mene|mene|to mean / think|verb|||mener, mente, ment|communication|neutral
+n-svare|svare|to answer|verb|||svarer, svarte, svart|communication|neutral
+n-spoerre|spørre|to ask|verb|||spør, spurte, spurt|communication|neutral
+n-fortelle|fortelle|to tell|verb|||forteller, fortalte, fortalt|communication|neutral
+n-prate|prate|to chat|verb|||prater, pratet, pratet|communication|colloquial
+n-rope|rope|to shout|verb|||roper, ropte, ropt|communication,body|neutral
+n-hviske|hviske|to whisper|verb|||hvisker, hvisket, hvisket|communication,body|neutral
+n-lyve|lyve|to lie|verb|||lyver, løy, løyet|communication|neutral
+n-love|love|to promise|verb|||lover, lovet, lovet|communication|neutral
+n-hilse|hilse|to greet|verb|||hilser, hilste, hilst|communication,society|neutral
+n-moete-2|møte|to meet|verb|||møter, møtte, møtt|society,communication|neutral
+n-besoeke|besøke|to visit|verb|||besøker, besøkte, besøkt|society|neutral
+n-hjelpe|hjelpe|to help|verb|||hjelper, hjalp, hjulpet|society,health|neutral
+n-kjenne|kjenne|to know (a person) / feel|verb|||kjenner, kjente, kjent|people,body|neutral
+n-treffe|treffe|to meet / hit|verb|||treffer, traff, truffet|society,communication|neutral
+n-krangle|krangle|to quarrel|verb|||krangler, kranglet, kranglet|communication|colloquial
+n-kysse|kysse|to kiss|verb|||kysser, kysset, kysset|feelings,body|neutral
+n-klemme|klemme|to hug / squeeze|verb|||klemmer, klemte, klemt|feelings,body|colloquial
+n-foede|føde|to give birth|verb|||føder, fødte, født|family,body|neutral
+n-doe|dø|to die|verb|||dør, døde, dødd|body,health|neutral
+n-leve|leve|to live|verb|||lever, levde, levd|body,health|neutral
+n-gifte|gifte|to marry|verb|||gifter, giftet, giftet|family,society|neutral
+n-puste|puste|to breathe|verb|||puster, pustet, pustet|body,health|neutral
+n-sove|sove|to sleep|verb|||sover, sov, sovet|body,health|neutral
+n-vaakne|våkne|to wake up|verb|||våkner, våknet, våknet|body,health|neutral
+n-hvile-2|hvile|to rest|verb|||hviler, hvilte, hvilt|health,body|neutral
+n-merke|merke|to notice / sense|verb|||merker, merket, merket|body|neutral
+n-lukte|lukte|to smell|verb|||lukter, luktet, luktet|body|neutral
+n-smake|smake|to taste|verb|||smaker, smakte, smakt|body|neutral
+n-roere|røre|to touch / stir|verb|||rører, rørte, rørt|body|neutral
+n-titte|titte|to peek|verb|||titter, tittet, tittet|body|colloquial
+n-glo|glo|to stare|verb|||glor, glodde, glodd|body|colloquial
+n-syk|syk|sick / ill|adj||||health|neutral
+n-frisk|frisk|healthy / well|adj||||health|neutral
+n-troett|trøtt|tired|adj||||health,feelings|neutral
+n-sliten|sliten|exhausted / worn out|adj||||health,feelings|neutral
+n-sulten|sulten|hungry|adj||||body,food|neutral
+n-toerst|tørst|thirsty|adj||||body,food|neutral
+n-redd|redd|afraid|adj||||feelings|neutral
+n-sint|sint|angry|adj||||feelings|neutral
+n-trist|trist|sad|adj||||feelings|neutral
+n-lykkelig|lykkelig|happy|adj||||feelings|neutral
+n-fornoeyd|fornøyd|satisfied / content|adj||||feelings|neutral
+n-stolt|stolt|proud|adj||||feelings|neutral
+n-nervoes|nervøs|nervous|adj||||feelings|neutral
+n-rolig|rolig|calm|adj||||feelings|neutral
+n-flau|flau|embarrassed|adj||||feelings|neutral
+n-sjenert|sjenert|shy|adj||||feelings|neutral
+n-ensom|ensom|lonely|adj||||feelings|neutral
+n-forelsket|forelsket|in love|adj||||feelings|neutral
+n-sjalu|sjalu|jealous|adj||||feelings|neutral
+n-overrasket|overrasket|surprised|adj||||feelings|neutral
+n-skuffet|skuffet|disappointed|adj||||feelings|neutral
+n-bekymret|bekymret|worried|adj||||feelings|neutral
+n-vennlig|vennlig|friendly / kind|adj||||feelings,society|neutral
+n-hyggelig|hyggelig|pleasant / nice|adj||||feelings,society|neutral
+n-grei|grei|nice / decent|adj||||feelings|colloquial
+n-aerlig|ærlig|honest|adj||||feelings|neutral
+n-hoeflig|høflig|polite|adj||||feelings,society|neutral
+n-frekk|frekk|rude / cheeky|adj||||feelings|colloquial
+n-smart|smart|smart / clever|adj||||feelings|colloquial
+n-klok|klok|wise|adj||||feelings|neutral
+n-dum|dum|stupid|adj||||feelings|colloquial
+n-morsom|morsom|funny|adj||||feelings|neutral
+n-kjedelig|kjedelig|boring|adj||||feelings|neutral
+n-doev|døv|deaf|adj||||body,health|neutral
+n-blind|blind|blind|adj||||body,health|neutral
+n-gravid|gravid|pregnant|adj||||body,health|neutral
+n-ung|ung|young|adj||||people|neutral
+n-doed-2|død|dead|adj||||body,health|neutral
+n-levende|levende|alive / living|adj||||body|neutral
+n-gift|gift|married|adj||||family,society|neutral
+n-enslig|enslig|single|adj||||family,society|neutral
+n-forelskelse|forelskelse|infatuation / falling in love|noun|m|forelskelser||feelings|neutral
+n-omtanke|omtanke|consideration / care|noun|m|||feelings|neutral
+n-omsorg|omsorg|care / nurturing|noun|f|||feelings,health|neutral
+n-medynk|medynk|pity|noun|m|||feelings|neutral
+n-sjokk|sjokk|shock|noun|n|sjokk||feelings,health|neutral
+n-forventning|forventning|expectation|noun|f|forventninger||feelings|neutral
+n-nysgjerrighet|nysgjerrighet|curiosity|noun|m|||feelings|neutral
+n-iver|iver|eagerness / zeal|noun|m|||feelings|neutral
+n-begeistring|begeistring|enthusiasm|noun|f|||feelings|neutral
+n-kjedsomhet|kjedsomhet|boredom|noun|m|||feelings|neutral
+n-forvirring|forvirring|confusion|noun|f|||feelings|neutral
+n-visshet|visshet|certainty|noun|m|||feelings,abstract|neutral
+n-tvil|tvil|doubt|noun|m|||feelings,abstract|neutral
+n-mistanke|mistanke|suspicion|noun|m|mistanker||feelings|neutral
+n-frihet|frihet|freedom|noun|f|friheter||feelings,society|neutral
+n-haandledd|håndledd|wrist|noun|n|håndledd||body|neutral
+n-knoke|knoke|knuckle|noun|m|knoker||body|neutral
+n-oeyelokk|øyelokk|eyelid|noun|n|øyelokk||body|neutral
+n-oeyenbryn|øyenbryn|eyebrow|noun|n|øyenbryn||body|neutral
+n-oeyevippe|øyevippe|eyelash|noun|f|øyevipper||body|neutral
+n-kjeve|kjeve|jaw|noun|m|kjever||body|neutral
+n-strupe|strupe|throat / windpipe|noun|m|struper||body|neutral
+n-ribbein|ribbein|rib|noun|n|ribbein||body|neutral
+n-navle|navle|navel|noun|m|navler||body|neutral
+n-saale|såle|sole (of foot)|noun|m|såler||body|neutral
+n-aare|åre|vein / artery|noun|f|årer||body|neutral
+n-nerve|nerve|nerve|noun|m|nerver||body|neutral
+n-organ|organ|organ|noun|n|organer||body|neutral
+n-lever|lever|liver|noun|f|levrer||body|neutral
+n-nyre|nyre|kidney|noun|f|nyrer||body|neutral
+n-tarm|tarm|intestine|noun|m|tarmer||body|neutral
+n-celle|celle|cell|noun|f|celler||body,health|neutral
+n-svette|svette|sweat|noun|m|||body|neutral
+n-skjegg|skjegg|beard|noun|n|skjegg||body|neutral
+n-bart|bart|moustache|noun|m|barter||body|neutral
+n-rynke|rynke|wrinkle|noun|f|rynker||body|neutral
+n-arr|arr|scar|noun|n|arr||body,health|neutral
+n-foedselsdag|fødselsdag|birthday|noun|m|fødselsdager||family,time|neutral
+n-stamtre|stamtre|family tree|noun|n|stamtrær||family|neutral
+n-arving|arving|heir|noun|m|arvinger||family,people|neutral
+n-forelder|forelder|parent|noun|m|foreldre||family,people|neutral
+n-stesoenn|stesønn|stepson|noun|m|stesønner||family,people|neutral
+n-stemor|stemor|stepmother|noun|f|stemødre||family,people|neutral
+n-stefar|stefar|stepfather|noun|m|stefedre||family,people|neutral
+n-svoger|svoger|brother-in-law|noun|m|svogere||family,people|neutral
+n-svigerinne|svigerinne|sister-in-law|noun|f|svigerinner||family,people|neutral
+n-barnebarn|barnebarn|grandchild|noun|n|barnebarn||family,people|neutral
+n-oldefar|oldefar|great-grandfather|noun|m|oldefedre||family,people|neutral
+n-bestevenn|bestevenn|best friend|noun|m|bestevenner||people,feelings|colloquial
+n-venninne|venninne|female friend|noun|f|venninner||people|neutral
+n-kamerat|kamerat|mate / buddy|noun|m|kamerater||people|colloquial
+n-rival|rival|rival|noun|m|rivaler||people|neutral
+n-fiende|fiende|enemy|noun|m|fiender||people|neutral
+n-offer|offer|victim|noun|n|ofre||people,society|neutral
+n-vitne|vitne|witness|noun|n|vitner||people,society|neutral
+n-eier|eier|owner|noun|m|eiere||people,society|neutral
+n-godhet|godhet|goodness|noun|m|||feelings|neutral
+n-grusomhet|grusomhet|cruelty|noun|m|grusomheter||feelings|neutral
+n-list|list|cunning|noun|f|||feelings|neutral
+n-flid|flid|diligence|noun|m|||feelings,work|neutral
+n-latskap|latskap|laziness|noun|m|||feelings|neutral
+n-feighet|feighet|cowardice|noun|m|||feelings|neutral
+n-snakkesalighet|snakkesalighet|talkativeness|noun|m|||feelings,communication|neutral
+n-prat|prat|chat / talk|noun|m|||communication|colloquial
+n-skravling|skravling|chatter|noun|f|||communication|colloquial
+n-rop|rop|shout / cry|noun|n|rop||communication,body|neutral
+n-hvisking|hvisking|whispering|noun|f|||communication,body|neutral
+n-nikk|nikk|nod|noun|n|nikk||communication,body|neutral
+n-gest|gest|gesture|noun|m|gester||communication,body|neutral
+n-vink|vink|wave / hint|noun|n|vink||communication,body|neutral
+n-kjaelenavn|kjælenavn|pet name|noun|n|kjælenavn||communication,feelings|neutral
+n-foredrag|foredrag|lecture / talk|noun|n|foredrag||communication,school|neutral
+n-intervju|intervju|interview|noun|n|intervjuer||communication,work|neutral
+n-debatt|debatt|debate|noun|m|debatter||communication,society|neutral
+n-ros|ros|praise|noun|m|||communication,feelings|neutral
+n-kritikk|kritikk|criticism|noun|m|||communication|neutral
+n-unnskyldning|unnskyldning|apology / excuse|noun|f|unnskyldninger||communication,society|neutral
+n-kompliment|kompliment|compliment|noun|m|komplimenter||communication,feelings|neutral
+n-forelske|forelske|to fall in love|verb|||forelsker, forelsket, forelsket|feelings|neutral
+n-glemme|glemme|to forget|verb|||glemmer, glemte, glemt|feelings,communication|neutral
+n-huske|huske|to remember|verb|||husker, husket, husket|feelings,communication|neutral
+n-undre|undre|to wonder|verb|||undrer, undret, undret|feelings,communication|neutral
+n-nyte|nyte|to enjoy|verb|||nyter, nøt, nytt|feelings,body|neutral
+n-skamme|skamme|to be ashamed|verb|||skammer, skammet, skammet|feelings|neutral
+n-rose|rose|to praise|verb|||roser, roste, rost|communication,feelings|neutral
+n-skjelle|skjelle|to scold|verb|||skjeller, skjelte, skjelt|communication|colloquial
+n-takke|takke|to thank|verb|||takker, takket, takket|communication,society|neutral
+n-be|be|to ask / pray|verb|||ber, ba, bedt|communication,society|neutral
+n-nikke|nikke|to nod|verb|||nikker, nikket, nikket|communication,body|neutral
+n-vinke|vinke|to wave|verb|||vinker, vinket, vinket|communication,body|neutral
+n-omfavne|omfavne|to embrace|verb|||omfavner, omfavnet, omfavnet|feelings,body|formal
+n-stryke|stryke|to stroke / iron|verb|||stryker, strøk, strøket|body|neutral
+n-lytte|lytte|to listen|verb|||lytter, lyttet, lyttet|communication,body|neutral
+n-skue|skue|to behold|verb|||skuer, skuet, skuet|body|formal
+n-stirre|stirre|to stare|verb|||stirrer, stirret, stirret|body|neutral
+n-kjede|kjede|to bore|verb|||kjeder, kjedet, kjedet|feelings|neutral
+n-irritere|irritere|to annoy|verb|||irriterer, irriterte, irritert|feelings|neutral
+n-troeste|trøste|to comfort|verb|||trøster, trøstet, trøstet|feelings,society|neutral
+n-skremme|skremme|to frighten|verb|||skremmer, skremte, skremt|feelings|neutral
+n-overraske|overraske|to surprise|verb|||overrasker, overrasket, overrasket|feelings|neutral
+n-mistenke|mistenke|to suspect|verb|||mistenker, mistenkte, mistenkt|feelings|neutral
+n-bekymre|bekymre|to worry|verb|||bekymrer, bekymret, bekymret|feelings|neutral
+n-modig|modig|brave|adj||||feelings|neutral
+n-feig|feig|cowardly|adj||||feelings|colloquial
+n-sjeneroes|sjenerøs|generous|adj||||feelings|neutral
+n-grisk|grisk|greedy|adj||||feelings|neutral
+n-lat|lat|lazy|adj||||feelings|colloquial
+n-flink|flink|skilled / good at|adj||||feelings,school|neutral
+n-godhjertet|godhjertet|kind-hearted|adj||||feelings|neutral
+n-grusom|grusom|cruel|adj||||feelings|neutral
+n-glemsk|glemsk|forgetful|adj||||feelings|neutral
+n-nysgjerrig|nysgjerrig|curious|adj||||feelings|neutral
+n-takknemlig|takknemlig|grateful|adj||||feelings|neutral
+n-stum|stum|mute|adj||||body,health|neutral
+n-svak|svak|weak|adj||||body,health|neutral
+n-alvorlig|alvorlig|serious / grave|adj||||health,feelings|neutral
+n-skadet|skadet|injured|adj||||health,body|neutral
+n-smittsom|smittsom|contagious|adj||||health|neutral
+n-kjekk|kjekk|handsome|adj||||body,people|neutral
+n-stygg|stygg|ugly|adj||||body|neutral
+n-slank|slank|slim|adj||||body|neutral
+n-tykk|tykk|thick / fat|adj||||body|neutral
+n-tynn|tynn|thin|adj||||body|neutral
+n-hael|hæl|heel|noun|m|hæler||body|neutral
+n-haandflate|håndflate|palm of hand|noun|f|håndflater||body|neutral
+n-kose|kose|to cuddle / enjoy|verb|||koser, koste, kost|feelings,body|colloquial
+n-toerste|tørste|to thirst|verb|||tørster, tørstet, tørstet|body,food|neutral

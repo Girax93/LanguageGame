@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { Grammar } from './Grammar';
+import { Grammar } from './GrammarGame';
 
 /** German article-ending drill. Unlocks after Pack 1 is learned. */
 export const grammarGame: GameModule = {

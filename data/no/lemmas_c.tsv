@@ -1,0 +1,381 @@
+n-tall|tall|number|noun|n|tall||numbers|neutral
+n-penger|penger|money|noun|m|penger||money|neutral
+n-arbeid|arbeid|work|noun|n|arbeider||work|neutral
+n-arbeide|arbeide|to work|verb|||arbeider, arbeidet, arbeidet|work|neutral
+n-laere|lære|to learn / to teach|verb|||lærer, lærte, lært|school|neutral
+n-betale|betale|to pay|verb|||betaler, betalte, betalt|money|neutral
+n-kjoepe|kjøpe|to buy|verb|||kjøper, kjøpte, kjøpt|shopping|neutral
+n-selge|selge|to sell|verb|||selger, solgte, solgt|shopping|neutral
+n-koste|koste|to cost|verb|||koster, kostet, kostet|money|neutral
+n-vinne|vinne|to win|verb|||vinner, vant, vunnet|sport|neutral
+n-tape|tape|to lose|verb|||taper, tapte, tapt|sport|neutral
+n-spille|spille|to play|verb|||spiller, spilte, spilt|sport|neutral
+n-leke|leke|to play (children)|verb|||leker, lekte, lekt|sport|colloquial
+n-studere|studere|to study|verb|||studerer, studerte, studert|school|neutral
+n-lese|lese|to read|verb|||leser, leste, lest|school|neutral
+n-skrive|skrive|to write|verb|||skriver, skrev, skrevet|school|neutral
+n-regne|regne|to calculate|verb|||regner, regnet, regnet|numbers|neutral
+n-telle|telle|to count|verb|||teller, telte, telt|numbers|neutral
+n-maale|måle|to measure|verb|||måler, målte, målt|numbers|neutral
+n-veie|veie|to weigh|verb|||veier, veide, veid|numbers|neutral
+n-time|time|hour / lesson|noun|m|timer||time|neutral
+n-uke|uke|week|noun|f|uker||time|neutral
+n-maaned|måned|month|noun|m|måneder||time|neutral
+n-minutt|minutt|minute|noun|n|minutter||time|neutral
+n-sekund|sekund|second|noun|n|sekunder||time|neutral
+n-morgen|morgen|morning|noun|m|morgener||time|neutral
+n-kveld|kveld|evening|noun|m|kvelder||time|neutral
+n-ettermiddag|ettermiddag|afternoon|noun|m|ettermiddager||time|neutral
+n-formiddag|formiddag|late morning|noun|m|formiddager||time|neutral
+n-uar|år|year|noun|n|år||time|neutral
+n-helg|helg|weekend|noun|f|helger||time|neutral
+n-doegn|døgn|day (24 hours)|noun|n|døgn||time|neutral
+n-mandag|mandag|Monday|noun|m|mandager||time|neutral
+n-tirsdag|tirsdag|Tuesday|noun|m|tirsdager||time|neutral
+n-onsdag|onsdag|Wednesday|noun|m|onsdager||time|neutral
+n-torsdag|torsdag|Thursday|noun|m|torsdager||time|neutral
+n-fredag|fredag|Friday|noun|m|fredager||time|neutral
+n-loerdag|lørdag|Saturday|noun|m|lørdager||time|neutral
+n-soendag|søndag|Sunday|noun|m|søndager||time|neutral
+n-januar|januar|January|noun|m|||time|neutral
+n-februar|februar|February|noun|m|||time|neutral
+n-mars|mars|March|noun|m|||time|neutral
+n-april|april|April|noun|m|||time|neutral
+n-mai|mai|May|noun|m|||time|neutral
+n-juni|juni|June|noun|m|||time|neutral
+n-juli|juli|July|noun|m|||time|neutral
+n-august|august|August|noun|m|||time|neutral
+n-september|september|September|noun|m|||time|neutral
+n-oktober|oktober|October|noun|m|||time|neutral
+n-november|november|November|noun|m|||time|neutral
+n-desember|desember|December|noun|m|||time|neutral
+n-vaar|vår|spring|noun|m|vårer||time|neutral
+n-sommer|sommer|summer|noun|m|somrer||time|neutral
+n-hoest|høst|autumn|noun|m|høster||time|neutral
+n-vinter|vinter|winter|noun|m|vintrer||time|neutral
+n-seks|seks|six|num||||numbers|neutral
+n-sju|sju|seven|num||||numbers|neutral
+n-aatte|åtte|eight|num||||numbers|neutral
+n-ni|ni|nine|num||||numbers|neutral
+n-ti|ti|ten|num||||numbers|neutral
+n-elleve|elleve|eleven|num||||numbers|neutral
+n-tolv|tolv|twelve|num||||numbers|neutral
+n-tretten|tretten|thirteen|num||||numbers|neutral
+n-fjorten|fjorten|fourteen|num||||numbers|neutral
+n-femten|femten|fifteen|num||||numbers|neutral
+n-seksten|seksten|sixteen|num||||numbers|neutral
+n-sytten|sytten|seventeen|num||||numbers|neutral
+n-atten|atten|eighteen|num||||numbers|neutral
+n-nitten|nitten|nineteen|num||||numbers|neutral
+n-tjue|tjue|twenty|num||||numbers|neutral
+n-tretti|tretti|thirty|num||||numbers|neutral
+n-foerti|førti|forty|num||||numbers|neutral
+n-femti|femti|fifty|num||||numbers|neutral
+n-seksti|seksti|sixty|num||||numbers|neutral
+n-sytti|sytti|seventy|num||||numbers|neutral
+n-aatti|åtti|eighty|num||||numbers|neutral
+n-nitti|nitti|ninety|num||||numbers|neutral
+n-hundre|hundre|hundred|num||||numbers|neutral
+n-tusen|tusen|thousand|num||||numbers|neutral
+n-million|million|million|noun|m|millioner||numbers|neutral
+n-null|null|zero|num||||numbers|neutral
+n-foerste|første|first|num||||numbers|neutral
+n-andre|andre|second|num||||numbers|neutral
+n-tredje|tredje|third|num||||numbers|neutral
+n-halv|halv|half|adj||||numbers|neutral
+n-hel|hel|whole|adj||||numbers|neutral
+n-dobbel|dobbel|double|adj||||numbers|neutral
+n-antall|antall|number / quantity|noun|n|antall||numbers|neutral
+n-mengde|mengde|amount / quantity|noun|m|mengder||numbers|neutral
+n-del|del|part|noun|m|deler||numbers|neutral
+n-halvdel|halvdel|half (part)|noun|m|halvdeler||numbers|neutral
+n-par|par|pair|noun|n|par||numbers|neutral
+n-dusin|dusin|dozen|noun|n|dusin||numbers|neutral
+n-prosent|prosent|percent|noun|m|prosent||numbers|neutral
+n-meter|meter|metre|noun|m|meter||numbers|neutral
+n-kilometer|kilometer|kilometre|noun|m|kilometer||numbers|neutral
+n-centimeter|centimeter|centimetre|noun|m|centimeter||numbers|neutral
+n-kilo|kilo|kilo|noun|n|kilo||numbers|neutral
+n-gram|gram|gram|noun|n|gram||numbers|neutral
+n-liter|liter|litre|noun|m|liter||numbers|neutral
+n-grad|grad|degree|noun|m|grader||numbers|neutral
+n-vekt|vekt|weight|noun|f|vekter||numbers|neutral
+n-stoerrelse|størrelse|size|noun|m|størrelser||numbers|neutral
+n-jobb|jobb|job|noun|m|jobber||work|neutral
+n-jobbe|jobbe|to work (job)|verb|||jobber, jobbet, jobbet|work|colloquial
+n-yrke|yrke|profession|noun|n|yrker||work|neutral
+n-sjef|sjef|boss|noun|m|sjefer||work|neutral
+n-kollega|kollega|colleague|noun|m|kolleger||work|neutral
+n-arbeidsgiver|arbeidsgiver|employer|noun|m|arbeidsgivere||work|formal
+n-ansatt|ansatt|employee|noun|m|ansatte||work|neutral
+n-loenn|lønn|salary / wage|noun|f|lønner||work|neutral
+n-moete|møte|meeting|noun|n|møter||work|neutral
+n-kontor|kontor|office|noun|n|kontorer||work|neutral
+n-bedrift|bedrift|company / firm|noun|f|bedrifter||work|neutral
+n-firma|firma|firm / company|noun|n|firmaer||work|neutral
+n-selskap|selskap|company|noun|n|selskaper||work|formal
+n-ferie|ferie|vacation|noun|m|ferier||work|neutral
+n-pause|pause|break|noun|m|pauser||work|neutral
+n-oppgave|oppgave|task|noun|f|oppgaver||work|neutral
+n-prosjekt|prosjekt|project|noun|n|prosjekter||work|neutral
+n-plan|plan|plan|noun|m|planer||work|neutral
+n-planlegge|planlegge|to plan|verb|||planlegger, planla, planlagt|work|neutral
+n-ansette|ansette|to hire|verb|||ansetter, ansatte, ansatt|work|formal
+n-laerer|lærer|teacher|noun|m|lærere||school|neutral
+n-lege|lege|doctor|noun|m|leger||work|neutral
+n-sykepleier|sykepleier|nurse|noun|m|sykepleiere||work|neutral
+n-politi|politi|police|noun|n|politi||work|neutral
+n-politimann|politimann|policeman|noun|m|politimenn||work|neutral
+n-brannmann|brannmann|firefighter|noun|m|brannmenn||work|neutral
+n-bonde|bonde|farmer|noun|m|bønder||work|neutral
+n-kokk|kokk|cook / chef|noun|m|kokker||work|neutral
+n-sjaafoer|sjåfør|driver|noun|m|sjåfører||work|neutral
+n-selger|selger|salesperson|noun|m|selgere||work|neutral
+n-advokat|advokat|lawyer|noun|m|advokater||work|formal
+n-ingenioer|ingeniør|engineer|noun|m|ingeniører||work|neutral
+n-frisoer|frisør|hairdresser|noun|m|frisører||work|neutral
+n-snekker|snekker|carpenter|noun|m|snekkere||work|neutral
+n-elektriker|elektriker|electrician|noun|m|elektrikere||work|neutral
+n-forfatter|forfatter|author|noun|m|forfattere||work|neutral
+n-kunstner|kunstner|artist|noun|m|kunstnere||work|neutral
+n-musiker|musiker|musician|noun|m|musikere||work|neutral
+n-skuespiller|skuespiller|actor|noun|m|skuespillere||work|neutral
+n-forsker|forsker|researcher|noun|m|forskere||work|formal
+n-direktoer|direktør|director|noun|m|direktører||work|formal
+n-leder|leder|leader / manager|noun|m|ledere||work|neutral
+n-pilot|pilot|pilot|noun|m|piloter||work|neutral
+n-soldat|soldat|soldier|noun|m|soldater||work|neutral
+n-prest|prest|priest|noun|m|prester||work|neutral
+n-tannlege|tannlege|dentist|noun|m|tannleger||work|neutral
+n-kunde|kunde|customer|noun|m|kunder||shopping|neutral
+n-sekretaer|sekretær|secretary|noun|m|sekretærer||work|neutral
+n-rormann|rørlegger|plumber|noun|m|rørleggere||work|neutral
+n-skole|skole|school|noun|m|skoler||school|neutral
+n-elev|elev|pupil|noun|m|elever||school|neutral
+n-student|student|student|noun|m|studenter||school|neutral
+n-klasse|klasse|class|noun|m|klasser||school|neutral
+n-fag|fag|subject|noun|n|fag||school|neutral
+n-leksjon|leksjon|lesson|noun|m|leksjoner||school|neutral
+n-lekse|lekse|homework|noun|f|lekser||school|neutral
+n-proeve|prøve|test / exam|noun|f|prøver||school|neutral
+n-eksamen|eksamen|exam|noun|m|eksamener||school|neutral
+n-karakter|karakter|grade / character|noun|m|karakterer||school|neutral
+n-universitet|universitet|university|noun|n|universiteter||school|neutral
+n-bibliotek|bibliotek|library|noun|n|biblioteker||school|neutral
+n-kurs|kurs|course|noun|n|kurs||school|neutral
+n-utdanning|utdanning|education|noun|f|utdanninger||school|neutral
+n-kunnskap|kunnskap|knowledge|noun|m|kunnskaper||school|neutral
+n-sporsmaal|spørsmål|question|noun|n|spørsmål||communication|neutral
+n-svar|svar|answer|noun|n|svar||communication|neutral
+n-svare|svare|to answer|verb|||svarer, svarte, svart|communication|neutral
+n-spoerre|spørre|to ask|verb|||spør, spurte, spurt|communication|neutral
+n-forklare|forklare|to explain|verb|||forklarer, forklarte, forklart|communication|neutral
+n-forstaa|forstå|to understand|verb|||forstår, forsto, forstått|school|neutral
+n-huske|huske|to remember|verb|||husker, husket, husket|school|neutral
+n-glemme|glemme|to forget|verb|||glemmer, glemte, glemt|school|neutral
+n-oeve|øve|to practise|verb|||øver, øvde, øvd|school|neutral
+n-undervise|undervise|to teach|verb|||underviser, underviste, undervist|school|formal
+n-blyant|blyant|pencil|noun|m|blyanter||school|neutral
+n-penn|penn|pen|noun|m|penner||school|neutral
+n-papir|papir|paper|noun|n|papirer||school|neutral
+n-tavle|tavle|board|noun|f|tavler||school|neutral
+n-pult|pult|desk|noun|m|pulter||school|neutral
+n-kroner|krone|krone (currency)|noun|f|kroner||money|neutral
+n-oere|øre|øre (cent)|noun|n|øre||money|neutral
+n-pris|pris|price|noun|m|priser||money|neutral
+n-regning|regning|bill|noun|f|regninger||money|neutral
+n-kvittering|kvittering|receipt|noun|f|kvitteringer||shopping|neutral
+n-bank|bank|bank|noun|m|banker||money|neutral
+n-konto|konto|account|noun|m|kontoer||money|neutral
+n-kort|kort|card|noun|n|kort||money|neutral
+n-kontant|kontant|cash|noun|m|kontanter||money|neutral
+n-rabatt|rabatt|discount|noun|m|rabatter||shopping|neutral
+n-tilbud|tilbud|offer / deal|noun|n|tilbud||shopping|neutral
+n-skatt|skatt|tax|noun|m|skatter||money|formal
+n-budsjett|budsjett|budget|noun|n|budsjetter||money|neutral
+n-gjeld|gjeld|debt|noun|f|gjelder||money|neutral
+n-laan|lån|loan|noun|n|lån||money|neutral
+n-laane|låne|to borrow / lend|verb|||låner, lånte, lånt|money|neutral
+n-spare|spare|to save|verb|||sparer, sparte, spart|money|neutral
+n-tjene|tjene|to earn|verb|||tjener, tjente, tjent|money|neutral
+n-eie|eie|to own|verb|||eier, eide, eid|money|neutral
+n-marked|marked|market|noun|n|markeder||money|neutral
+n-butikk|butikk|shop|noun|m|butikker||shopping|neutral
+n-vare|vare|product / goods|noun|f|varer||shopping|neutral
+n-handel|handel|trade / commerce|noun|m|handler||money|neutral
+n-handle|handle|to shop|verb|||handler, handlet, handlet|shopping|neutral
+n-veksle|veksle|to exchange (money)|verb|||veksler, vekslet, vekslet|money|neutral
+n-rik|rik|rich|adj||||money|neutral
+n-fattig|fattig|poor|adj||||money|neutral
+n-dyr|dyr|expensive|adj||||shopping|neutral
+n-billig|billig|cheap|adj||||shopping|neutral
+n-gratis|gratis|free (of charge)|adj||||money|neutral
+n-telefon|telefon|telephone|noun|m|telefoner||technology|neutral
+n-mobil|mobil|mobile phone|noun|m|mobiler||technology|colloquial
+n-datamaskin|datamaskin|computer|noun|m|datamaskiner||technology|neutral
+n-data|data|data|noun|n|data||technology|neutral
+n-internett|internett|internet|noun|n|internett||technology|neutral
+n-nett|nett|network / net|noun|n|nett||technology|neutral
+n-skjerm|skjerm|screen|noun|m|skjermer||technology|neutral
+n-tastatur|tastatur|keyboard|noun|n|tastaturer||technology|neutral
+n-mus|mus|mouse|noun|f|mus||technology|neutral
+n-app|app|app|noun|m|apper||technology|colloquial
+n-program|program|program|noun|n|programmer||technology|neutral
+n-fil|fil|file|noun|f|filer||technology|neutral
+n-passord|passord|password|noun|n|passord||technology|neutral
+n-melding|melding|message|noun|f|meldinger||communication|neutral
+n-epost|e-post|email|noun|m|e-poster||communication|neutral
+n-nettside|nettside|website|noun|f|nettsider||technology|neutral
+n-side|side|page / side|noun|f|sider||technology|neutral
+n-kamera|kamera|camera|noun|n|kameraer||technology|neutral
+n-bilde|bilde|picture|noun|n|bilder||technology|neutral
+n-video|video|video|noun|m|videoer||technology|neutral
+n-musikk|musikk|music|noun|m|||sport|neutral
+n-radio|radio|radio|noun|m|radioer||technology|neutral
+n-fjernsyn|fjernsyn|television|noun|n|fjernsyn||technology|neutral
+n-avis|avis|newspaper|noun|f|aviser||communication|neutral
+n-nyhet|nyhet|news|noun|f|nyheter||communication|neutral
+n-batteri|batteri|battery|noun|n|batterier||technology|neutral
+n-lade|lade|to charge|verb|||lader, ladet, ladet|technology|neutral
+n-ringe|ringe|to call|verb|||ringer, ringte, ringt|communication|neutral
+n-sende|sende|to send|verb|||sender, sendte, sendt|communication|neutral
+n-laste|laste|to load / download|verb|||laster, lastet, lastet|technology|neutral
+n-trykke|trykke|to press|verb|||trykker, trykket, trykket|technology|neutral
+n-koble|koble|to connect|verb|||kobler, koblet, koblet|technology|neutral
+n-sok|søk|search|noun|n|søk||technology|neutral
+n-soeke|søke|to search / apply|verb|||søker, søkte, søkt|technology|neutral
+n-sport|sport|sport|noun|m|||sport|neutral
+n-idrett|idrett|sport / athletics|noun|m|idretter||sport|neutral
+n-lag|lag|team|noun|n|lag||sport|neutral
+n-kamp|kamp|match / fight|noun|m|kamper||sport|neutral
+n-ball|ball|ball|noun|m|baller||sport|neutral
+n-fotball|fotball|football|noun|m|fotballer||sport|neutral
+n-spiller|spiller|player|noun|m|spillere||sport|neutral
+n-trener|trener|coach|noun|m|trenere||sport|neutral
+n-maal|mål|goal|noun|n|mål||sport|neutral
+n-poeng|poeng|point|noun|n|poeng||sport|neutral
+n-seier|seier|victory|noun|m|seirer||sport|neutral
+n-regel|regel|rule|noun|m|regler||sport|neutral
+n-spill|spill|game|noun|n|spill||sport|neutral
+n-leketoy|leketøy|toy|noun|n|leketøy||sport|neutral
+n-hobby|hobby|hobby|noun|m|hobbyer||sport|neutral
+n-fritid|fritid|free time|noun|f|||sport|neutral
+n-fest|fest|party|noun|m|fester||sport|neutral
+n-svoemme|svømme|to swim|verb|||svømmer, svømte, svømt|sport|neutral
+n-loepe|løpe|to run|verb|||løper, løp, løpt|sport|neutral
+n-hoppe|hoppe|to jump|verb|||hopper, hoppet, hoppet|sport|neutral
+n-kaste|kaste|to throw|verb|||kaster, kastet, kastet|sport|neutral
+n-trene|trene|to train / exercise|verb|||trener, trente, trent|sport|neutral
+n-danse|danse|to dance|verb|||danser, danset, danset|sport|neutral
+n-synge|synge|to sing|verb|||synger, sang, sunget|sport|neutral
+n-male|male|to paint|verb|||maler, malte, malt|sport|neutral
+n-tegne|tegne|to draw|verb|||tegner, tegnet, tegnet|sport|neutral
+n-konsert|konsert|concert|noun|m|konserter||sport|neutral
+n-film|film|film / movie|noun|m|filmer||sport|neutral
+n-kino|kino|cinema|noun|m|kinoer||sport|neutral
+n-teater|teater|theatre|noun|n|teatre||sport|neutral
+n-kunst|kunst|art|noun|m|kunster||sport|neutral
+n-sang|sang|song|noun|m|sanger||sport|neutral
+n-instrument|instrument|instrument|noun|n|instrumenter||sport|neutral
+n-gitar|gitar|guitar|noun|m|gitarer||sport|neutral
+n-piano|piano|piano|noun|n|pianoer||sport|neutral
+n-stat|stat|state|noun|m|stater||society|formal
+n-regjering|regjering|government|noun|f|regjeringer||society|formal
+n-konge|konge|king|noun|m|konger||society|neutral
+n-dronning|dronning|queen|noun|f|dronninger||society|neutral
+n-president|president|president|noun|m|presidenter||society|formal
+n-minister|minister|minister|noun|m|ministre||society|formal
+n-politiker|politiker|politician|noun|m|politikere||society|neutral
+n-parti|parti|party (political)|noun|n|partier||society|formal
+n-valg|valg|election / choice|noun|n|valg||society|neutral
+n-stemme|stemme|to vote / voice|verb|||stemmer, stemte, stemt|society|neutral
+n-lov|lov|law|noun|f|lover||society|formal
+n-rett|rett|right / court|noun|m|retter||society|formal
+n-rettighet|rettighet|right (legal)|noun|f|rettigheter||society|formal
+n-dom|dom|verdict / judgement|noun|m|dommer||society|formal
+n-dommer|dommer|judge / referee|noun|m|dommere||society|neutral
+n-straff|straff|punishment|noun|m|straffer||society|formal
+n-fengsel|fengsel|prison|noun|n|fengsler||society|neutral
+n-regjere|regjere|to govern|verb|||regjerer, regjerte, regjert|society|formal
+n-forby|forby|to forbid|verb|||forbyr, forbød, forbudt|society|formal
+n-tillate|tillate|to allow|verb|||tillater, tillot, tillatt|society|formal
+n-borger|borger|citizen|noun|m|borgere||society|formal
+n-folk|folk|people|noun|n|folk||society|neutral
+n-samfunn|samfunn|society|noun|n|samfunn||society|formal
+n-kommune|kommune|municipality|noun|m|kommuner||society|neutral
+n-rådhus|rådhus|town hall|noun|n|rådhus||city|neutral
+n-sykehus|sykehus|hospital|noun|n|sykehus||city|neutral
+n-bibliotek-2|folkebibliotek|public library|noun|n|folkebiblioteker||city|neutral
+n-post|post|mail / post|noun|m|||communication|neutral
+n-gate|gate|street|noun|f|gater||city|neutral
+n-vei|vei|road / way|noun|m|veier||city|neutral
+n-plass|plass|square / place|noun|m|plasser||city|neutral
+n-park|park|park|noun|m|parker||city|neutral
+n-torg|torg|market square|noun|n|torg||city|neutral
+n-grense|grense|border / limit|noun|f|grenser||society|neutral
+n-frihet|frihet|freedom|noun|f|friheter||abstract|neutral
+n-makt|makt|power|noun|f|makter||society|formal
+n-fred|fred|peace|noun|m|||society|neutral
+n-krig|krig|war|noun|m|kriger||society|neutral
+n-skatt-2|skattekontor|tax office|noun|n|skattekontorer||society|formal
+n-vitenskap|vitenskap|science|noun|m|vitenskaper||abstract|formal
+n-forskning|forskning|research|noun|f|||abstract|formal
+n-natur|natur|nature|noun|m|||nature|neutral
+n-energi|energi|energy|noun|m|energier||abstract|neutral
+n-kraft|kraft|force / power|noun|f|krefter||abstract|neutral
+n-stoff|stoff|substance / material|noun|n|stoffer||abstract|neutral
+n-system|system|system|noun|n|systemer||abstract|neutral
+n-metode|metode|method|noun|m|metoder||abstract|formal
+n-teori|teori|theory|noun|m|teorier||abstract|formal
+n-ide|idé|idea|noun|m|ideer||abstract|neutral
+n-tanke|tanke|thought|noun|m|tanker||abstract|neutral
+n-mening|mening|opinion / meaning|noun|f|meninger||abstract|neutral
+n-grunn|grunn|reason / ground|noun|m|grunner||abstract|neutral
+n-aarsak|årsak|cause|noun|f|årsaker||abstract|neutral
+n-foelge|følge|consequence / result|noun|m|følger||abstract|neutral
+n-resultat|resultat|result|noun|n|resultater||abstract|neutral
+n-eksempel|eksempel|example|noun|n|eksempler||abstract|neutral
+n-problem|problem|problem|noun|n|problemer||abstract|neutral
+n-loesning|løsning|solution|noun|f|løsninger||abstract|neutral
+n-sak|sak|case / matter|noun|f|saker||abstract|neutral
+n-emne|emne|topic|noun|n|emner||abstract|neutral
+n-form|form|form / shape|noun|f|former||abstract|neutral
+n-mulighet|mulighet|possibility|noun|f|muligheter||abstract|neutral
+n-forskjell|forskjell|difference|noun|m|forskjeller||abstract|neutral
+n-forhold|forhold|relationship / condition|noun|n|forhold||abstract|neutral
+n-situasjon|situasjon|situation|noun|m|situasjoner||abstract|neutral
+n-tilstand|tilstand|state / condition|noun|m|tilstander||abstract|formal
+n-utvikling|utvikling|development|noun|f|utviklinger||abstract|formal
+n-endring|endring|change|noun|f|endringer||abstract|neutral
+n-forandre|forandre|to change|verb|||forandrer, forandret, forandret|abstract|neutral
+n-utvikle|utvikle|to develop|verb|||utvikler, utviklet, utviklet|abstract|formal
+n-skape|skape|to create|verb|||skaper, skapte, skapt|abstract|neutral
+n-finnes|finnes|to exist|verb|||finnes, fantes, funnes|abstract|neutral
+n-bety|bety|to mean|verb|||betyr, betydde, betydd|abstract|neutral
+n-bevise|bevise|to prove|verb|||beviser, beviste, bevist|abstract|formal
+n-undersoeke|undersøke|to investigate|verb|||undersøker, undersøkte, undersøkt|abstract|formal
+n-oppdage|oppdage|to discover|verb|||oppdager, oppdaget, oppdaget|abstract|neutral
+n-velge|velge|to choose|verb|||velger, valgte, valgt|abstract|neutral
+n-bestemme|bestemme|to decide|verb|||bestemmer, bestemte, bestemt|abstract|neutral
+n-passe|passe|to fit / suit|verb|||passer, passet, passet|abstract|neutral
+n-vanlig|vanlig|usual / common|adj||||abstract|neutral
+n-mulig|mulig|possible|adj||||abstract|neutral
+n-umulig|umulig|impossible|adj||||abstract|neutral
+n-sikker|sikker|sure / safe|adj||||abstract|neutral
+n-klar|klar|clear / ready|adj||||abstract|neutral
+n-enkel|enkel|simple|adj||||abstract|neutral
+n-vanskelig-2|komplisert|complicated|adj||||abstract|neutral
+n-offentlig|offentlig|public|adj||||society|formal
+n-privat|privat|private|adj||||society|neutral
+n-politisk|politisk|political|adj||||society|formal
+n-okonomisk|økonomisk|economic|adj||||money|formal
+n-teknisk|teknisk|technical|adj||||technology|neutral
+n-digital|digital|digital|adj||||technology|neutral
+n-moderne|moderne|modern|adj||||abstract|neutral
+n-nyttig|nyttig|useful|adj||||abstract|neutral
+n-felles|felles|common / shared|adj||||society|neutral
+n-ulik|ulik|different|adj||||abstract|neutral
+n-lik|lik|equal / alike|adj||||abstract|neutral
+n-ledig|ledig|free / vacant|adj||||work|neutral
+n-travel|travel|busy|adj||||work|neutral
+n-ferdig|ferdig|finished|adj||||work|neutral

@@ -27,3 +27,6 @@ npm-debug.log*
 
 # Local cruft from sandbox mount (safe to delete)
 .trash/
+
+# Recorded audio: WAV masters stay local; only the small .m4a get committed (for playback later)
+public/audio/**/*.wav

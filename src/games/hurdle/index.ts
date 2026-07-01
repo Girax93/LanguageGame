@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { Hurdle } from './Hurdle';
+import { Hurdle } from './HurdleGame';
 
 /** Wordle-style word speller. Drill a block's words letter by letter. */
 export const hurdleGame: GameModule = {

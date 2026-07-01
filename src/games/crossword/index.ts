@@ -1,5 +1,5 @@
 import type { GameModule } from '../types';
-import { Crossword } from './Crossword';
+import { Crossword } from './CrosswordGame';
 
 /** German vocabulary crossword. Draws from the whole mastered pool (Recap). */
 export const crosswordGame: GameModule = {

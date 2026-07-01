@@ -1,0 +1,387 @@
+n-bli|bli|to become / to stay|verb|||blir, ble, blitt|function|neutral
+n-sette|sette|to set / to put|verb|||setter, satte, satt|function|neutral
+n-legge|legge|to lay / to put|verb|||legger, la, lagt|function|neutral
+n-holde|holde|to hold|verb|||holder, holdt, holdt|function|neutral
+n-staa|stå|to stand|verb|||står, sto, stått|function|neutral
+n-sitte|sitte|to sit|verb|||sitter, satt, sittet|function|neutral
+n-ligge|ligge|to lie / to be located|verb|||ligger, lå, ligget|function|neutral
+n-begynne|begynne|to begin|verb|||begynner, begynte, begynt|function|neutral
+n-slutte|slutte|to stop / to finish|verb|||slutter, sluttet, sluttet|function|neutral
+n-aapne|åpne|to open|verb|||åpner, åpnet, åpnet|function|neutral
+n-lukke|lukke|to close|verb|||lukker, lukket, lukket|function|neutral
+n-klare|klare|to manage / to cope|verb|||klarer, klarte, klart|function|neutral
+n-vise|vise|to show|verb|||viser, viste, vist|function|neutral
+n-miste|miste|to lose|verb|||mister, mistet, mistet|function|neutral
+n-bringe|bringe|to bring|verb|||bringer, brakte, brakt|function|neutral
+n-dra|dra|to go / to pull|verb|||drar, dro, dratt|function|neutral
+n-vente|vente|to wait|verb|||venter, ventet, ventet|function|neutral
+n-falle|falle|to fall|verb|||faller, falt, falt|function|neutral
+n-bruke|bruke|to use|verb|||bruker, brukte, brukt|function|neutral
+n-bygge|bygge|to build|verb|||bygger, bygde, bygd|function|neutral
+n-synes|synes|to think / to seem|verb|||synes, syntes, synes|communication|neutral
+n-tore|tore|to dare|verb|||tør, torde, tort|feelings|neutral
+n-flytte|flytte|to move (relocate)|verb|||flytter, flyttet, flyttet|home|neutral
+n-stoppe|stoppe|to stop|verb|||stopper, stoppet, stoppet|function|neutral
+n-fortsette|fortsette|to continue|verb|||fortsetter, fortsatte, fortsatt|function|neutral
+n-fullfoere|fullføre|to complete|verb|||fullfører, fullførte, fullført|function|neutral
+n-avslutte|avslutte|to end|verb|||avslutter, avsluttet, avsluttet|function|neutral
+n-starte|starte|to start|verb|||starter, startet, startet|function|neutral
+n-gjenta|gjenta|to repeat|verb|||gjentar, gjentok, gjentatt|function|neutral
+n-fange|fange|to catch|verb|||fanger, fanget, fanget|function|neutral
+n-gripe|gripe|to grab|verb|||griper, grep, grepet|function|neutral
+n-slippe|slippe|to release / to drop|verb|||slipper, slapp, sluppet|function|neutral
+n-dytte|dytte|to push|verb|||dytter, dyttet, dyttet|function|colloquial
+n-skyve|skyve|to push / to shove|verb|||skyver, skjøv, skjøvet|function|neutral
+n-trekke|trekke|to pull|verb|||trekker, trakk, trukket|function|neutral
+n-dele|dele|to share / to divide|verb|||deler, delte, delt|function|neutral
+n-samle|samle|to gather / to collect|verb|||samler, samlet, samlet|function|neutral
+n-bytte|bytte|to swap / to change|verb|||bytter, byttet, byttet|function|neutral
+n-endre|endre|to change|verb|||endrer, endret, endret|function|neutral
+n-oeke|øke|to increase|verb|||øker, økte, økt|function|neutral
+n-fylle|fylle|to fill|verb|||fyller, fylte, fylt|function|neutral
+n-oedelegge|ødelegge|to destroy / to break|verb|||ødelegger, ødela, ødelagt|function|neutral
+n-reparere|reparere|to repair|verb|||reparerer, reparerte, reparert|function|neutral
+n-fikse|fikse|to fix|verb|||fikser, fikset, fikset|function|colloquial
+n-boeye|bøye|to bend|verb|||bøyer, bøyde, bøyd|function|neutral
+n-rive|rive|to tear|verb|||river, rev, revet|function|neutral
+n-slaa|slå|to hit / to strike|verb|||slår, slo, slått|function|neutral
+n-sparke|sparke|to kick|verb|||sparker, sparket, sparket|sport|neutral
+n-bere|bære|to carry|verb|||bærer, bar, båret|function|neutral
+n-henge|henge|to hang|verb|||henger, hang, hengt|home|neutral
+n-motta|motta|to receive|verb|||mottar, mottok, mottatt|communication|formal
+n-hente|hente|to fetch / to pick up|verb|||henter, hentet, hentet|function|neutral
+n-levere|levere|to deliver|verb|||leverer, leverte, levert|work|neutral
+n-tilby|tilby|to offer|verb|||tilbyr, tilbød, tilbudt|work|neutral
+n-passe-paa|passe på|to take care / to watch out|verb|||passer på, passet på, passet på|function|colloquial
+n-vokte|vokte|to guard|verb|||vokter, voktet, voktet|function|neutral
+n-beskytte|beskytte|to protect|verb|||beskytter, beskyttet, beskyttet|function|neutral
+n-redde|redde|to save / to rescue|verb|||redder, reddet, reddet|function|neutral
+n-lete|lete|to look for|verb|||leter, lette, lett|function|neutral
+n-kikke|kikke|to peek / to look|verb|||kikker, kikket, kikket|function|colloquial
+n-droemme|drømme|to dream|verb|||drømmer, drømte, drømt|feelings|neutral
+n-foedes|fødes|to be born|verb|||fødes, fødtes, født|health|neutral
+n-hende|hende|to happen|verb|||hender, hendte, hendt|abstract|neutral
+n-foregaa|foregå|to take place|verb|||foregår, foregikk, foregått|abstract|formal
+n-virke|virke|to work / to seem|verb|||virker, virket, virket|function|neutral
+n-fungere|fungere|to function|verb|||fungerer, fungerte, fungert|function|neutral
+n-gjelde|gjelde|to apply / to be valid|verb|||gjelder, gjaldt, gjeldt|abstract|formal
+n-tilhoere|tilhøre|to belong to|verb|||tilhører, tilhørte, tilhørt|abstract|formal
+n-mangle|mangle|to lack|verb|||mangler, manglet, manglet|abstract|neutral
+n-inneholde|inneholde|to contain|verb|||inneholder, inneholdt, inneholdt|abstract|neutral
+n-loese|løse|to solve|verb|||løser, løste, løst|function|neutral
+n-lykkes|lykkes|to succeed|verb|||lykkes, lyktes, lykkes|abstract|neutral
+n-mislykkes|mislykkes|to fail|verb|||mislykkes, mislyktes, mislykkes|abstract|neutral
+n-delta|delta|to participate|verb|||deltar, deltok, deltatt|society|neutral
+n-moetes|møtes|to meet (each other)|verb|||møtes, møttes, møtt|function|neutral
+n-lede|lede|to lead|verb|||leder, ledet, ledet|work|neutral
+n-styre|styre|to control / to steer|verb|||styrer, styrte, styrt|function|neutral
+n-ordne|ordne|to arrange / to sort out|verb|||ordner, ordnet, ordnet|function|neutral
+n-toerke|tørke|to dry / to wipe|verb|||tørker, tørket, tørket|home|neutral
+n-smelte|smelte|to melt|verb|||smelter, smeltet, smeltet|nature|neutral
+n-brenne|brenne|to burn|verb|||brenner, brant, brent|function|neutral
+n-tenne|tenne|to light / to ignite|verb|||tenner, tente, tent|function|neutral
+n-slukke|slukke|to extinguish|verb|||slukker, slukket, slukket|function|neutral
+n-lyse|lyse|to light / to glow|verb|||lyser, lyste, lyst|function|neutral
+n-flyte|flyte|to float|verb|||flyter, fløt, flytt|nature|neutral
+n-synke|synke|to sink|verb|||synker, sank, sunket|nature|neutral
+n-klatre|klatre|to climb|verb|||klatrer, klatret, klatret|sport|neutral
+n-krype|krype|to crawl|verb|||kryper, krøp, krøpet|function|neutral
+n-gli|gli|to slide / to glide|verb|||glir, gled, glidd|function|neutral
+n-snu|snu|to turn|verb|||snur, snudde, snudd|function|neutral
+n-klikke|klikke|to click|verb|||klikker, klikket, klikket|technology|colloquial
+n-laste-ned|laste ned|to download|verb|||laster ned, lastet ned, lastet ned|technology|neutral
+n-lagre|lagre|to save / to store|verb|||lagrer, lagret, lagret|technology|neutral
+n-skru|skru|to screw / to turn|verb|||skrur, skrudde, skrudd|technology|colloquial
+n-skru-paa|skru på|to turn on|verb|||skrur på, skrudde på, skrudd på|technology|colloquial
+n-skru-av|skru av|to turn off|verb|||skrur av, skrudde av, skrudd av|technology|colloquial
+n-fortjene|fortjene|to deserve|verb|||fortjener, fortjente, fortjent|abstract|neutral
+n-skylde|skylde|to owe|verb|||skylder, skyldte, skyldt|money|neutral
+n-unngaa|unngå|to avoid|verb|||unngår, unngikk, unngått|function|neutral
+n-roemme|rømme|to flee / to escape|verb|||rømmer, rømte, rømt|function|neutral
+n-gjemme|gjemme|to hide|verb|||gjemmer, gjemte, gjemt|function|neutral
+n-dukke-opp|dukke opp|to show up|verb|||dukker opp, dukket opp, dukket opp|function|colloquial
+n-forsvinne|forsvinne|to disappear|verb|||forsvinner, forsvant, forsvunnet|function|neutral
+n-komme-tilbake|komme tilbake|to come back|verb|||kommer tilbake, kom tilbake, kommet tilbake|function|colloquial
+n-ankomme|ankomme|to arrive|verb|||ankommer, ankom, ankommet|travel|formal
+n-forlate|forlate|to leave|verb|||forlater, forlot, forlatt|function|neutral
+n-haste|haste|to be urgent|verb|||haster, hastet, hastet|abstract|neutral
+n-skynde-seg|skynde seg|to hurry|verb|||skynder seg, skyndte seg, skyndt seg|function|neutral
+n-utsette|utsette|to postpone|verb|||utsetter, utsatte, utsatt|function|neutral
+n-naerme-seg|nærme seg|to approach|verb|||nærmer seg, nærmet seg, nærmet seg|function|neutral
+n-foreslaa|foreslå|to suggest|verb|||foreslår, foreslo, foreslått|communication|neutral
+n-anbefale|anbefale|to recommend|verb|||anbefaler, anbefalte, anbefalt|communication|neutral
+n-advare|advare|to warn|verb|||advarer, advarte, advart|communication|neutral
+n-true|true|to threaten|verb|||truer, truet, truet|communication|neutral
+n-overtale|overtale|to persuade|verb|||overtaler, overtalte, overtalt|communication|neutral
+n-overbevise|overbevise|to convince|verb|||overbeviser, overbeviste, overbevist|communication|neutral
+n-diskutere|diskutere|to discuss|verb|||diskuterer, diskuterte, diskutert|communication|neutral
+n-gjette|gjette|to guess|verb|||gjetter, gjettet, gjettet|function|colloquial
+n-lure|lure|to wonder / to trick|verb|||lurer, lurte, lurt|function|colloquial
+n-slappe-av|slappe av|to relax|verb|||slapper av, slappet av, slappet av|feelings|colloquial
+n-kose-seg|kose seg|to have a cosy time|verb|||koser seg, koste seg, kost seg|feelings|colloquial
+n-trives|trives|to thrive / to feel at home|verb|||trives, trivdes, trivdes|feelings|neutral
+n-foretrekke|foretrekke|to prefer|verb|||foretrekker, foretrakk, foretrukket|abstract|neutral
+n-rask|rask|fast / quick|adj||||function|neutral
+n-treig|treig|slow|adj||||function|colloquial
+n-hoey|høy|tall / high / loud|adj||||function|neutral
+n-lav|lav|low|adj||||function|neutral
+n-bred|bred|wide / broad|adj||||function|neutral
+n-smal|smal|narrow|adj||||function|neutral
+n-aapen|åpen|open|adj||||function|neutral
+n-lukket|lukket|closed|adj||||function|neutral
+n-full|full|full|adj||||function|neutral
+n-tom|tom|empty|adj||||function|neutral
+n-oedelagt|ødelagt|broken|adj||||function|neutral
+n-knust|knust|shattered|adj||||function|neutral
+n-ekte|ekte|real / genuine|adj||||abstract|neutral
+n-falsk|falsk|false / fake|adj||||abstract|neutral
+n-tydelig|tydelig|clear / distinct|adj||||function|neutral
+n-uklar|uklar|unclear|adj||||function|neutral
+n-uvanlig|uvanlig|unusual|adj||||function|neutral
+n-spesiell|spesiell|special|adj||||abstract|neutral
+n-fri|fri|free|adj||||abstract|neutral
+n-trygg|trygg|safe / secure|adj||||feelings|neutral
+n-farlig|farlig|dangerous|adj||||function|neutral
+n-mektig|mektig|powerful|adj||||society|neutral
+n-svaert|svær|huge|adj||||function|colloquial
+n-enorm|enorm|enormous|adj||||function|neutral
+n-trang|trang|tight / cramped|adj||||function|neutral
+n-loes|løs|loose|adj||||function|neutral
+n-skarp|skarp|sharp|adj||||function|neutral
+n-fersk|fersk|fresh|adj||||food|neutral
+n-vakker-pen|pen|pretty / nice|adj||||abstract|neutral
+n-flott|flott|great / gorgeous|adj||||feelings|colloquial
+n-fantastisk|fantastisk|fantastic|adj||||feelings|neutral
+n-forferdelig|forferdelig|terrible|adj||||feelings|neutral
+n-daarlig|dårlig|bad|adj||||function|neutral
+n-bedre|bedre|better|adj||||function|neutral
+n-best|best|best|adj||||function|neutral
+n-verre|verre|worse|adj||||function|neutral
+n-verst|verst|worst|adj||||function|neutral
+n-dyktig|dyktig|capable|adj||||work|neutral
+n-lur|lur|clever / sly|adj||||abstract|colloquial
+n-gal|gal|crazy / wrong|adj||||feelings|colloquial
+n-rar|rar|strange / weird|adj||||abstract|colloquial
+n-spennende|spennende|exciting|adj||||feelings|neutral
+n-interessant|interessant|interesting|adj||||abstract|neutral
+n-noedvendig|nødvendig|necessary|adj||||abstract|neutral
+n-unoedvendig|unødvendig|unnecessary|adj||||abstract|neutral
+n-sannsynlig|sannsynlig|likely|adj||||abstract|formal
+n-perfekt|perfekt|perfect|adj||||abstract|neutral
+n-feil-adj|feil|wrong|adj||||function|neutral
+n-sann|sann|true|adj||||abstract|neutral
+n-slem|slem|mean / naughty|adj||||feelings|colloquial
+n-uhoeflig|uhøflig|rude|adj||||feelings|neutral
+n-streng|streng|strict|adj||||abstract|neutral
+n-urolig|urolig|restless / anxious|adj||||feelings|neutral
+n-stille|stille|quiet / still|adj||||function|neutral
+n-stoeyende|støyende|noisy|adj||||function|neutral
+n-opptatt|opptatt|busy / occupied|adj||||abstract|neutral
+n-trett|trett|tired|adj||||body|neutral
+n-vaaken|våken|awake|adj||||body|neutral
+n-mett|mett|full (satiated)|adj||||body|neutral
+n-lei|lei|sad / fed up|adj||||feelings|colloquial
+n-spent|spent|excited / tense|adj||||feelings|neutral
+n-varm-blid|blid|cheerful|adj||||feelings|colloquial
+n-naer|nær|near / close|adj||||function|neutral
+n-hoeyre|høyre|right (side)|adj||||function|neutral
+n-venstre|venstre|left (side)|adj||||function|neutral
+n-oeverst|øverst|topmost|adj||||function|neutral
+n-nederst|nederst|bottommost|adj||||function|neutral
+n-neste|neste|next|adj||||time|neutral
+n-forrige|forrige|previous|adj||||time|neutral
+n-siste|siste|last|adj||||time|neutral
+n-tidlig|tidlig|early|adj||||time|neutral
+n-sen|sen|late|adj||||time|neutral
+n-daglig|daglig|daily|adj||||time|neutral
+n-ukentlig|ukentlig|weekly|adj||||time|neutral
+n-aarlig|årlig|yearly|adj||||time|neutral
+n-fast|fast|fixed / firm|adj||||function|neutral
+n-lokal|lokal|local|adj||||society|neutral
+n-egen|egen|own|adj||||abstract|neutral
+n-usikker|usikker|uncertain|adj||||feelings|neutral
+n-snart|snart|soon|adv||||time|neutral
+n-straks|straks|immediately|adv||||time|neutral
+n-ennaa|ennå|still / yet|adv||||time|neutral
+n-allerede|allerede|already|adv||||time|neutral
+n-fortsatt|fortsatt|still|adv||||time|neutral
+n-sikkert|sikkert|surely / probably|adv||||abstract|neutral
+n-nesten|nesten|almost|adv||||abstract|neutral
+n-omtrent|omtrent|approximately|adv||||abstract|neutral
+n-cirka|cirka|about / approximately|adv||||abstract|neutral
+n-ofte|ofte|often|adv||||time|neutral
+n-sjelden|sjelden|rarely|adv||||time|neutral
+n-vanligvis|vanligvis|usually|adv||||time|neutral
+n-stadig|stadig|constantly|adv||||time|neutral
+n-plutselig|plutselig|suddenly|adv||||time|neutral
+n-endelig|endelig|finally|adv||||time|neutral
+n-dessverre|dessverre|unfortunately|adv||||abstract|neutral
+n-heldigvis|heldigvis|fortunately|adv||||abstract|neutral
+n-kanskje-adv|muligens|maybe / possibly|adv||||abstract|neutral
+n-trolig|trolig|probably|adv||||abstract|neutral
+n-absolutt|absolutt|absolutely|adv||||abstract|neutral
+n-virkelig|virkelig|really|adv||||abstract|neutral
+n-egentlig|egentlig|actually|adv||||abstract|neutral
+n-faktisk|faktisk|actually / in fact|adv||||abstract|neutral
+n-kun|kun|only|adv||||abstract|neutral
+n-altfor|altfor|far too|adv||||abstract|neutral
+n-ganske-temmelig|temmelig|fairly / quite|adv||||abstract|neutral
+n-svaert-adv|svært|very|adv||||abstract|neutral
+n-ekstremt|ekstremt|extremely|adv||||abstract|neutral
+n-litt|litt|a little|adv||||abstract|neutral
+n-mest|mest|most|adv||||abstract|neutral
+n-minst|minst|least / at least|adv||||abstract|neutral
+n-mindre|mindre|less|adv||||abstract|neutral
+n-nok|nok|enough|adv||||abstract|neutral
+n-for-mye|formye|too much|adv||||abstract|colloquial
+n-helst|helst|preferably|adv||||abstract|neutral
+n-gjerne|gjerne|gladly / willingly|adv||||abstract|neutral
+n-heller|heller|rather|adv||||abstract|neutral
+n-istedenfor|istedenfor|instead of|adv||||abstract|neutral
+n-isteden|istedet|instead|adv||||abstract|neutral
+n-derfor|derfor|therefore|adv||||function|neutral
+n-likevel|likevel|nevertheless|adv||||function|neutral
+n-altsaa|altså|so / thus|adv||||function|neutral
+n-dessuten|dessuten|besides|adv||||function|neutral
+n-forresten|forresten|by the way|adv||||communication|colloquial
+n-uansett|uansett|regardless|adv||||abstract|neutral
+n-tvert-imot|tvertimot|on the contrary|adv||||abstract|neutral
+n-nemlig|nemlig|namely / you see|adv||||communication|neutral
+n-jo|jo|surely / after all|adv||||communication|colloquial
+n-da|da|then / when|adv||||time|neutral
+n-tidligere|tidligere|earlier / previously|adv||||time|neutral
+n-senere|senere|later|adv||||time|neutral
+n-etterpaa|etterpå|afterwards|adv||||time|neutral
+n-foerst-adv|først|first / not until|adv||||time|neutral
+n-samtidig|samtidig|at the same time|adv||||time|neutral
+n-snarest|snarest|as soon as possible|adv||||time|neutral
+n-overalt|overalt|everywhere|adv||||function|neutral
+n-hjemover|hjemover|homeward|adv||||function|colloquial
+n-frem|fram|forward|adv||||function|neutral
+n-tilbake|tilbake|back|adv||||function|neutral
+n-opp|opp|up|adv||||function|neutral
+n-ned|ned|down|adv||||function|neutral
+n-bort|bort|away|adv||||function|neutral
+n-hit|hit|here (to here)|adv||||function|neutral
+n-dit|dit|there (to there)|adv||||function|neutral
+n-rundt-adv|omkring|around|adv||||function|neutral
+n-fremover|fremover|forwards|adv||||function|neutral
+n-bakover|bakover|backwards|adv||||function|neutral
+n-oppover|oppover|upwards|adv||||function|neutral
+n-nedover|nedover|downwards|adv||||function|neutral
+n-innover|innover|inwards|adv||||function|neutral
+n-utover|utover|outwards|adv||||function|neutral
+n-hvordan-adv|slik|like this / such|adv||||function|neutral
+n-knapt|knapt|hardly|adv||||abstract|neutral
+n-neppe|neppe|hardly / unlikely|adv||||abstract|neutral
+n-overhodet|overhodet|at all|adv||||abstract|neutral
+n-utelukkende|utelukkende|exclusively|adv||||abstract|formal
+n-spesielt|spesielt|especially|adv||||abstract|neutral
+n-saerlig|særlig|particularly|adv||||abstract|neutral
+n-hovedsakelig|hovedsakelig|mainly|adv||||abstract|formal
+n-blant-annet|blantannet|among other things|adv||||abstract|neutral
+n-for-eksempel|foreksempel|for example|adv||||abstract|neutral
+n-totalt|totalt|totally|adv||||abstract|neutral
+n-delvis|delvis|partly|adv||||abstract|neutral
+n-helt-adv|fullstendig|completely|adv||||abstract|neutral
+n-godt|godt|well|adv||||abstract|neutral
+n-vel|vel|well / probably|adv||||abstract|colloquial
+n-under|under|under / below|prep||||function|neutral
+n-over-prep|over|over / above|prep||||function|neutral
+n-mellom|mellom|between|prep||||function|neutral
+n-bak|bak|behind|prep||||function|neutral
+n-foran|foran|in front of|prep||||function|neutral
+n-ved|ved|by / at|prep||||function|neutral
+n-uten|uten|without|prep||||function|neutral
+n-gjennom|gjennom|through|prep||||function|neutral
+n-rundt-prep|rundt|around|prep||||function|neutral
+n-langs|langs|along|prep||||function|neutral
+n-blant|blant|among|prep||||function|neutral
+n-hos|hos|at (someone's)|prep||||function|neutral
+n-etter|etter|after|prep||||function|neutral
+n-foer|før|before|prep||||function|neutral
+n-siden|siden|since / because|prep||||function|neutral
+n-innen|innen|within / by|prep||||function|neutral
+n-innenfor|innenfor|inside|prep||||function|neutral
+n-utenfor|utenfor|outside|prep||||function|neutral
+n-ifoelge|ifølge|according to|prep||||function|neutral
+n-per|per|per|prep||||function|neutral
+n-via|via|via|prep||||function|neutral
+n-samt|samt|as well as|conj||||function|formal
+n-derfor-konj|saa|so / then|conj||||function|neutral
+n-likevel-konj|dog|however / yet|conj||||function|formal
+n-mens|mens|while|conj||||function|neutral
+n-selv-om|selvom|even though|conj||||function|neutral
+n-enten|enten|either|conj||||function|neutral
+n-verken|verken|neither|conj||||function|neutral
+n-hverken|hverken|neither|conj||||function|neutral
+n-baade|både|both|conj||||function|neutral
+n-fordi-konj|ettersom|since / as|conj||||function|neutral
+n-dersom|dersom|if|conj||||function|neutral
+n-med-mindre|medmindre|unless|conj||||function|neutral
+n-foer-konj|inntil|until|conj||||function|neutral
+n-naar-konj|idet|as / just as|conj||||function|formal
+n-slik-at|slikat|so that|conj||||function|neutral
+n-for-at|forat|in order that|conj||||function|neutral
+n-enn|enn|than|conj||||function|neutral
+n-denne|denne|this (m/f)|pron||||function|neutral
+n-dette|dette|this (n)|pron||||function|neutral
+n-disse|disse|these|pron||||function|neutral
+n-den-der|hin|that (yonder)|pron||||function|formal
+n-noen|noen|some / someone|pron||||function|neutral
+n-noe|noe|something|pron||||function|neutral
+n-ingen|ingen|no one / none|pron||||function|neutral
+n-intet|intet|nothing|pron||||function|formal
+n-ingenting|ingenting|nothing|pron||||function|neutral
+n-alle|alle|all / everyone|pron||||function|neutral
+n-alt|alt|everything|pron||||function|neutral
+n-all|all|all|pron||||function|neutral
+n-hver|hver|each / every|pron||||function|neutral
+n-enhver|enhver|anyone / each|pron||||function|formal
+n-mange|mange|many|pron||||function|neutral
+n-flere|flere|several / more|pron||||function|neutral
+n-begge|begge|both|pron||||function|neutral
+n-de-fleste|defleste|most (people)|pron||||function|neutral
+n-samme|samme|same|pron||||function|neutral
+n-selv|selv|self / oneself|pron||||function|neutral
+n-hverandre|hverandre|each other|pron||||function|neutral
+n-min|min|my / mine|pron||||function|neutral
+n-din|din|your / yours|pron||||function|neutral
+n-sin|sin|his / her / its (own)|pron||||function|neutral
+n-deres|deres|their / your (pl)|pron||||function|neutral
+n-hans|hans|his|pron||||function|neutral
+n-hennes|hennes|her / hers|pron||||function|neutral
+n-man|man|one (impersonal)|pron||||function|neutral
+n-dem|dem|them|pron||||function|neutral
+n-oss|oss|us|pron||||function|neutral
+n-dere|dere|you (pl)|pron||||function|neutral
+n-hvilken|hvilken|which (m/f)|pron||||function|neutral
+n-hvilket|hvilket|which (n)|pron||||function|neutral
+n-hvilke|hvilke|which (pl)|pron||||function|neutral
+n-hva-slags|hvaslags|what kind of|pron||||function|colloquial
+n-hvem-som|hvemsomhelst|anyone|pron||||function|colloquial
+n-annen|annen|other / another|pron||||function|neutral
+n-bevege|bevege|to move|verb|||beveger, beveget, beveget|function|neutral
+n-binde|binde|to tie / to bind|verb|||binder, bandt, bundet|function|neutral
+n-feste|feste|to attach / to fasten|verb|||fester, festet, festet|function|neutral
+n-blande|blande|to mix|verb|||blander, blandet, blandet|function|neutral
+n-skille|skille|to separate|verb|||skiller, skilte, skilt|function|neutral
+n-skaffe|skaffe|to obtain / to provide|verb|||skaffer, skaffet, skaffet|function|neutral
+n-riste|riste|to shake|verb|||rister, ristet, ristet|function|neutral
+n-banke|banke|to knock|verb|||banker, banket, banket|function|neutral
+n-spre|spre|to spread|verb|||sprer, spredte, spredt|function|neutral
+n-knytte|knytte|to tie / to knot|verb|||knytter, knyttet, knyttet|function|neutral
+n-orke|orke|to manage / to be bothered|verb|||orker, orket, orket|feelings|colloquial
+n-skjule|skjule|to conceal|verb|||skjuler, skjulte, skjult|function|neutral
+n-jage|jage|to chase|verb|||jager, jaget, jaget|function|neutral
+n-flykte|flykte|to flee|verb|||flykter, flyktet, flyktet|function|neutral
+n-godta|godta|to accept|verb|||godtar, godtok, godtatt|function|neutral
+n-anta|anta|to assume|verb|||antar, antok, antatt|abstract|neutral
+n-tvile|tvile|to doubt|verb|||tviler, tvilte, tvilt|feelings|neutral
+n-vende|vende|to turn|verb|||vender, vendte, vendt|function|neutral
+n-stikke|stikke|to stab / to poke|verb|||stikker, stakk, stukket|function|neutral
+n-knuse|knuse|to smash|verb|||knuser, knuste, knust|function|neutral
+n-fuktig|fuktig|damp / humid|adj||||weather|neutral
+n-fjern|fjern|distant / far|adj||||function|neutral
+n-evig|evig|eternal|adj||||abstract|neutral
+n-skjoer|skjør|fragile|adj||||function|neutral

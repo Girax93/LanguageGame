@@ -1,0 +1,796 @@
+Det er ikke en mann.	||	That is not a man.
+Du er god.	||	You are good.
+Jeg er her.	||	I am here.
+Han er stor og hun er fin.	||	He is big and she is fine.
+Ei jente er der.	||	A girl is there.
+Et hus er fint.	||	A house is fine.
+Det er en gammel venn.	||	That is an old friend.
+Et barn går.	||	A child walks.
+Han er ny og hun er ny.	||	He is new and she is new.
+Han har det.	||	He has it.
+En kvinne kommer.	||	A woman comes.
+Han er glad og hun er liten.	||	He is happy and she is small.
+Et barn ser det.	||	A child sees it.
+Det er en dag.	||	That is a day.
+Han sier det.	||	He says it.
+Ei mor er stor.	||	A mother is big.
+En far snakker.	||	A father talks.
+Det er en ting.	||	That is a thing.
+Det er ei vakker bok.	||	That is a beautiful book.
+En gutt tar det.	||	A boy takes it.
+Hvem er det?	||	Who is that?
+En kvinne vet det.	||	A woman knows it.
+En by er varm.	||	A city is warm.
+Det er et sterkt land.	||	That is a strong country.
+Han liker det.	||	He likes it.
+Han hører det.	||	He hears it.
+Han er kald og hun er lang.	||	He is cold and she is long.
+Han finner det.	||	He finds it.
+Det er et år.	||	That is a year.
+Et vann er stort.	||	A water is big.
+Han trenger det.	||	He needs it.
+Det er ei natt.	||	That is a night.
+Et barn elsker det.	||	A child loves it.
+Det er ei tid.	||	That is a time.
+Han er snill og hun er snill.	||	He is kind and she is kind.
+Det er et navn.	||	That is a name.
+Det er bare et liv.	||	That is only a life.
+Det er veldig stort.	||	That is very big.
+Et øye er varmt.	||	An eye is warm.
+En hund spiser det.	||	A dog eats it.
+En katt drikker det.	||	A cat drinks it.
+Det er ei hånd.	||	That is a hand.
+Det er en verden.	||	That is a world.
+Det er et fint bord.	||	That is a fine table.
+Det er et hjem.	||	That is a home.
+Det er ei ny dør.	||	That is a new door.
+Et barn er ute.	||	A child is outside.
+Ei jente er inne.	||	A girl is inside.
+Det er ganske vanskelig.	||	That is quite difficult.
+En hund er borte.	||	A dog is away.
+Det er lett.	||	That is easy.
+Han er hjemme.	||	He is at home.
+Et folk ler.	||	A people laughs.
+En person gråter.	||	A person cries.
+Et menneske smiler.	||	A human being smiles.
+En kropp er god.	||	A body is good.
+En bror hater det.	||	A brother hates it.
+En bestefar er varm.	||	A grandfather is warm.
+En sønn sier det.	||	A son says it.
+Det er ei søster.	||	That is a sister.
+Ei kusine forstår det.	||	A female cousin understands it.
+Det er en lang fetter.	||	That is a long male cousin.
+En nevø sier det.	||	A nephew says it.
+Det er ei niese.	||	That is a niece.
+En baby er lang.	||	A baby is long.
+En tvilling er hjemme.	||	A twin is at home.
+Det er en pappa.	||	That is a dad.
+Ei mamma er fin.	||	A mum is fine.
+Er det ei svigermor?	||	Is that a mother-in-law?
+En forlovede er fin.	||	A fiancé is fine.
+Ei kone er her.	||	A wife is here.
+Det er en ektemann.	||	That is a husband.
+Han kjenner det.	||	He knows it.
+Ei slekt hjelper det.	||	A family helps it.
+En svigerfar er lang.	||	A father-in-law is long.
+Det er et fint ekteskap.	||	That is a fine marriage.
+En tenåring er fin.	||	A teenager is fine.
+Det er en fødsel.	||	That is a birth.
+En voksen er kald.	||	An adult is cold.
+Ei enke er inne.	||	A widow is inside.
+En herre er her.	||	A gentleman is here.
+Ei dame lever.	||	A lady lives.
+En fyr er fin.	||	A guy is fine.
+Det er en gjeng.	||	That is a gang.
+Det er en nabo.	||	That is a neighbour.
+En bekjent sover.	||	An acquaintance sleeps.
+Et medlem er sterkt.	||	A member is strong.
+En kjenning er borte.	||	An acquaintance is away.
+En leder er god.	||	A leader is good.
+Det er ei gammel dronning.	||	That is an old queen.
+En konge er hjemme.	||	A king is at home.
+Det er en varm sjef.	||	That is a warm boss.
+Han er frisk og hun er sliten.	||	He is healthy and she is exhausted.
+Han er syk og hun er syk.	||	He is sick and she is sick.
+Han er trøtt og hun er trøtt.	||	He is tired and she is tired.
+Ei prinsesse er varm.	||	A princess is warm.
+Han er tørst og hun er sint.	||	He is thirsty and she is angry.
+Han er sulten og hun er redd.	||	He is hungry and she is afraid.
+Det er et varmt publikum.	||	That is a warm audience.
+Et lag er her.	||	A team is here.
+Han er stolt og hun er stolt.	||	He is proud and she is proud.
+Det er ei panne.	||	That is a forehead.
+Det er et gammelt ansikt.	||	That is an old face.
+Et individ tar det.	||	An individual takes it.
+Han er nervøs og hun er sjenert.	||	He is nervous and she is shy.
+Det er ei sterk tunge.	||	That is a strong tongue.
+Et kinn er godt.	||	A cheek is good.
+Det er ei kald tann.	||	That is a cold tooth.
+Han er ensom og hun er forelsket.	||	He is lonely and she is in love.
+Det er en kald hals.	||	That is a cold neck.
+Det er en arm.	||	That is an arm.
+Det er en varm nakke.	||	That is a warm nape.
+Han er vennlig og hun er grei.	||	He is friendly and she is nice.
+Det er en fin mage.	||	That is a fine stomach.
+Det er en tommel.	||	That is a thumb.
+Det er en liten finger.	||	That is a small finger.
+Han er ærlig og hun er smart.	||	He is honest and she is smart.
+En rygg er sterk.	||	A back is strong.
+Det er et vakkert lår.	||	That is a beautiful thigh.
+Ei hofte er liten.	||	A hip is small.
+Han er dum og hun er dum.	||	He is stupid and she is stupid.
+Ei hud er varm.	||	A skin is warm.
+Det er et hjerte.	||	That is a heart.
+Det er et gammelt blod.	||	That is an old blood.
+Ei lunge er liten.	||	A lung is small.
+Er det en hjerne?	||	Is that a brain?
+Et skjelett er nytt.	||	A skeleton is new.
+Det er en knokkel.	||	That is a bone.
+Han er gift og hun er gift.	||	He is married and she is married.
+Ei stemme er kald.	||	A voice is cold.
+Det er et lite fang.	||	That is a small lap.
+Det er en smerte.	||	That is a pain.
+Det er en hoste.	||	That is a cough.
+En fetter glemmer det.	||	A male cousin forgets it.
+Det er et sår.	||	That is a wound.
+Ei dame husker det.	||	A lady remembers it.
+Det er et lite blåmerke.	||	That is a small bruise.
+Det er en allergi.	||	That is an allergy.
+Det er en medisin.	||	That is a medicine.
+Det er en skade.	||	That is an injury.
+Det er en operasjon.	||	That is an operation.
+Det er et plaster.	||	That is a plaster.
+Det er en vaksine.	||	That is a vaccine.
+Det er ei sprøyte.	||	That is an injection.
+Det er en bakterie.	||	That is a bacterium.
+Det er en diagnose.	||	That is a diagnosis.
+Det er et symptom.	||	That is a symptom.
+Det er et virus.	||	That is a virus.
+En lege er her.	||	A doctor is here.
+En sykepleier er liten.	||	A nurse is small.
+En pasient tenker.	||	A patient thinks.
+Det er et sykehus.	||	That is a hospital.
+Han er modig og hun er modig.	||	He is brave and she is brave.
+Et kosthold er fint.	||	A diet is fine.
+Det er en ambulanse.	||	That is an ambulance.
+En psykolog er hjemme.	||	A psychologist is at home.
+Han er flink og hun er flink.	||	He is skilled and she is skilled.
+Han er lat og hun er lat.	||	He is lazy and she is lazy.
+En søvn er liten.	||	A sleep is small.
+Det er en kjærlighet.	||	That is a love.
+Det er ei sorg.	||	That is a grief.
+Det er en angst.	||	That is an anxiety.
+Det er en redsel.	||	That is a terror.
+Det er ei lykke.	||	That is a happiness.
+Han er svak og hun er svak.	||	He is weak and she is weak.
+Det er et raseri.	||	That is a rage.
+Det er en sjalusi.	||	That is a jealousy.
+Det er en misunnelse.	||	That is an envy.
+Han er stygg og hun er stygg.	||	He is ugly and she is ugly.
+Det er et savn.	||	That is a sense of loss.
+Det er en trygghet.	||	That is a safety.
+Det er en stolthet.	||	That is a pride.
+Det er et humør.	||	That is a mood.
+Det er en ensomhet.	||	That is a loneliness.
+Det er en tristhet.	||	That is a sadness.
+Det er et stress.	||	That is a stress.
+Det er ei ro.	||	That is a calm.
+Han lager det.	||	He makes it.
+Det er en skuffelse.	||	That is a disappointment.
+Det er en lettelse.	||	That is a relief.
+Det er et mot.	||	That is a courage.
+Det er en svak latter.	||	That is a weak laughter.
+Det er en respekt.	||	That is a respect.
+Det er en takknemlighet.	||	That is a gratitude.
+Det er en varm gråt.	||	That is a warm crying.
+Ei tåre er ny.	||	A tear is new.
+Det er en tanke.	||	That is a thought.
+En klem er god.	||	A hug is good.
+En personlighet kommer.	||	A personality comes.
+Det er en drøm.	||	That is a dream.
+Det er en god karakter.	||	That is a good character.
+Det er et minne.	||	That is a memory.
+Det er en oppførsel.	||	That is a behaviour.
+Det er en vilje.	||	That is a will.
+Det er en ærlighet.	||	That is a honesty.
+Det er en tålmodighet.	||	That is a patience.
+Han er blå og hun er blå.	||	He is blue and she is blue.
+Han er grønn og hun er svart.	||	He is green and she is black.
+Han er gul og hun er rød.	||	He is yellow and she is red.
+Det er en vennlighet.	||	That is a kindness.
+Han er hvit og hun er hvit.	||	He is white and she is white.
+Det er en beskjed.	||	That is a message.
+Det er ei melding.	||	That is a message.
+Det er et spørsmål.	||	That is a question.
+Det er ei historie.	||	That is a story.
+Det er ei fortelling.	||	That is a tale.
+Det er et råd.	||	That is an advice.
+Det er ei løgn.	||	That is a lie.
+Det er ei forklaring.	||	That is an explanation.
+Det er en diskusjon.	||	That is a discussion.
+Det er en krangel.	||	That is a quarrel.
+Det er et løfte.	||	That is a promise.
+Det er en stavelse.	||	That is a syllable.
+Det er et tegn.	||	That is a sign.
+Det er en hilsen.	||	That is a greeting.
+Det er ei setning.	||	That is a sentence.
+Det er en oversettelse.	||	That is a translation.
+Det er ei blå ordbok.	||	That is a blue dictionary.
+Det er en dialekt.	||	That is a dialect.
+Det er klart.	||	That is clear.
+Et forhold er blått.	||	A relationship is blue.
+Det er et tema.	||	That is a topic.
+Det er et brev.	||	That is a letter.
+Det er en telefon.	||	That is a telephone.
+Han er ren og hun er ren.	||	He is clean and she is clean.
+Han er tung og hun er tung.	||	He is heavy and she is heavy.
+Det er et selskap.	||	That is a party.
+Det er en invitasjon.	||	That is an invitation.
+Det er ei plikt.	||	That is a duty.
+Et medlem kjøper det.	||	A member buys it.
+Det er en kultur.	||	That is a culture.
+Det er ei feiring.	||	That is a celebration.
+Det er en konflikt.	||	That is a conflict.
+Det er ei makt.	||	That is a power.
+Det er ei enighet.	||	That is an agreement.
+Det er et ansvar.	||	That is a responsibility.
+Et folkeslag leser det.	||	An ethnic group reads it.
+Det er en rød generasjon.	||	That is a red generation.
+Det er en sladder.	||	That is a gossip.
+Det er et rykte.	||	That is a rumour.
+En kollega er der.	||	A colleague is there.
+En arbeider skriver det.	||	A worker writes it.
+Det er ei gul rolle.	||	That is a yellow role.
+En klasse er varm.	||	A class is warm.
+Det er et svart politi.	||	That is a black police.
+En baker er fin.	||	A baker is fine.
+Det er en stygg lærer.	||	That is an ugly teacher.
+En bonde er stygg.	||	A farmer is ugly.
+En soldat drikker det.	||	A soldier drinks it.
+En kokk er ren.	||	A cook is clean.
+En forfatter glemmer det.	||	An author forgets it.
+Det er en kunstner.	||	That is an artist.
+Det er en frisør.	||	That is a hairdresser.
+En selger er blå.	||	A salesperson is blue.
+Er det en sjåfør?	||	Is that a driver?
+En skuespiller er der.	||	An actor is there.
+Ei lukt er god.	||	A smell is good.
+En ingeniør er inne.	||	An engineer is inside.
+Det er en snekker.	||	That is a carpenter.
+En advokat er kald.	||	A lawyer is cold.
+Det er en vakker sans.	||	That is a beautiful sense.
+En smak er fin.	||	A taste is fine.
+Det er en svart lyd.	||	That is a black sound.
+Det er en stillhet.	||	That is a silence.
+Det er ei ren berøring.	||	That is a clean touch.
+Et blikk er langt.	||	A gaze is long.
+Det er et grønt inntrykk.	||	That is a green impression.
+Et utseende er gult.	||	An appearance is yellow.
+Det er en humor.	||	That is a humour.
+En pleier er ren.	||	A carer is clean.
+Det er et helsevesen.	||	That is a health service.
+Det er en vits.	||	That is a joke.
+En identitet jobber.	||	An identity works.
+En alderdom er hvit.	||	An old age is white.
+Det er en stygg barndom.	||	That is an ugly childhood.
+En oppvekst er inne.	||	An upbringing is inside.
+Det er et kjønn.	||	That is a sex.
+Det er et stygt kallenavn.	||	That is an ugly nickname.
+Det er et etternavn.	||	That is a surname.
+Det er et varmt fornavn.	||	That is a warm first name.
+Det er en omtanke.	||	That is a consideration.
+Det er en medynk.	||	That is a pity.
+Det er ei omsorg.	||	That is a care.
+Det er ei forventning.	||	That is an expectation.
+Han er rik og hun er rik.	||	He is rich and she is rich.
+Han er billig og hun er billig.	||	He is cheap and she is cheap.
+Det er en nysgjerrighet.	||	That is a curiosity.
+Det er en iver.	||	That is an eagerness.
+En knoke er stygg.	||	A knuckle is ugly.
+Det er et billig håndledd.	||	That is a cheap wrist.
+Det er en tvil.	||	That is a doubt.
+Et øyelokk er blått.	||	An eyelid is blue.
+En navle er gul.	||	A navel is yellow.
+Han svømmer.	||	He swims.
+Ei øyevippe er hvit.	||	An eyelash is white.
+Det er en liten kjeve.	||	That is a small jaw.
+Det er en billig såle.	||	That is a cheap sole.
+Det er et organ.	||	That is an organ.
+Det er ei sterk lever.	||	That is a strong liver.
+Han løper.	||	He runs.
+Det er ei fin celle.	||	That is a fine cell.
+Det er en tarm.	||	That is an intestine.
+Det er et billig skjegg.	||	That is a cheap beard.
+Han danser.	||	He dances.
+En fødselsdag er hvit.	||	A birthday is white.
+En forelder er ute.	||	A parent is outside.
+Det er en liten arving.	||	That is a small heir.
+Et stamtre er inne.	||	A family tree is inside.
+Det er en kald stefar.	||	That is a cold stepfather.
+Det er ei svigerinne.	||	That is a sister-in-law.
+Det er et langt barnebarn.	||	That is a long grandchild.
+Ei stemor elsker det.	||	A stepmother loves it.
+Ei venninne er hjemme.	||	A female friend is at home.
+Det er en kamerat.	||	That is a mate.
+En rival er lang.	||	A rival is long.
+En fiende er inne.	||	An enemy is inside.
+Det er et svakt offer.	||	That is a weak victim.
+Et vitne er der.	||	A witness is there.
+En eier er gammel.	||	An owner is old.
+Det er en grusomhet.	||	That is a cruelty.
+Han er sikker og hun er sikker.	||	He is sure and she is sure.
+Det er en feighet.	||	That is a cowardice.
+Det er en flid.	||	That is a diligence.
+Det er en latskap.	||	That is a laziness.
+Det er et vink.	||	That is a wave.
+Ei hvisking er gul.	||	A whispering is yellow.
+Det er et langt nikk.	||	That is a long nod.
+Et rop er tungt.	||	A shout is heavy.
+Det er en debatt.	||	That is a debate.
+Et foredrag er blått.	||	A lecture is blue.
+Det er en kritikk.	||	That is a criticism.
+Det er et kjælenavn.	||	That is a pet name.
+Det er et ferdig rom.	||	That is a finished room.
+Det er ei unnskyldning.	||	That is an apology.
+Det er en gammel hæl.	||	That is an old heel.
+Det er en kompliment.	||	That is a compliment.
+Et soverom er gammelt.	||	A bedroom is old.
+Det er ei gammel stue.	||	That is an old living room.
+En vegg er blå.	||	A wall is blue.
+Det er et bad.	||	That is a bathroom.
+Det er et langt skap.	||	That is a long cupboard.
+Han ligger.	||	He lies.
+Ei trapp er fin.	||	A stairs is fine.
+Det er ei stygg hylle.	||	That is an ugly shelf.
+Det er ei pute.	||	That is a pillow.
+Det er ei liten lampe.	||	That is a small lamp.
+Ei dyne er blå.	||	A duvet is blue.
+Det er et gammelt speil.	||	That is an old mirror.
+Det er et gjerde.	||	That is a fence.
+En port er liten.	||	A gate is small.
+Det er en grønn hage.	||	That is a green garden.
+Det er et vær.	||	That is a weather.
+En kjeller er lang.	||	A basement is long.
+Det er et rent loft.	||	That is a clean attic.
+Ei leilighet er gul.	||	An apartment is yellow.
+Han bruker det.	||	He uses it.
+Et møbel er grønt.	||	A furniture is green.
+Det er en ovn.	||	That is an oven.
+Det er et godt kjøleskap.	||	That is a good fridge.
+Det er en fryser.	||	That is a freezer.
+Det er en gul kopp.	||	That is a yellow cup.
+Det er en kjele.	||	That is a kettle.
+Det er ei blå gryte.	||	That is a blue pot.
+En tallerken er lang.	||	A plate is long.
+Det er ei flaske.	||	That is a bottle.
+Et glass er gult.	||	A glass is yellow.
+Det er en gaffel.	||	That is a fork.
+Ei skje er gammel.	||	A spoon is old.
+Det er et kaldt spann.	||	That is a cold bucket.
+En kost er svak.	||	A broom is weak.
+Det er ei sterk bøtte.	||	That is a strong bucket.
+En boks er lang.	||	A can is long.
+Det er et kaldt do.	||	That is a cold toilet.
+Et toalett er svart.	||	A toilet is black.
+Det er et håndkle.	||	That is a towel.
+En klut er ferdig.	||	A cloth is finished.
+Det er en dusj.	||	That is a shower.
+Det er et tungt lys.	||	That is a heavy light.
+Ei fyrstikk er gul.	||	A match is yellow.
+Det er ei klokke.	||	That is a clock.
+Det er et brød.	||	That is a bread.
+Det er et blått egg.	||	That is a blue egg.
+Ei melk er kald.	||	A milk is cold.
+Det er en sterk ost.	||	That is a strong cheese.
+Et kjøtt er fint.	||	A meat is fine.
+Det er ei suppe.	||	That is a soup.
+Det er ei god pølse.	||	That is a good sausage.
+Det er ei skinke.	||	That is a ham.
+Det er en blå salat.	||	That is a blue salad.
+Det er en potet.	||	That is a potato.
+En pasta er svak.	||	A pasta is weak.
+Det er en løk.	||	That is an onion.
+Et eple er billig.	||	An apple is cheap.
+Det er en tomat.	||	That is a tomato.
+Det er ei svak gulrot.	||	That is a weak carrot.
+En appelsin er gammel.	||	An orange is old.
+Det er ei liten grønnsak.	||	That is a small vegetable.
+Ei drue er lang.	||	A grape is long.
+Det er ei pære.	||	That is a pear.
+Det er ei blå frukt.	||	That is a blue fruit.
+Det er et hvitt mel.	||	That is a white flour.
+Et salt er svart.	||	A salt is black.
+Det er et sukker.	||	That is a sugar.
+Ei olje er vakker.	||	An oil is beautiful.
+Det er et syltetøy.	||	That is a jam.
+Det er en svak kjeks.	||	That is a weak biscuit.
+Det er en is.	||	That is an ice cream.
+Ei kake er rik.	||	A cake is rich.
+En vin er fin.	||	A wine is fine.
+Det er et øl.	||	That is a beer.
+Det er en sikker kaffe.	||	That is a sure coffee.
+En juice er hvit.	||	A juice is white.
+Et måltid er tungt.	||	A meal is heavy.
+Det er en rød middag.	||	That is a red dinner.
+En frokost er fin.	||	A breakfast is fine.
+Det er ei varm saft.	||	That is a warm juice.
+Det er ei oppskrift.	||	That is a recipe.
+Det er en tung laks.	||	That is a heavy salmon.
+Ei sild er stor.	||	A herring is big.
+Det er ei nøtt.	||	That is a nut.
+Det er ei jakke.	||	That is a jacket.
+Det er en kjole.	||	That is a dress.
+Det er ei skjorte.	||	That is a shirt.
+Det er et skjørt.	||	That is a skirt.
+Det er en sko.	||	That is a shoe.
+Det er en støvel.	||	That is a boot.
+Det er ei strømpe.	||	That is a stocking.
+Det er en sokk.	||	That is a sock.
+Det er ei lue.	||	That is a cap.
+Det er et skjerf.	||	That is a scarf.
+Det er en hanske.	||	That is a glove.
+Det er en hatt.	||	That is a hat.
+Det er ei badedrakt.	||	That is a swimsuit.
+Det er et undertøy.	||	That is an underwear.
+Det er en dress.	||	That is a suit.
+Det er en pyjamas.	||	That is a pyjamas.
+Det er en stygg koffert.	||	That is an ugly suitcase.
+Det er ei lomme.	||	That is a pocket.
+Det er en knapp.	||	That is a button.
+Det er ei veske.	||	That is a bag.
+Det er en ring.	||	That is a ring.
+Det er et stoff.	||	That is a fabric.
+Det er en paraply.	||	That is an umbrella.
+Det er ei ull.	||	That is a wool.
+Det er ei bomull.	||	That is a cotton.
+Det er en silke.	||	That is a silk.
+Det er et lær.	||	That is a leather.
+Det er et jern.	||	That is an iron.
+Det er et sølv.	||	That is a silver.
+Det er et gull.	||	That is a gold.
+Det er en gummi.	||	That is a rubber.
+Det er en plast.	||	That is a plastic.
+Ei leire er tom.	||	A clay is empty.
+Det er en full stein.	||	That is a full stone.
+Det er en papp.	||	That is a cardboard.
+Det er en rik sand.	||	That is a rich sand.
+Det er et tau.	||	That is a rope.
+Det er ei snor.	||	That is a string.
+Det er en tråd.	||	That is a thread.
+Det er en mur.	||	That is a brick wall.
+Han er fri og hun er fri.	||	He is free and she is free.
+Det er en hammer.	||	That is a hammer.
+Det er ei sag.	||	That is a saw.
+Det er en stige.	||	That is a ladder.
+Det er ei ku.	||	That is a cow.
+En gris er der.	||	A pig is there.
+Det er en god hest.	||	That is a good horse.
+Et dyr er borte.	||	An animal is away.
+Han er pen og hun er pen.	||	He is pretty and she is pretty.
+Ei geit er sterk.	||	A goat is strong.
+Det er ei vakker gås.	||	That is a beautiful goose.
+Ei and er rød.	||	A duck is red.
+Det er en dårlig rev.	||	That is a bad fox.
+Det er ei mus.	||	That is a mouse.
+Det er en kald ulv.	||	That is a cold wolf.
+Det er en bjørn.	||	That is a bear.
+Det er et reinsdyr.	||	That is a reindeer.
+En elg er ute.	||	A moose is outside.
+En hare er liten.	||	A hare is small.
+Det er en hvit hjort.	||	That is a white deer.
+Ei løve er ute.	||	A lion is outside.
+Det er en elefant.	||	That is an elephant.
+Et pinnsvin gråter.	||	A hedgehog cries.
+Det er en fugl.	||	That is a bird.
+En spurv er gammel.	||	A sparrow is old.
+Det er ei ugle.	||	That is an owl.
+Det er ei vakker måke.	||	That is a beautiful seagull.
+Det er ei ørn.	||	That is an eagle.
+Et insekt ler.	||	An insect laughs.
+Det er ei flue.	||	That is a fly.
+En slange er sikker.	||	A snake is sure.
+Det er en varm orm.	||	That is a warm snake.
+Det er en stygg edderkopp.	||	That is an ugly spider.
+Det er en sommerfugl.	||	That is a butterfly.
+Det er en ferdig veps.	||	That is a finished wasp.
+Det er en mygg.	||	That is a mosquito.
+Han er våken og hun er våken.	||	He is awake and she is awake.
+Det er en fri hval.	||	That is a free whale.
+En vinge er svak.	||	A wing is weak.
+En sel er inne.	||	A seal is inside.
+En pels er nær.	||	A fur is near.
+Han er lei og hun er lei.	||	He is sad and she is sad.
+Ei fjær er borte.	||	A feather is away.
+Det er et rikt løv.	||	That is a rich foliage.
+Det er et frø.	||	That is a seed.
+Det er ei tung rot.	||	That is a heavy root.
+Det er ei grein.	||	That is a branch.
+Et blad er stygt.	||	A leaf is ugly.
+Det er ei dårlig eik.	||	That is a bad oak.
+Ei bjørk er sterk.	||	A birch is strong.
+Det er ei svart gran.	||	That is a black spruce.
+En busk er vakker.	||	A bush is beautiful.
+Det er et godt fjell.	||	That is a good mountain.
+Det er et landskap.	||	That is a landscape.
+Det er en grønn mose.	||	That is a green moss.
+En ås er rik.	||	A hill is rich.
+Ei slette er blå.	||	A plain is blue.
+Det er en dal.	||	That is a valley.
+Ei mark er grønn.	||	A field is green.
+Det er en rød åker.	||	That is a red field.
+Det er et hav.	||	That is an ocean.
+Ei klippe er tung.	||	A cliff is heavy.
+Det er et juv.	||	That is a gorge.
+Ei hule er pen.	||	A cave is pretty.
+Det er en lang foss.	||	That is a long waterfall.
+Det er en innsjø.	||	That is a lake.
+Det er en god bekk.	||	That is a good stream.
+En sjø er fin.	||	A sea is fine.
+Ei øy er grønn.	||	An island is green.
+Det er ei strand.	||	That is a beach.
+Det er en rød fjord.	||	That is a red fjord.
+Det er ei bølge.	||	That is a wave.
+Et dyp er rent.	||	A depth is clean.
+Det er en liten odde.	||	That is a small cape.
+En grunn er full.	||	A ground is full.
+Det er ei bredd.	||	That is a shore.
+Det er et regn.	||	That is a rain.
+Det er virkelig kaldt.	||	That is really cold.
+Det er ei sky.	||	That is a cloud.
+Det er en snø.	||	That is a snow.
+Det er en torden.	||	That is a thunder.
+Det er et lyn.	||	That is a lightning.
+Det er ei tåke.	||	That is a fog.
+Det er en storm.	||	That is a storm.
+Det er en temperatur.	||	That is a temperature.
+Det er en grad.	||	That is a degree.
+Det er et hagl.	||	That is a hail.
+Det er en skygge.	||	That is a shadow.
+Det er en høst.	||	That is an autumn.
+Det er et klima.	||	That is a climate.
+Det er en sesong.	||	That is a season.
+Det er en sommer.	||	That is a summer.
+Et fortau er rent.	||	A sidewalk is clean.
+Det er en plass.	||	That is a square.
+Det er en nær vei.	||	That is a near road.
+Ei gate er stor.	||	A street is big.
+Et torg er svart.	||	A market square is black.
+Det er en butikk.	||	That is a shop.
+En park er dårlig.	||	A park is bad.
+Det er ei ferdig bro.	||	That is a finished bridge.
+Det er en gammel bar.	||	That is an old bar.
+Et hotell er rødt.	||	A hotel is red.
+Det er en nær kafé.	||	That is a near cafe.
+En restaurant er ferdig.	||	A restaurant is finished.
+Et teater er sikkert.	||	A theatre is sure.
+Det er et tomt bibliotek.	||	That is an empty library.
+Et museum er langt.	||	A museum is long.
+Det er ei kirke.	||	That is a church.
+En post er fri.	||	A post office is free.
+Det er en fin politistasjon.	||	That is a fine police station.
+Det er en gård.	||	That is a farm.
+Det er et kontor.	||	That is an office.
+Et tårn er blått.	||	A tower is blue.
+Det er et slott.	||	That is a castle.
+Det er et ferdig fjøs.	||	That is a finished cowshed.
+En låve er god.	||	A barn is good.
+Det er en fin landsby.	||	That is a fine village.
+Et sentrum er kaldt.	||	A centre is cold.
+Det er en ferdig hovedstad.	||	That is a finished capital.
+Et område er godt.	||	An area is good.
+Det er et varmt wc.	||	That is a warm toilet.
+Det er ei reise.	||	That is a journey.
+En tur er gul.	||	A trip is yellow.
+Det er en ferdig ferie.	||	That is a finished holiday.
+Et kjøretøy er sikkert.	||	A vehicle is sure.
+Det er et sterkt tog.	||	That is a strong train.
+Det er en trikk.	||	That is a tram.
+Det er en god transport.	||	That is a good transport.
+En sykkel er ferdig.	||	A bicycle is finished.
+Det er et skip.	||	That is a ship.
+Et fly er svakt.	||	An airplane is weak.
+Det er ei varm ferge.	||	That is a warm ferry.
+Det er et varmt hjul.	||	That is a warm wheel.
+Ei vogn er liten.	||	A cart is small.
+Det er en vakker traktor.	||	That is a beautiful tractor.
+Det er ei drosje.	||	That is a taxi.
+Et dekk er blått.	||	A tyre is blue.
+Det er et stort ratt.	||	That is a big steering wheel.
+En stasjon er lang.	||	A station is long.
+Det er en rik billett.	||	That is a rich ticket.
+Ei brygge er vakker.	||	A wharf is beautiful.
+Det er et stygt spor.	||	That is an ugly track.
+Det er en holdeplass.	||	That is a stop.
+Ei havn er liten.	||	A harbour is small.
+Det er en avstand.	||	That is a distance.
+Et kart er vakkert.	||	A map is beautiful.
+Det er en hvit fart.	||	That is a white speed.
+Det er en passasjer.	||	That is a passenger.
+Det er et kaldt kryss.	||	That is a cold crossroads.
+Det er ei parkering.	||	That is a parking.
+Det er en stygg tunnel.	||	That is an ugly tunnel.
+En kø er rik.	||	A queue is rich.
+Det er et arbeid.	||	That is a work.
+Det er et sekund.	||	That is a second.
+Det er en time.	||	That is a hour.
+Det er ei uke.	||	That is a week.
+Det er en kveld.	||	That is an evening.
+Det er en ettermiddag.	||	That is an afternoon.
+Det er et døgn.	||	That is a day.
+Det er en morgen.	||	That is a morning.
+Det er en torsdag.	||	That is a Thursday.
+Det er en tirsdag.	||	That is a Tuesday.
+Det er en mandag.	||	That is a Monday.
+Det er en fredag.	||	That is a Friday.
+Det er en januar.	||	That is a January.
+Det er en april.	||	That is an April.
+Det er en februar.	||	That is a February.
+Det er en søndag.	||	That is a Sunday.
+Det er en mai.	||	That is a May.
+Det er en juni.	||	That is a June.
+Det er en august.	||	That is an August.
+Det er en september.	||	That is a September.
+Det er en mengde.	||	That is an amount.
+Det er en november.	||	That is a November.
+Det er et antall.	||	That is a number.
+Det er en desember.	||	That is a December.
+Det er en prosent.	||	That is a percent.
+Det er en centimeter.	||	That is a centimetre.
+Det er en meter.	||	That is a metre.
+Det er en kilometer.	||	That is a kilometre.
+Det er en størrelse.	||	That is a size.
+Det er en liter.	||	That is a litre.
+Det er et gram.	||	That is a gram.
+Det er en arbeidsgiver.	||	That is an employer.
+Det er ei bedrift.	||	That is a company.
+Det er en ansatt.	||	That is an employee.
+Det er ei oppgave.	||	That is a task.
+Det er en pause.	||	That is a break.
+Det er en plan.	||	That is a plan.
+Er det en politimann?	||	Is that a policeman?
+Det er en forsker.	||	That is a researcher.
+Det er en musiker.	||	That is a musician.
+Det er en pen leksjon.	||	That is a pretty lesson.
+Det er en pilot.	||	That is a pilot.
+Det er et nært fag.	||	That is a near subject.
+Det er en sekretær.	||	That is a secretary.
+Det er ei billig prøve.	||	That is a cheap test.
+Ei utdanning er fri.	||	An education is free.
+Det er et langt universitet.	||	That is a long university.
+Det er et kurs.	||	That is a course.
+Det er en blyant.	||	That is a pencil.
+En pult er stygg.	||	A desk is ugly.
+Det er ei tavle.	||	That is a board.
+Det er en tung penn.	||	That is a heavy pen.
+Det er ei regning.	||	That is a bill.
+Det er et kort.	||	That is a card.
+Det er en kontant.	||	That is a cash.
+Det er ei kvittering.	||	That is a receipt.
+Det er en skatt.	||	That is a tax.
+Det er et budsjett.	||	That is a budget.
+Det er et tilbud.	||	That is an offer.
+Det er ei gjeld.	||	That is a debt.
+Det er en datamaskin.	||	That is a computer.
+Det er en mobil.	||	That is a mobile phone.
+Det er ei vare.	||	That is a product.
+Det er et lån.	||	That is a loan.
+Det er et tastatur.	||	That is a keyboard.
+Det er et nett.	||	That is a network.
+Det er et program.	||	That is a program.
+Det er en app.	||	That is an app.
+Det er et passord.	||	That is a password.
+Det er et kamera.	||	That is a camera.
+Det er ei side.	||	That is a page.
+Det er ei fil.	||	That is a file.
+Det er en musikk.	||	That is a music.
+Det er ei nyhet.	||	That is a news.
+Det er et søk.	||	That is a search.
+Det er ei avis.	||	That is a newspaper.
+Det er en fotball.	||	That is a football.
+Det er en ball.	||	That is a ball.
+Det er en sport.	||	That is a sport.
+Det er en idrett.	||	That is a sport.
+Det er en spiller.	||	That is a player.
+Det er en seier.	||	That is a victory.
+Det er et mål.	||	That is a goal.
+Det er et poeng.	||	That is a point.
+Det er en kunst.	||	That is an art.
+Det er ei fritid.	||	That is a free time.
+Det er et leketøy.	||	That is a toy.
+Det er en film.	||	That is a film.
+Det er en stat.	||	That is a state.
+Det er et piano.	||	That is a piano.
+Det er et instrument.	||	That is an instrument.
+Det er en sang.	||	That is a song.
+Det er en politiker.	||	That is a politician.
+Det er en president.	||	That is a president.
+Det er et parti.	||	That is a party.
+Det er ei lov.	||	That is a law.
+Det er en dom.	||	That is a verdict.
+Det er en straff.	||	That is a punishment.
+Det er en dommer.	||	That is a judge.
+Det er et fengsel.	||	That is a prison.
+Et rådhus er varmt.	||	A town hall is warm.
+Det er et folkebibliotek.	||	That is a public library.
+Det er en kommune.	||	That is a municipality.
+Det er en vitenskap.	||	That is a science.
+Det er ei kraft.	||	That is a force.
+Det er en energi.	||	That is an energy.
+Det er en idé.	||	That is an idea.
+Det er en metode.	||	That is a method.
+Det er ei årsak.	||	That is a cause.
+Det er en følge.	||	That is a consequence.
+Det er et problem.	||	That is a problem.
+Det er ei løsning.	||	That is a solution.
+Det er et emne.	||	That is a topic.
+Det er en forskjell.	||	That is a difference.
+Det er ei form.	||	That is a form.
+Er det en situasjon?	||	Is that a situation?
+Det er et godt gardin.	||	That is a good curtain.
+En gangsti er god.	||	A footpath is good.
+Det er en kald stol.	||	That is a cold chair.
+Det er en tilstand.	||	That is a state.
+Det er et sterkt bestikk.	||	That is a strong cutlery.
+En serviett er rik.	||	A napkin is rich.
+Det er et pledd.	||	That is a blanket.
+Det er ei nær stekepanne.	||	That is a near frying pan.
+Det er et søppel.	||	That is a garbage.
+En skuffeseksjon er lang.	||	A drawer is long.
+Det er en støvsuger.	||	That is a vacuum cleaner.
+En feiekost er sterk.	||	A broom is strong.
+Det er et stort lim.	||	That is a big glue.
+Det er ei saks.	||	That is a scissors.
+Det er en ferdig håndduk.	||	That is a finished hand cloth.
+Det er ei nål.	||	That is a needle.
+Det er en skinnhanske.	||	That is a leather glove.
+Det er en dårlig tøffel.	||	That is a bad slipper.
+Det er en ullsokk.	||	That is a wool sock.
+Det er en sandal.	||	That is a sandal.
+Det er en bh.	||	That is a bra.
+Det er ei truse.	||	That is an underpants.
+Det er ei bluse.	||	That is a blouse.
+Det er en singlet.	||	That is an undershirt.
+Det er et bankkort.	||	That is a bank card.
+Det er ei lommebok.	||	That is a wallet.
+Det er en mynt.	||	That is a coin.
+Det er et knapphull.	||	That is a buttonhole.
+Et drikkevann er langt.	||	A drinking water is long.
+Det er en rik kakao.	||	That is a rich cocoa.
+Det er en appelsinjuice.	||	That is an orange juice.
+Et margarin er stort.	||	A margarine is big.
+Det er en god fløte.	||	That is a good cream.
+Det er en kesam.	||	That is a quark.
+Det er en lang gjær.	||	That is a long yeast.
+En deig er grønn.	||	A dough is green.
+Et pålegg er langt.	||	A sandwich topping is long.
+Det er ei svart brødskive.	||	That is a black slice of bread.
+Et knekkebrød er hvitt.	||	A crispbread is white.
+Det er en kavring.	||	That is a rusk.
+Det er et ferdig bacon.	||	That is a finished bacon.
+En torsk hjelper det.	||	A cod helps it.
+En biff er svak.	||	A steak is weak.
+Det er ei varm kjøttkake.	||	That is a warm meatball.
+Det er en tung grøt.	||	That is a heavy porridge.
+En omelett er gammel.	||	An omelette is old.
+Det er en gammel vaffel.	||	That is an old waffle.
+Et havregryn er pent.	||	An oats is pretty.
+Det er et godt krydder.	||	That is a good spice.
+Et melis er sterkt.	||	A powdered sugar is strong.
+Det er en grønn mysli.	||	That is a green muesli.
+Det er en sennep.	||	That is a mustard.
+Det er ei ert.	||	That is a pea.
+En ketchup er ren.	||	A ketchup is clean.
+Det er en tung majones.	||	That is a heavy mayonnaise.
+En buljong er full.	||	A broth is full.
+Det er en mais.	||	That is a corn.
+Det er en sikker brokkoli.	||	That is a sure broccoli.
+Det er en kål.	||	That is a cabbage.
+Det er en hvit blomkål.	||	That is a white cauliflower.
+Det er en sitron.	||	That is a lemon.
+Det er en ren fersken.	||	That is a clean peach.
+En purre er pen.	||	A leek is pretty.
+Det er en dårlig paprika.	||	That is a bad bell pepper.
+En aprikos er full.	||	An apricot is full.
+Det er en vakker melon.	||	That is a beautiful melon.
+Ei plomme er gul.	||	A plum is yellow.
+Det er et blåbær.	||	That is a blueberry.
