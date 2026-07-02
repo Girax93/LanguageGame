@@ -51,6 +51,11 @@ blocks) — Ari's "polished core first" call — not the full ~2000 yet.
   is QWERTY + Æ/Ø/Å; the copula is always `er` and present tense is person-invariant. Crossword clues
   are authored in `lang/no/cluesData.ts` (Bokmål definition + English). Norwegian invariants live in
   `tests/content.no.mts`.
+  **Verb lemmas gloss to the BARE English infinitive** (`være` = “be”, `gå` =
+  “go / walk”), NOT “to be”, because `å` is taught as its own lemma (“to (before a
+  verb)”) — so `å være` = “to be”. The leading “to ” is stripped per sense; the modal
+  `skulle` (“shall / should”) and non-verbs (`til`, `å`) stay as-is. German `sein` /
+  French `être` KEEP “to be” — their infinitives are single words with no separate particle.
 - **French specifics.** Gender is the TWO-gender system **un/une** (masc./fem.) — no neuter, so every
   French noun is m or f. The grammar drill fills the INDEFINITE un/une (not definite le/la, which elides
   to l' before a vowel and would break the letter-fill) — le/la is taught via lemmas, Learn cards and
