@@ -14,7 +14,7 @@ import type { Lemma, Pos, Gender, Register } from '../../lemmas';
 
 const DATA = `
 n-jeg|jeg|I|pron|||||function
-n-vaere|være|to be|verb|||er, var, vært|function|neutral
+n-vaere|være|be|verb|||er, var, vært|function|neutral
 n-du|du|you (singular)|pron|||||function
 n-det|det|it / that|pron|||||function
 n-ikke|ikke|not|adv|||||function
@@ -35,91 +35,91 @@ n-fin|fin|fine / nice|adj|||||function
 n-der|der|there|adv|||||function
 n-vi|vi|we|pron|||||people
 n-de|de|they|pron|||||people
-n-ha|ha|to have|verb|||har, hadde, hatt|function|neutral
+n-ha|ha|have|verb|||har, hadde, hatt|function|neutral
 n-barn|barn|child|noun|n|barn||family,people|neutral
 n-ny|ny|new|adj|||||function
 n-med|med|with|prep|||||function
 n-til|til|to / until|prep|||||function
 n-venn|venn|friend|noun|m|venner||people|neutral
 n-gammel|gammel|old|adj|||||function
-n-gaa|gå|to go / to walk|verb|||går, gikk, gått|function|neutral
+n-gaa|gå|go / walk|verb|||går, gikk, gått|function|neutral
 n-som|som|who / which / that|pron|||||function
 n-at|at|that (conjunction)|conj|||||function
 n-kvinne|kvinne|woman|noun|m|kvinner||people,family|neutral
 n-liten|liten|small / little|adj|||||function
-n-se|se|to see|verb|||ser, så, sett|body|neutral
+n-se|se|see|verb|||ser, så, sett|body|neutral
 n-men|men|but|conj|||||function
 n-aa|å|to (before a verb)|particle|||||function
 n-dag|dag|day|noun|m|dager||time|neutral
 n-glad|glad|happy / glad|adj|||||feelings
-n-komme|komme|to come|verb|||kommer, kom, kommet|function|neutral
+n-komme|komme|come|verb|||kommer, kom, kommet|function|neutral
 n-meg|meg|me|pron|||||people
 n-deg|deg|you (object)|pron|||||people
 n-far|far|father|noun|m|fedre||family|neutral
 n-mor|mor|mother|noun|f|mødre||family|neutral
-n-snakke|snakke|to speak / to talk|verb|||snakker, snakket, snakket|communication|neutral
+n-snakke|snakke|speak / talk|verb|||snakker, snakket, snakket|communication|neutral
 n-fra|fra|from|prep|||||function
 n-om|om|about / if|prep|||||function
 n-ting|ting|thing|noun|m|ting||function|neutral
 n-viktig|viktig|important|adj|||||function
-n-si|si|to say|verb|||sier, sa, sagt|communication|neutral
+n-si|si|say|verb|||sier, sa, sagt|communication|neutral
 n-den|den|it / that|pron|||||function
 n-seg|seg|himself / herself|pron|||||function
 n-gutt|gutt|boy|noun|m|gutter||people,family|neutral
 n-vakker|vakker|beautiful|adj|||||function
-n-ta|ta|to take|verb|||tar, tok, tatt|function|neutral
+n-ta|ta|take|verb|||tar, tok, tatt|function|neutral
 n-hva|hva|what|pron|||||question
 n-hvem|hvem|who|pron|||||question
 n-bok|bok|book|noun|f|bøker||school|neutral
 n-riktig|riktig|correct / right|adj|||||function
-n-vite|vite|to know|verb|||vet, visste, visst|function|neutral
+n-vite|vite|know|verb|||vet, visste, visst|function|neutral
 n-naa|nå|now|adv|||||time
 n-for|for|for / too|prep|||||function
 n-by|by|city / town|noun|m|byer||city,travel|neutral
 n-varm|varm|warm|adj|||||function
-n-like|like|to like|verb|||liker, likte, likt|feelings|neutral
-n-kunne|kunne|to be able to / can|verb|||kan, kunne, kunnet|function|neutral
-n-ville|ville|to want to / will|verb|||vil, ville, villet|function|neutral
+n-like|like|like|verb|||liker, likte, likt|feelings|neutral
+n-kunne|kunne|be able to / can|verb|||kan, kunne, kunnet|function|neutral
+n-ville|ville|want to / will|verb|||vil, ville, villet|function|neutral
 n-land|land|country|noun|n|land||travel|neutral
 n-sterk|sterk|strong|adj|||||function
-n-hoere|høre|to hear|verb|||hører, hørte, hørt|body|neutral
+n-hoere|høre|hear|verb|||hører, hørte, hørt|body|neutral
 n-hvor|hvor|where|adv|||||question
 n-eller|eller|or|conj|||||function
 n-aar|år|year|noun|n|år||time|neutral
 n-kald|kald|cold|adj|||||nature
-n-finne|finne|to find|verb|||finner, fant, funnet|function|neutral
+n-finne|finne|find|verb|||finner, fant, funnet|function|neutral
 n-skulle|skulle|shall / should|verb|||skal, skulle, skullet|function|neutral
-n-maatte|måtte|to have to / must|verb|||må, måtte, måttet|function|neutral
+n-maatte|måtte|have to / must|verb|||må, måtte, måttet|function|neutral
 n-vann|vann|water|noun|n|vann||nature,food|neutral
 n-lang|lang|long|adj|||||function
-n-gi|gi|to give|verb|||gir, ga, gitt|function|neutral
+n-gi|gi|give|verb|||gir, ga, gitt|function|neutral
 n-ja|ja|yes|particle|||||communication
 n-nei|nei|no|particle|||||communication
 n-tid|tid|time|noun|f|tider||time|neutral
 n-natt|natt|night|noun|f|netter||time|neutral
-n-elske|elske|to love|verb|||elsker, elsket, elsket|feelings|neutral
-n-trenge|trenge|to need|verb|||trenger, trengte, trengt|function|neutral
+n-elske|elske|love|verb|||elsker, elsket, elsket|feelings|neutral
+n-trenge|trenge|need|verb|||trenger, trengte, trengt|function|neutral
 n-hvis|hvis|if|conj|||||function
 n-fordi|fordi|because|conj|||||function
 n-naar|når|when|conj|||||question
-n-tro|tro|to believe / to think|verb|||tror, trodde, trodd|feelings|neutral
+n-tro|tro|believe / think|verb|||tror, trodde, trodd|feelings|neutral
 n-bare|bare|only / just|adv|||||function
 n-ogsaa|også|also|adv|||||function
 n-veldig|veldig|very|adv|||||function
 n-navn|navn|name|noun|n|navn||function|neutral
 n-liv|liv|life|noun|n|liv||function|neutral
-n-gjoere|gjøre|to do / to make|verb|||gjør, gjorde, gjort|function|neutral
-n-tenke|tenke|to think|verb|||tenker, tenkte, tenkt|feelings|neutral
+n-gjoere|gjøre|do / make|verb|||gjør, gjorde, gjort|function|neutral
+n-tenke|tenke|think|verb|||tenker, tenkte, tenkt|feelings|neutral
 n-mat|mat|food|noun|m|||food|neutral
 n-snill|snill|kind / nice|adj|||||feelings
-n-bo|bo|to live / to reside|verb|||bor, bodde, bodd|home|neutral
+n-bo|bo|live / reside|verb|||bor, bodde, bodd|home|neutral
 n-mer|mer|more|adv|||||function
 n-saa|så|so / then|adv|||||function
 n-kanskje|kanskje|maybe / perhaps|adv|||||function
 n-haand|hånd|hand|noun|f|hender||body|neutral
 n-oeye|øye|eye|noun|n|øyne||body|neutral
-n-spise|spise|to eat|verb|||spiser, spiste, spist|food|neutral
-n-drikke|drikke|to drink|verb|||drikker, drakk, drukket|food|neutral
+n-spise|spise|eat|verb|||spiser, spiste, spist|food|neutral
+n-drikke|drikke|drink|verb|||drikker, drakk, drukket|food|neutral
 n-bil|bil|car|noun|m|biler||travel|neutral
 n-hund|hund|dog|noun|m|hunder||animals|neutral
 n-katt|katt|cat|noun|m|katter||animals|neutral
@@ -132,9 +132,9 @@ n-ord|ord|word|noun|n|ord||communication|neutral
 n-gud|gud|god|noun|m|guder||function|neutral
 n-familie|familie|family|noun|m|familier||family|neutral
 n-verden|verden|world|noun|m|verdener||nature|neutral
-n-hete|hete|to be called|verb|||heter, het, hett|communication|neutral
+n-hete|hete|be called|verb|||heter, het, hett|communication|neutral
 n-mye|mye|much / a lot|adv|||||function
-n-faa|få|to get / to receive|verb|||får, fikk, fått|function|neutral
+n-faa|få|get / receive|verb|||får, fikk, fått|function|neutral
 n-hvordan|hvordan|how|adv|||||question
 n-hvorfor|hvorfor|why|adv|||||question
 n-aldri|aldri|never|adv|||||time
@@ -157,102 +157,102 @@ n-takk|takk|thanks|interj|||||communication
 n-hei|hei|hi / hello|interj|||||communication
 n-folk|folk|people / folk|noun|n|folk||people,society|neutral
 n-menneske|menneske|human being|noun|n|mennesker||people|neutral
-n-smile|smile|to smile|verb|||smiler, smilte, smilt|feelings,body|neutral
+n-smile|smile|smile|verb|||smiler, smilte, smilt|feelings,body|neutral
 n-person|person|person|noun|m|personer||people|neutral
-n-le|le|to laugh|verb|||ler, lo, ledd|feelings,body|neutral
+n-le|le|laugh|verb|||ler, lo, ledd|feelings,body|neutral
 n-kropp|kropp|body|noun|m|kropper||body|neutral
 n-foreldre|foreldre|parents|noun||foreldre||family,people|neutral
-n-graate|gråte|to cry|verb|||gråter, gråt, grått|feelings,body|neutral
+n-graate|gråte|cry|verb|||gråter, gråt, grått|feelings,body|neutral
 n-bror|bror|brother|noun|m|brødre||family,people|neutral
-n-foele|føle|to feel|verb|||føler, følte, følt|feelings,body|neutral
+n-foele|føle|feel|verb|||føler, følte, følt|feelings,body|neutral
 n-soester|søster|sister|noun|f|søstre||family,people|neutral
-n-haape|håpe|to hope|verb|||håper, håpet, håpet|feelings|neutral
+n-haape|håpe|hope|verb|||håper, håpet, håpet|feelings|neutral
 n-soenn|sønn|son|noun|m|sønner||family,people|neutral
 n-datter|datter|daughter|noun|f|døtre||family,people|neutral
-n-hate|hate|to hate|verb|||hater, hatet, hatet|feelings|neutral
+n-hate|hate|hate|verb|||hater, hatet, hatet|feelings|neutral
 n-bestefar|bestefar|grandfather|noun|m|bestefedre||family,people|neutral
-n-frykte|frykte|to fear|verb|||frykter, fryktet, fryktet|feelings|neutral
+n-frykte|frykte|fear|verb|||frykter, fryktet, fryktet|feelings|neutral
 n-bestemor|bestemor|grandmother|noun|f|bestemødre||family,people|neutral
 n-fetter|fetter|male cousin|noun|m|fettere||family,people|neutral
-n-savne|savne|to miss (someone)|verb|||savner, savnet, savnet|feelings|neutral
+n-savne|savne|miss (someone)|verb|||savner, savnet, savnet|feelings|neutral
 n-kusine|kusine|female cousin|noun|f|kusiner||family,people|neutral
-n-stole|stole|to trust|verb|||stoler, stolte, stolt|feelings|neutral
+n-stole|stole|trust|verb|||stoler, stolte, stolt|feelings|neutral
 n-onkel|onkel|uncle|noun|m|onkler||family,people|neutral
-n-lengte|lengte|to long / yearn|verb|||lengter, lengtet, lengtet|feelings|neutral
+n-lengte|lengte|long / yearn|verb|||lengter, lengtet, lengtet|feelings|neutral
 n-tante|tante|aunt|noun|f|tanter||family,people|neutral
 n-nevoe|nevø|nephew|noun|m|nevøer||family,people|neutral
-n-forstaa|forstå|to understand|verb|||forstår, forsto, forstått|communication,abstract|neutral
+n-forstaa|forstå|understand|verb|||forstår, forsto, forstått|communication,abstract|neutral
 n-niese|niese|niece|noun|f|nieser||family,people|neutral
-n-mene|mene|to mean / think|verb|||mener, mente, ment|communication|neutral
+n-mene|mene|mean / think|verb|||mener, mente, ment|communication|neutral
 n-mamma|mamma|mum|noun|f|mammaer||family,people|colloquial
 n-pappa|pappa|dad|noun|m|pappaer||family,people|colloquial
-n-svare|svare|to answer|verb|||svarer, svarte, svart|communication|neutral
+n-svare|svare|answer|verb|||svarer, svarte, svart|communication|neutral
 n-baby|baby|baby|noun|m|babyer||family,people|neutral
-n-spoerre|spørre|to ask|verb|||spør, spurte, spurt|communication|neutral
+n-spoerre|spørre|ask|verb|||spør, spurte, spurt|communication|neutral
 n-unge|unge|kid / young one|noun|m|unger||family,people|colloquial
-n-fortelle|fortelle|to tell|verb|||forteller, fortalte, fortalt|communication|neutral
+n-fortelle|fortelle|tell|verb|||forteller, fortalte, fortalt|communication|neutral
 n-tvilling|tvilling|twin|noun|m|tvillinger||family,people|neutral
 n-ektefelle|ektefelle|spouse|noun|m|ektefeller||family,people|formal
-n-prate|prate|to chat|verb|||prater, pratet, pratet|communication|colloquial
+n-prate|prate|chat|verb|||prater, pratet, pratet|communication|colloquial
 n-ektemann|ektemann|husband|noun|m|ektemenn||family,people|neutral
-n-rope|rope|to shout|verb|||roper, ropte, ropt|communication,body|neutral
+n-rope|rope|shout|verb|||roper, ropte, ropt|communication,body|neutral
 n-kone|kone|wife|noun|f|koner||family,people|neutral
-n-hviske|hviske|to whisper|verb|||hvisker, hvisket, hvisket|communication,body|neutral
+n-hviske|hviske|whisper|verb|||hvisker, hvisket, hvisket|communication,body|neutral
 n-kjaereste|kjæreste|partner / sweetheart|noun|m|kjærester||family,people|neutral
 n-forlovede|forlovede|fiancé(e)|noun|m|forlovede||family,people|neutral
-n-lyve|lyve|to lie|verb|||lyver, løy, løyet|communication|neutral
+n-lyve|lyve|lie|verb|||lyver, løy, løyet|communication|neutral
 n-svigermor|svigermor|mother-in-law|noun|f|svigermødre||family,people|neutral
-n-love|love|to promise|verb|||lover, lovet, lovet|communication|neutral
+n-love|love|promise|verb|||lover, lovet, lovet|communication|neutral
 n-svigerfar|svigerfar|father-in-law|noun|m|svigerfedre||family,people|neutral
 n-slekt|slekt|family / kin|noun|f|slekter||family,people|neutral
-n-hilse|hilse|to greet|verb|||hilser, hilste, hilst|communication,society|neutral
+n-hilse|hilse|greet|verb|||hilser, hilste, hilst|communication,society|neutral
 n-slektning|slektning|relative|noun|m|slektninger||family,people|neutral
-n-besoeke|besøke|to visit|verb|||besøker, besøkte, besøkt|society|neutral
+n-besoeke|besøke|visit|verb|||besøker, besøkte, besøkt|society|neutral
 n-par|par|couple / pair|noun|n|par||family,people|neutral
-n-hjelpe|hjelpe|to help|verb|||hjelper, hjalp, hjulpet|society,health|neutral
+n-hjelpe|hjelpe|help|verb|||hjelper, hjalp, hjulpet|society,health|neutral
 n-ekteskap|ekteskap|marriage|noun|n|ekteskap||family,society|neutral
 n-bryllup|bryllup|wedding|noun|n|bryllup||family,society|neutral
-n-kjenne|kjenne|to know (a person) / feel|verb|||kjenner, kjente, kjent|people,body|neutral
+n-kjenne|kjenne|know (a person) / feel|verb|||kjenner, kjente, kjent|people,body|neutral
 n-skilsmisse|skilsmisse|divorce|noun|m|skilsmisser||family,society|neutral
-n-treffe|treffe|to meet / hit|verb|||treffer, traff, truffet|society,communication|neutral
+n-treffe|treffe|meet / hit|verb|||treffer, traff, truffet|society,communication|neutral
 n-enke|enke|widow|noun|f|enker||family,people|neutral
 n-foedsel|fødsel|birth|noun|m|fødsler||family,body|neutral
-n-krangle|krangle|to quarrel|verb|||krangler, kranglet, kranglet|communication|colloquial
+n-krangle|krangle|quarrel|verb|||krangler, kranglet, kranglet|communication|colloquial
 n-doed|død|death|noun|m|||family,abstract|neutral
-n-kysse|kysse|to kiss|verb|||kysser, kysset, kysset|feelings,body|neutral
+n-kysse|kysse|kiss|verb|||kysser, kysset, kysset|feelings,body|neutral
 n-voksen|voksen|adult|noun|m|voksne||people|neutral
-n-klemme|klemme|to hug / squeeze|verb|||klemmer, klemte, klemt|feelings,body|colloquial
+n-klemme|klemme|hug / squeeze|verb|||klemmer, klemte, klemt|feelings,body|colloquial
 n-tenaaring|tenåring|teenager|noun|m|tenåringer||people|neutral
 n-ungdom|ungdom|youth / young person|noun|m|ungdommer||people|neutral
-n-foede|føde|to give birth|verb|||føder, fødte, født|family,body|neutral
+n-foede|føde|give birth|verb|||føder, fødte, født|family,body|neutral
 n-eldre|eldre|elderly people|noun|m|eldre||people|neutral
-n-doe|dø|to die|verb|||dør, døde, dødd|body,health|neutral
+n-doe|dø|die|verb|||dør, døde, dødd|body,health|neutral
 n-gjeng|gjeng|gang / crowd|noun|m|gjenger||people,society|colloquial
 n-fyr|fyr|guy / bloke|noun|m|fyrer||people|colloquial
-n-leve|leve|to live|verb|||lever, levde, levd|body,health|neutral
+n-leve|leve|live|verb|||lever, levde, levd|body,health|neutral
 n-dame|dame|lady|noun|f|damer||people|neutral
-n-gifte|gifte|to marry|verb|||gifter, giftet, giftet|family,society|neutral
+n-gifte|gifte|marry|verb|||gifter, giftet, giftet|family,society|neutral
 n-herre|herre|gentleman|noun|m|herrer||people|neutral
-n-puste|puste|to breathe|verb|||puster, pustet, pustet|body,health|neutral
+n-puste|puste|breathe|verb|||puster, pustet, pustet|body,health|neutral
 n-gjest|gjest|guest|noun|m|gjester||people,society|neutral
 n-nabo|nabo|neighbour|noun|m|naboer||people,society|neutral
-n-sove|sove|to sleep|verb|||sover, sov, sovet|body,health|neutral
+n-sove|sove|sleep|verb|||sover, sov, sovet|body,health|neutral
 n-kjenning|kjenning|acquaintance|noun|m|kjenninger||people,society|neutral
-n-vaakne|våkne|to wake up|verb|||våkner, våknet, våknet|body,health|neutral
+n-vaakne|våkne|wake up|verb|||våkner, våknet, våknet|body,health|neutral
 n-bekjent|bekjent|acquaintance / known person|noun|m|bekjente||people,society|neutral
-n-merke|merke|to notice / sense|verb|||merker, merket, merket|body|neutral
+n-merke|merke|notice / sense|verb|||merker, merket, merket|body|neutral
 n-fremmed|fremmed|stranger|noun|m|fremmede||people,society|neutral
 n-medlem|medlem|member|noun|n|medlemmer||people,society|neutral
-n-lukte|lukte|to smell|verb|||lukter, luktet, luktet|body|neutral
+n-lukte|lukte|smell|verb|||lukter, luktet, luktet|body|neutral
 n-leder|leder|leader|noun|m|ledere||people,work|neutral
-n-smake|smake|to taste|verb|||smaker, smakte, smakt|body|neutral
+n-smake|smake|taste|verb|||smaker, smakte, smakt|body|neutral
 n-sjef|sjef|boss|noun|m|sjefer||people,work|neutral
 n-konge|konge|king|noun|m|konger||people,society|neutral
-n-roere|røre|to touch / stir|verb|||rører, rørte, rørt|body|neutral
+n-roere|røre|touch / stir|verb|||rører, rørte, rørt|body|neutral
 n-dronning|dronning|queen|noun|f|dronninger||people,society|neutral
-n-titte|titte|to peek|verb|||titter, tittet, tittet|body|colloquial
+n-titte|titte|peek|verb|||titter, tittet, tittet|body|colloquial
 n-prins|prins|prince|noun|m|prinser||people,society|neutral
-n-glo|glo|to stare|verb|||glor, glodde, glodd|body|colloquial
+n-glo|glo|stare|verb|||glor, glodde, glodd|body|colloquial
 n-prinsesse|prinsesse|princess|noun|f|prinsesser||people,society|neutral
 n-folkemengde|folkemengde|crowd|noun|f|folkemengder||people,society|neutral
 n-syk|syk|sick / ill|adj||||health|neutral
@@ -350,62 +350,62 @@ n-gift|gift|married|adj||||family,society|neutral
 n-midje|midje|waist|noun|f|midjer||body|neutral
 n-enslig|enslig|single|adj||||family,society|neutral
 n-helse|helse|health|noun|f|||health|neutral
-n-forelske|forelske|to fall in love|verb|||forelsker, forelsket, forelsket|feelings|neutral
+n-forelske|forelske|fall in love|verb|||forelsker, forelsket, forelsket|feelings|neutral
 n-sykdom|sykdom|illness / disease|noun|m|sykdommer||health|neutral
 n-smerte|smerte|pain|noun|m|smerter||health,feelings|neutral
-n-glemme|glemme|to forget|verb|||glemmer, glemte, glemt|feelings,communication|neutral
+n-glemme|glemme|forget|verb|||glemmer, glemte, glemt|feelings,communication|neutral
 n-feber|feber|fever|noun|m|||health|neutral
-n-huske|huske|to remember|verb|||husker, husket, husket|feelings,communication|neutral
+n-huske|huske|remember|verb|||husker, husket, husket|feelings,communication|neutral
 n-forkjoelelse|forkjølelse|cold (illness)|noun|m|forkjølelser||health|neutral
 n-influensa|influensa|flu|noun|m|||health|neutral
-n-undre|undre|to wonder|verb|||undrer, undret, undret|feelings,communication|neutral
+n-undre|undre|wonder|verb|||undrer, undret, undret|feelings,communication|neutral
 n-hoste|hoste|cough|noun|m|||health|neutral
-n-nyte|nyte|to enjoy|verb|||nyter, nøt, nytt|feelings,body|neutral
+n-nyte|nyte|enjoy|verb|||nyter, nøt, nytt|feelings,body|neutral
 n-saar|sår|wound / sore|noun|n|sår||health,body|neutral
-n-skamme|skamme|to be ashamed|verb|||skammer, skammet, skammet|feelings|neutral
+n-skamme|skamme|be ashamed|verb|||skammer, skammet, skammet|feelings|neutral
 n-skade|skade|injury / damage|noun|m|skader||health|neutral
 n-blaamerke|blåmerke|bruise|noun|n|blåmerker||health,body|neutral
-n-rose|rose|to praise|verb|||roser, roste, rost|communication,feelings|neutral
+n-rose|rose|praise|verb|||roser, roste, rost|communication,feelings|neutral
 n-allergi|allergi|allergy|noun|m|allergier||health|neutral
-n-skjelle|skjelle|to scold|verb|||skjeller, skjelte, skjelt|communication|colloquial
+n-skjelle|skjelle|scold|verb|||skjeller, skjelte, skjelt|communication|colloquial
 n-kreft|kreft|cancer|noun|m|||health|neutral
-n-takke|takke|to thank|verb|||takker, takket, takket|communication,society|neutral
+n-takke|takke|thank|verb|||takker, takket, takket|communication,society|neutral
 n-medisin|medisin|medicine|noun|m|medisiner||health|neutral
 n-pille|pille|pill|noun|f|piller||health|neutral
-n-be|be|to ask / pray|verb|||ber, ba, bedt|communication,society|neutral
+n-be|be|ask / pray|verb|||ber, ba, bedt|communication,society|neutral
 n-sproeyte|sprøyte|injection / syringe|noun|f|sprøyter||health|neutral
-n-nikke|nikke|to nod|verb|||nikker, nikket, nikket|communication,body|neutral
+n-nikke|nikke|nod|verb|||nikker, nikket, nikket|communication,body|neutral
 n-vaksine|vaksine|vaccine|noun|m|vaksiner||health|neutral
 n-plaster|plaster|plaster / band-aid|noun|n|plaster||health|neutral
-n-vinke|vinke|to wave|verb|||vinker, vinket, vinket|communication,body|neutral
+n-vinke|vinke|wave|verb|||vinker, vinket, vinket|communication,body|neutral
 n-bandasje|bandasje|bandage|noun|m|bandasjer||health|neutral
-n-omfavne|omfavne|to embrace|verb|||omfavner, omfavnet, omfavnet|feelings,body|formal
+n-omfavne|omfavne|embrace|verb|||omfavner, omfavnet, omfavnet|feelings,body|formal
 n-behandling|behandling|treatment|noun|f|behandlinger||health|neutral
-n-stryke|stryke|to stroke / iron|verb|||stryker, strøk, strøket|body|neutral
+n-stryke|stryke|stroke / iron|verb|||stryker, strøk, strøket|body|neutral
 n-operasjon|operasjon|operation / surgery|noun|m|operasjoner||health|neutral
 n-resept|resept|prescription|noun|m|resepter||health|neutral
-n-lytte|lytte|to listen|verb|||lytter, lyttet, lyttet|communication,body|neutral
+n-lytte|lytte|listen|verb|||lytter, lyttet, lyttet|communication,body|neutral
 n-diagnose|diagnose|diagnosis|noun|m|diagnoser||health|neutral
-n-skue|skue|to behold|verb|||skuer, skuet, skuet|body|formal
+n-skue|skue|behold|verb|||skuer, skuet, skuet|body|formal
 n-symptom|symptom|symptom|noun|n|symptomer||health|neutral
 n-virus|virus|virus|noun|n|virus||health|neutral
-n-stirre|stirre|to stare|verb|||stirrer, stirret, stirret|body|neutral
+n-stirre|stirre|stare|verb|||stirrer, stirret, stirret|body|neutral
 n-bakterie|bakterie|bacterium|noun|m|bakterier||health|neutral
-n-kjede|kjede|to bore|verb|||kjeder, kjedet, kjedet|feelings|neutral
+n-kjede|kjede|bore|verb|||kjeder, kjedet, kjedet|feelings|neutral
 n-smitte|smitte|infection / contagion|noun|m|||health|neutral
-n-irritere|irritere|to annoy|verb|||irriterer, irriterte, irritert|feelings|neutral
+n-irritere|irritere|annoy|verb|||irriterer, irriterte, irritert|feelings|neutral
 n-sykehus|sykehus|hospital|noun|n|sykehus||health|neutral
 n-legekontor|legekontor|doctor's office|noun|n|legekontor||health|neutral
-n-troeste|trøste|to comfort|verb|||trøster, trøstet, trøstet|feelings,society|neutral
+n-troeste|trøste|comfort|verb|||trøster, trøstet, trøstet|feelings,society|neutral
 n-apotek|apotek|pharmacy|noun|n|apotek||health|neutral
-n-skremme|skremme|to frighten|verb|||skremmer, skremte, skremt|feelings|neutral
+n-skremme|skremme|frighten|verb|||skremmer, skremte, skremt|feelings|neutral
 n-pasient|pasient|patient|noun|m|pasienter||health,people|neutral
-n-overraske|overraske|to surprise|verb|||overrasker, overrasket, overrasket|feelings|neutral
+n-overraske|overraske|surprise|verb|||overrasker, overrasket, overrasket|feelings|neutral
 n-lege|lege|doctor|noun|m|leger||health,work,people|neutral
 n-sykepleier|sykepleier|nurse|noun|m|sykepleiere||health,work,people|neutral
-n-mistenke|mistenke|to suspect|verb|||mistenker, mistenkte, mistenkt|feelings|neutral
+n-mistenke|mistenke|suspect|verb|||mistenker, mistenkte, mistenkt|feelings|neutral
 n-tannlege|tannlege|dentist|noun|m|tannleger||health,work,people|neutral
-n-bekymre|bekymre|to worry|verb|||bekymrer, bekymret, bekymret|feelings|neutral
+n-bekymre|bekymre|worry|verb|||bekymrer, bekymret, bekymret|feelings|neutral
 n-psykolog|psykolog|psychologist|noun|m|psykologer||health,work,people|neutral
 n-ambulanse|ambulanse|ambulance|noun|m|ambulanser||health|neutral
 n-modig|modig|brave|adj||||feelings|neutral
@@ -458,59 +458,59 @@ n-uro|uro|unease / restlessness|noun|m|||feelings|neutral
 n-tynn|tynn|thin|adj||||body|neutral
 n-bekymring|bekymring|worry|noun|f|bekymringer||feelings|neutral
 n-stress|stress|stress|noun|n|||feelings,health|neutral
-n-kose|kose|to cuddle / enjoy|verb|||koser, koste, kost|feelings,body|colloquial
+n-kose|kose|cuddle / enjoy|verb|||koser, koste, kost|feelings,body|colloquial
 n-ensomhet|ensomhet|loneliness|noun|m|||feelings|neutral
-n-toerste|tørste|to thirst|verb|||tørster, tørstet, tørstet|body,food|neutral
+n-toerste|tørste|thirst|verb|||tørster, tørstet, tørstet|body,food|neutral
 n-tristhet|tristhet|sadness|noun|m|||feelings|neutral
 n-humoer|humør|mood|noun|n|||feelings|neutral
-n-koke|koke|to boil|verb|||koker, kokte, kokt|food|neutral
+n-koke|koke|boil|verb|||koker, kokte, kokt|food|neutral
 n-overraskelse|overraskelse|surprise|noun|m|overraskelser||feelings|neutral
-n-steke|steke|to fry|verb|||steker, stekte, stekt|food|neutral
+n-steke|steke|fry|verb|||steker, stekte, stekt|food|neutral
 n-skuffelse|skuffelse|disappointment|noun|m|skuffelser||feelings|neutral
-n-bake|bake|to bake|verb|||baker, bakte, bakt|food|neutral
+n-bake|bake|bake|verb|||baker, bakte, bakt|food|neutral
 n-lettelse|lettelse|relief|noun|m|lettelser||feelings|neutral
 n-spenning|spenning|excitement / tension|noun|f|spenninger||feelings|neutral
-n-lage|lage|to make|verb|||lager, laget, laget|food|neutral
+n-lage|lage|make|verb|||lager, laget, laget|food|neutral
 n-ro|ro|calm / peace|noun|f|||feelings|neutral
-n-skjaere|skjære|to cut|verb|||skjærer, skar, skåret|food|neutral
+n-skjaere|skjære|cut|verb|||skjærer, skar, skåret|food|neutral
 n-mot|mot|courage|noun|n|||feelings|neutral
 n-tillit|tillit|trust|noun|m|||feelings|neutral
-n-helle|helle|to pour|verb|||heller, helte, helt|food|neutral
+n-helle|helle|pour|verb|||heller, helte, helt|food|neutral
 n-respekt|respekt|respect|noun|m|||feelings,society|neutral
-n-servere|servere|to serve|verb|||serverer, serverte, servert|food|neutral
+n-servere|servere|serve|verb|||serverer, serverte, servert|food|neutral
 n-medfoelelse|medfølelse|compassion|noun|m|||feelings|neutral
-n-vaske|vaske|to wash|verb|||vasker, vasket, vasket|home|neutral
+n-vaske|vaske|wash|verb|||vasker, vasket, vasket|home|neutral
 n-takknemlighet|takknemlighet|gratitude|noun|m|||feelings|neutral
 n-latter|latter|laughter|noun|m|||feelings,body|neutral
-n-rydde|rydde|to tidy|verb|||rydder, ryddet, ryddet|home|neutral
+n-rydde|rydde|tidy|verb|||rydder, ryddet, ryddet|home|neutral
 n-graat|gråt|crying|noun|m|||feelings,body|neutral
-n-pusse|pusse|to polish|verb|||pusser, pusset, pusset|home|neutral
+n-pusse|pusse|polish|verb|||pusser, pusset, pusset|home|neutral
 n-smil|smil|smile|noun|n|smil||feelings,body|neutral
-n-feie|feie|to sweep|verb|||feier, feide, feid|home|neutral
+n-feie|feie|sweep|verb|||feier, feide, feid|home|neutral
 n-taare|tåre|tear|noun|f|tårer||feelings,body|neutral
 n-klem|klem|hug|noun|m|klemmer||feelings,body|colloquial
-n-kjoere|kjøre|to drive|verb|||kjører, kjørte, kjørt|travel|neutral
+n-kjoere|kjøre|drive|verb|||kjører, kjørte, kjørt|travel|neutral
 n-kyss|kyss|kiss|noun|n|kyss||feelings,body|neutral
-n-seile|seile|to sail|verb|||seiler, seilte, seilt|travel|neutral
+n-seile|seile|sail|verb|||seiler, seilte, seilt|travel|neutral
 n-tanke|tanke|thought|noun|m|tanker||feelings,communication|neutral
 n-droem|drøm|dream|noun|m|drømmer||feelings|neutral
-n-sykle|sykle|to cycle|verb|||sykler, syklet, syklet|travel|neutral
+n-sykle|sykle|cycle|verb|||sykler, syklet, syklet|travel|neutral
 n-minne|minne|memory|noun|n|minner||feelings,abstract|neutral
-n-parkere|parkere|to park|verb|||parkerer, parkerte, parkert|travel|neutral
+n-parkere|parkere|park|verb|||parkerer, parkerte, parkert|travel|neutral
 n-personlighet|personlighet|personality|noun|m|personligheter||feelings,people|neutral
-n-vokse|vokse|to grow|verb|||vokser, vokste, vokst|nature|neutral
+n-vokse|vokse|grow|verb|||vokser, vokste, vokst|nature|neutral
 n-karakter|karakter|character|noun|m|karakterer||feelings,people|neutral
 n-vane|vane|habit|noun|m|vaner||feelings,abstract|neutral
-n-blomstre|blomstre|to bloom|verb|||blomstrer, blomstret, blomstret|nature|neutral
+n-blomstre|blomstre|bloom|verb|||blomstrer, blomstret, blomstret|nature|neutral
 n-egenskap|egenskap|quality / trait|noun|m|egenskaper||feelings,abstract|neutral
-n-regne|regne|to rain|verb|||regner, regnet, regnet|weather|neutral
+n-regne|regne|rain|verb|||regner, regnet, regnet|weather|neutral
 n-holdning|holdning|attitude|noun|f|holdninger||feelings,society|neutral
 n-oppfoersel|oppførsel|behaviour|noun|m|||feelings,society|neutral
-n-blaase|blåse|to blow|verb|||blåser, blåste, blåst|weather|neutral
+n-blaase|blåse|blow|verb|||blåser, blåste, blåst|weather|neutral
 n-temperament|temperament|temperament|noun|n|temperamenter||feelings|neutral
-n-skinne|skinne|to shine|verb|||skinner, skinte, skint|weather|neutral
+n-skinne|skinne|shine|verb|||skinner, skinte, skint|weather|neutral
 n-vilje|vilje|will|noun|m|||feelings,abstract|neutral
-n-fryse|fryse|to freeze|verb|||fryser, frøs, frosset|weather|neutral
+n-fryse|fryse|freeze|verb|||fryser, frøs, frosset|weather|neutral
 n-taalmodighet|tålmodighet|patience|noun|m|||feelings|neutral
 n-aerlighet|ærlighet|honesty|noun|m|||feelings|neutral
 n-roed|rød|red|adj||||nature|neutral
@@ -594,43 +594,43 @@ n-besoek|besøk|visit|noun|n|besøk||society|neutral
 n-invitasjon|invitasjon|invitation|noun|m|invitasjoner||society,communication|neutral
 n-skitten|skitten|dirty|adj||||home|neutral
 n-feiring|feiring|celebration|noun|f|feiringer||society|neutral
-n-arbeide|arbeide|to work|verb|||arbeider, arbeidet, arbeidet|work|neutral
+n-arbeide|arbeide|work|verb|||arbeider, arbeidet, arbeidet|work|neutral
 n-tradisjon|tradisjon|tradition|noun|m|tradisjoner||society|neutral
-n-laere|lære|to learn / to teach|verb|||lærer, lærte, lært|school|neutral
+n-laere|lære|learn / teach|verb|||lærer, lærte, lært|school|neutral
 n-kultur|kultur|culture|noun|m|kulturer||society|neutral
 n-skikk|skikk|custom|noun|m|skikker||society|neutral
-n-betale|betale|to pay|verb|||betaler, betalte, betalt|money|neutral
+n-betale|betale|pay|verb|||betaler, betalte, betalt|money|neutral
 n-regel|regel|rule|noun|m|regler||society,abstract|neutral
-n-kjoepe|kjøpe|to buy|verb|||kjøper, kjøpte, kjøpt|shopping|neutral
+n-kjoepe|kjøpe|buy|verb|||kjøper, kjøpte, kjøpt|shopping|neutral
 n-plikt|plikt|duty|noun|f|plikter||society|neutral
-n-selge|selge|to sell|verb|||selger, solgte, solgt|shopping|neutral
+n-selge|selge|sell|verb|||selger, solgte, solgt|shopping|neutral
 n-ansvar|ansvar|responsibility|noun|n|ansvar||society,work|neutral
 n-makt|makt|power|noun|f|makter||society|neutral
-n-koste|koste|to cost|verb|||koster, kostet, kostet|money|neutral
+n-koste|koste|cost|verb|||koster, kostet, kostet|money|neutral
 n-konflikt|konflikt|conflict|noun|m|konflikter||society|neutral
-n-vinne|vinne|to win|verb|||vinner, vant, vunnet|sport|neutral
+n-vinne|vinne|win|verb|||vinner, vant, vunnet|sport|neutral
 n-krig|krig|war|noun|m|kriger||society|neutral
 n-fred|fred|peace|noun|m|||society|neutral
-n-tape|tape|to lose|verb|||taper, tapte, tapt|sport|neutral
+n-tape|tape|lose|verb|||taper, tapte, tapt|sport|neutral
 n-enighet|enighet|agreement / consensus|noun|f|||society,communication|neutral
-n-spille|spille|to play|verb|||spiller, spilte, spilt|sport|neutral
+n-spille|spille|play|verb|||spiller, spilte, spilt|sport|neutral
 n-uenighet|uenighet|disagreement|noun|f|uenigheter||society,communication|neutral
-n-leke|leke|to play (children)|verb|||leker, lekte, lekt|sport|colloquial
+n-leke|leke|play (children)|verb|||leker, lekte, lekt|sport|colloquial
 n-fellesskap|fellesskap|community / fellowship|noun|n|fellesskap||society|neutral
 n-rykte|rykte|rumour / reputation|noun|n|rykter||society,communication|neutral
-n-studere|studere|to study|verb|||studerer, studerte, studert|school|neutral
+n-studere|studere|study|verb|||studerer, studerte, studert|school|neutral
 n-sladder|sladder|gossip|noun|m|||society,communication|colloquial
-n-lese|lese|to read|verb|||leser, leste, lest|school|neutral
+n-lese|lese|read|verb|||leser, leste, lest|school|neutral
 n-folkeslag|folkeslag|ethnic group / people|noun|n|folkeslag||society,people|neutral
 n-generasjon|generasjon|generation|noun|m|generasjoner||society,people|neutral
-n-skrive|skrive|to write|verb|||skriver, skrev, skrevet|school|neutral
+n-skrive|skrive|write|verb|||skriver, skrev, skrevet|school|neutral
 n-klasse|klasse|class|noun|m|klasser||society,school|neutral
-n-telle|telle|to count|verb|||teller, telte, telt|numbers|neutral
+n-telle|telle|count|verb|||teller, telte, telt|numbers|neutral
 n-rolle|rolle|role|noun|f|roller||society,people|neutral
-n-maale|måle|to measure|verb|||måler, målte, målt|numbers|neutral
+n-maale|måle|measure|verb|||måler, målte, målt|numbers|neutral
 n-yrke|yrke|profession / occupation|noun|n|yrker||work,society|neutral
 n-arbeider|arbeider|worker|noun|m|arbeidere||work,people|neutral
-n-veie|veie|to weigh|verb|||veier, veide, veid|numbers|neutral
+n-veie|veie|weigh|verb|||veier, veide, veid|numbers|neutral
 n-kollega|kollega|colleague|noun|m|kolleger||work,people|neutral
 n-seks|seks|six|num||||numbers|neutral
 n-laerer|lærer|teacher|noun|m|lærere||work,school,people|neutral
@@ -706,33 +706,33 @@ n-helsevesen|helsevesen|health service|noun|n|||health,society|neutral
 n-aldring|aldring|ageing|noun|f|||body,health|neutral
 n-dobbel|dobbel|double|adj||||numbers|neutral
 n-utvikling|utvikling|development|noun|f|utviklinger||abstract,society|neutral
-n-jobbe|jobbe|to work (job)|verb|||jobber, jobbet, jobbet|work|colloquial
+n-jobbe|jobbe|work (job)|verb|||jobber, jobbet, jobbet|work|colloquial
 n-oppvekst|oppvekst|upbringing|noun|m|||family,society|neutral
 n-barndom|barndom|childhood|noun|m|||family,time|neutral
-n-planlegge|planlegge|to plan|verb|||planlegger, planla, planlagt|work|neutral
+n-planlegge|planlegge|plan|verb|||planlegger, planla, planlagt|work|neutral
 n-alderdom|alderdom|old age|noun|m|||body,time|neutral
-n-ansette|ansette|to hire|verb|||ansetter, ansatte, ansatt|work|formal
+n-ansette|ansette|hire|verb|||ansetter, ansatte, ansatt|work|formal
 n-identitet|identitet|identity|noun|m|identiteter||people,abstract|neutral
-n-forklare|forklare|to explain|verb|||forklarer, forklarte, forklart|communication|neutral
+n-forklare|forklare|explain|verb|||forklarer, forklarte, forklart|communication|neutral
 n-kjoenn|kjønn|sex / gender|noun|n|kjønn||people,body|neutral
 n-alder|alder|age|noun|m|aldre||people,time|neutral
-n-oeve|øve|to practise|verb|||øver, øvde, øvd|school|neutral
+n-oeve|øve|practise|verb|||øver, øvde, øvd|school|neutral
 n-kallenavn|kallenavn|nickname|noun|n|kallenavn||people,communication|neutral
-n-undervise|undervise|to teach|verb|||underviser, underviste, undervist|school|formal
+n-undervise|undervise|teach|verb|||underviser, underviste, undervist|school|formal
 n-etternavn|etternavn|surname|noun|n|etternavn||people,communication|neutral
 n-fornavn|fornavn|first name|noun|n|fornavn||people,communication|neutral
-n-laane|låne|to borrow / lend|verb|||låner, lånte, lånt|money|neutral
+n-laane|låne|borrow / lend|verb|||låner, lånte, lånt|money|neutral
 n-forelskelse|forelskelse|infatuation / falling in love|noun|m|forelskelser||feelings|neutral
-n-spare|spare|to save|verb|||sparer, sparte, spart|money|neutral
+n-spare|spare|save|verb|||sparer, sparte, spart|money|neutral
 n-omtanke|omtanke|consideration / care|noun|m|||feelings|neutral
-n-tjene|tjene|to earn|verb|||tjener, tjente, tjent|money|neutral
+n-tjene|tjene|earn|verb|||tjener, tjente, tjent|money|neutral
 n-omsorg|omsorg|care / nurturing|noun|f|||feelings,health|neutral
 n-medynk|medynk|pity|noun|m|||feelings|neutral
-n-eie|eie|to own|verb|||eier, eide, eid|money|neutral
+n-eie|eie|own|verb|||eier, eide, eid|money|neutral
 n-sjokk|sjokk|shock|noun|n|sjokk||feelings,health|neutral
-n-handle|handle|to shop|verb|||handler, handlet, handlet|shopping|neutral
+n-handle|handle|shop|verb|||handler, handlet, handlet|shopping|neutral
 n-forventning|forventning|expectation|noun|f|forventninger||feelings|neutral
-n-veksle|veksle|to exchange (money)|verb|||veksler, vekslet, vekslet|money|neutral
+n-veksle|veksle|exchange (money)|verb|||veksler, vekslet, vekslet|money|neutral
 n-nysgjerrighet|nysgjerrighet|curiosity|noun|m|||feelings|neutral
 n-iver|iver|eagerness / zeal|noun|m|||feelings|neutral
 n-rik|rik|rich|adj||||money|neutral
@@ -744,77 +744,77 @@ n-billig|billig|cheap|adj||||shopping|neutral
 n-visshet|visshet|certainty|noun|m|||feelings,abstract|neutral
 n-gratis|gratis|free (of charge)|adj||||money|neutral
 n-tvil|tvil|doubt|noun|m|||feelings,abstract|neutral
-n-lade|lade|to charge|verb|||lader, ladet, ladet|technology|neutral
+n-lade|lade|charge|verb|||lader, ladet, ladet|technology|neutral
 n-mistanke|mistanke|suspicion|noun|m|mistanker||feelings|neutral
 n-frihet|frihet|freedom|noun|f|friheter||feelings,society|neutral
-n-ringe|ringe|to call|verb|||ringer, ringte, ringt|communication|neutral
+n-ringe|ringe|call|verb|||ringer, ringte, ringt|communication|neutral
 n-haandledd|håndledd|wrist|noun|n|håndledd||body|neutral
-n-sende|sende|to send|verb|||sender, sendte, sendt|communication|neutral
+n-sende|sende|send|verb|||sender, sendte, sendt|communication|neutral
 n-knoke|knoke|knuckle|noun|m|knoker||body|neutral
 n-oeyelokk|øyelokk|eyelid|noun|n|øyelokk||body|neutral
-n-laste|laste|to load / download|verb|||laster, lastet, lastet|technology|neutral
+n-laste|laste|load / download|verb|||laster, lastet, lastet|technology|neutral
 n-oeyenbryn|øyenbryn|eyebrow|noun|n|øyenbryn||body|neutral
-n-trykke|trykke|to press|verb|||trykker, trykket, trykket|technology|neutral
+n-trykke|trykke|press|verb|||trykker, trykket, trykket|technology|neutral
 n-oeyevippe|øyevippe|eyelash|noun|f|øyevipper||body|neutral
-n-koble|koble|to connect|verb|||kobler, koblet, koblet|technology|neutral
+n-koble|koble|connect|verb|||kobler, koblet, koblet|technology|neutral
 n-kjeve|kjeve|jaw|noun|m|kjever||body|neutral
 n-strupe|strupe|throat / windpipe|noun|m|struper||body|neutral
-n-soeke|søke|to search / apply|verb|||søker, søkte, søkt|technology|neutral
+n-soeke|søke|search / apply|verb|||søker, søkte, søkt|technology|neutral
 n-ribbein|ribbein|rib|noun|n|ribbein||body|neutral
-n-svoemme|svømme|to swim|verb|||svømmer, svømte, svømt|sport|neutral
+n-svoemme|svømme|swim|verb|||svømmer, svømte, svømt|sport|neutral
 n-navle|navle|navel|noun|m|navler||body|neutral
 n-saale|såle|sole (of foot)|noun|m|såler||body|neutral
-n-loepe|løpe|to run|verb|||løper, løp, løpt|sport|neutral
+n-loepe|løpe|run|verb|||løper, løp, løpt|sport|neutral
 n-aare|åre|vein / artery|noun|f|årer||body|neutral
-n-hoppe|hoppe|to jump|verb|||hopper, hoppet, hoppet|sport|neutral
+n-hoppe|hoppe|jump|verb|||hopper, hoppet, hoppet|sport|neutral
 n-nerve|nerve|nerve|noun|m|nerver||body|neutral
-n-kaste|kaste|to throw|verb|||kaster, kastet, kastet|sport|neutral
+n-kaste|kaste|throw|verb|||kaster, kastet, kastet|sport|neutral
 n-organ|organ|organ|noun|n|organer||body|neutral
 n-lever|lever|liver|noun|f|levrer||body|neutral
-n-trene|trene|to train / exercise|verb|||trener, trente, trent|sport|neutral
+n-trene|trene|train / exercise|verb|||trener, trente, trent|sport|neutral
 n-nyre|nyre|kidney|noun|f|nyrer||body|neutral
-n-danse|danse|to dance|verb|||danser, danset, danset|sport|neutral
+n-danse|danse|dance|verb|||danser, danset, danset|sport|neutral
 n-tarm|tarm|intestine|noun|m|tarmer||body|neutral
-n-synge|synge|to sing|verb|||synger, sang, sunget|sport|neutral
+n-synge|synge|sing|verb|||synger, sang, sunget|sport|neutral
 n-celle|celle|cell|noun|f|celler||body,health|neutral
 n-svette|svette|sweat|noun|m|||body|neutral
-n-male|male|to paint|verb|||maler, malte, malt|sport|neutral
+n-male|male|paint|verb|||maler, malte, malt|sport|neutral
 n-skjegg|skjegg|beard|noun|n|skjegg||body|neutral
-n-tegne|tegne|to draw|verb|||tegner, tegnet, tegnet|sport|neutral
+n-tegne|tegne|draw|verb|||tegner, tegnet, tegnet|sport|neutral
 n-bart|bart|moustache|noun|m|barter||body|neutral
 n-rynke|rynke|wrinkle|noun|f|rynker||body|neutral
-n-regjere|regjere|to govern|verb|||regjerer, regjerte, regjert|society|formal
+n-regjere|regjere|govern|verb|||regjerer, regjerte, regjert|society|formal
 n-arr|arr|scar|noun|n|arr||body,health|neutral
-n-forby|forby|to forbid|verb|||forbyr, forbød, forbudt|society|formal
+n-forby|forby|forbid|verb|||forbyr, forbød, forbudt|society|formal
 n-foedselsdag|fødselsdag|birthday|noun|m|fødselsdager||family,time|neutral
-n-tillate|tillate|to allow|verb|||tillater, tillot, tillatt|society|formal
+n-tillate|tillate|allow|verb|||tillater, tillot, tillatt|society|formal
 n-stamtre|stamtre|family tree|noun|n|stamtrær||family|neutral
 n-arving|arving|heir|noun|m|arvinger||family,people|neutral
-n-forandre|forandre|to change|verb|||forandrer, forandret, forandret|abstract|neutral
+n-forandre|forandre|change|verb|||forandrer, forandret, forandret|abstract|neutral
 n-forelder|forelder|parent|noun|m|foreldre||family,people|neutral
-n-utvikle|utvikle|to develop|verb|||utvikler, utviklet, utviklet|abstract|formal
+n-utvikle|utvikle|develop|verb|||utvikler, utviklet, utviklet|abstract|formal
 n-stesoenn|stesønn|stepson|noun|m|stesønner||family,people|neutral
 n-stemor|stemor|stepmother|noun|f|stemødre||family,people|neutral
-n-skape|skape|to create|verb|||skaper, skapte, skapt|abstract|neutral
+n-skape|skape|create|verb|||skaper, skapte, skapt|abstract|neutral
 n-stefar|stefar|stepfather|noun|m|stefedre||family,people|neutral
-n-finnes|finnes|to exist|verb|||finnes, fantes, funnes|abstract|neutral
+n-finnes|finnes|exist|verb|||finnes, fantes, funnes|abstract|neutral
 n-svoger|svoger|brother-in-law|noun|m|svogere||family,people|neutral
-n-bety|bety|to mean|verb|||betyr, betydde, betydd|abstract|neutral
+n-bety|bety|mean|verb|||betyr, betydde, betydd|abstract|neutral
 n-svigerinne|svigerinne|sister-in-law|noun|f|svigerinner||family,people|neutral
 n-barnebarn|barnebarn|grandchild|noun|n|barnebarn||family,people|neutral
-n-bevise|bevise|to prove|verb|||beviser, beviste, bevist|abstract|formal
+n-bevise|bevise|prove|verb|||beviser, beviste, bevist|abstract|formal
 n-oldefar|oldefar|great-grandfather|noun|m|oldefedre||family,people|neutral
-n-undersoeke|undersøke|to investigate|verb|||undersøker, undersøkte, undersøkt|abstract|formal
+n-undersoeke|undersøke|investigate|verb|||undersøker, undersøkte, undersøkt|abstract|formal
 n-bestevenn|bestevenn|best friend|noun|m|bestevenner||people,feelings|colloquial
-n-oppdage|oppdage|to discover|verb|||oppdager, oppdaget, oppdaget|abstract|neutral
+n-oppdage|oppdage|discover|verb|||oppdager, oppdaget, oppdaget|abstract|neutral
 n-venninne|venninne|female friend|noun|f|venninner||people|neutral
 n-kamerat|kamerat|mate / buddy|noun|m|kamerater||people|colloquial
-n-velge|velge|to choose|verb|||velger, valgte, valgt|abstract|neutral
+n-velge|velge|choose|verb|||velger, valgte, valgt|abstract|neutral
 n-rival|rival|rival|noun|m|rivaler||people|neutral
-n-bestemme|bestemme|to decide|verb|||bestemmer, bestemte, bestemt|abstract|neutral
+n-bestemme|bestemme|decide|verb|||bestemmer, bestemte, bestemt|abstract|neutral
 n-fiende|fiende|enemy|noun|m|fiender||people|neutral
 n-offer|offer|victim|noun|n|ofre||people,society|neutral
-n-passe|passe|to fit / suit|verb|||passer, passet, passet|abstract|neutral
+n-passe|passe|fit / suit|verb|||passer, passet, passet|abstract|neutral
 n-vitne|vitne|witness|noun|n|vitner||people,society|neutral
 n-vanlig|vanlig|usual / common|adj||||abstract|neutral
 n-eier|eier|owner|noun|m|eiere||people,society|neutral
@@ -864,274 +864,274 @@ n-rom|rom|room|noun|n|rom||home|neutral
 n-ferdig|ferdig|finished|adj||||work|neutral
 n-kjoekken|kjøkken|kitchen|noun|n|kjøkken||home|neutral
 n-stue|stue|living room|noun|f|stuer||home|neutral
-n-bli|bli|to become / to stay|verb|||blir, ble, blitt|function|neutral
+n-bli|bli|become / stay|verb|||blir, ble, blitt|function|neutral
 n-soverom|soverom|bedroom|noun|n|soverom||home|neutral
-n-sette|sette|to set / to put|verb|||setter, satte, satt|function|neutral
+n-sette|sette|set / put|verb|||setter, satte, satt|function|neutral
 n-bad|bad|bathroom|noun|n|bad||home|neutral
 n-vindu|vindu|window|noun|n|vinduer||home|neutral
-n-legge|legge|to lay / to put|verb|||legger, la, lagt|function|neutral
+n-legge|legge|lay / put|verb|||legger, la, lagt|function|neutral
 n-vegg|vegg|wall|noun|m|vegger||home|neutral
-n-holde|holde|to hold|verb|||holder, holdt, holdt|function|neutral
+n-holde|holde|hold|verb|||holder, holdt, holdt|function|neutral
 n-gulv|gulv|floor|noun|n|gulv||home|neutral
-n-staa|stå|to stand|verb|||står, sto, stått|function|neutral
+n-staa|stå|stand|verb|||står, sto, stått|function|neutral
 n-tak|tak|roof|noun|n|tak||home|neutral
 n-trapp|trapp|stairs|noun|f|trapper||home|neutral
-n-sitte|sitte|to sit|verb|||sitter, satt, sittet|function|neutral
+n-sitte|sitte|sit|verb|||sitter, satt, sittet|function|neutral
 n-seng|seng|bed|noun|f|senger||home|neutral
-n-ligge|ligge|to lie / to be located|verb|||ligger, lå, ligget|function|neutral
+n-ligge|ligge|lie / be located|verb|||ligger, lå, ligget|function|neutral
 n-sofa|sofa|sofa|noun|m|sofaer||home|neutral
 n-skap|skap|cupboard|noun|n|skap||home|neutral
-n-begynne|begynne|to begin|verb|||begynner, begynte, begynt|function|neutral
+n-begynne|begynne|begin|verb|||begynner, begynte, begynt|function|neutral
 n-hylle|hylle|shelf|noun|f|hyller||home|neutral
-n-slutte|slutte|to stop / to finish|verb|||slutter, sluttet, sluttet|function|neutral
+n-slutte|slutte|stop / finish|verb|||slutter, sluttet, sluttet|function|neutral
 n-lampe|lampe|lamp|noun|f|lamper||home|neutral
-n-aapne|åpne|to open|verb|||åpner, åpnet, åpnet|function|neutral
+n-aapne|åpne|open|verb|||åpner, åpnet, åpnet|function|neutral
 n-speil|speil|mirror|noun|n|speil||home|neutral
 n-teppe|teppe|carpet|noun|n|tepper||home|neutral
-n-lukke|lukke|to close|verb|||lukker, lukket, lukket|function|neutral
+n-lukke|lukke|close|verb|||lukker, lukket, lukket|function|neutral
 n-pute|pute|pillow|noun|f|puter||home|neutral
-n-klare|klare|to manage / to cope|verb|||klarer, klarte, klart|function|neutral
+n-klare|klare|manage / cope|verb|||klarer, klarte, klart|function|neutral
 n-dyne|dyne|duvet|noun|f|dyner||home|neutral
-n-vise|vise|to show|verb|||viser, viste, vist|function|neutral
+n-vise|vise|show|verb|||viser, viste, vist|function|neutral
 n-noekkel|nøkkel|key|noun|m|nøkler||home|neutral
 n-laas|lås|lock|noun|m|låser||home|neutral
-n-miste|miste|to lose|verb|||mister, mistet, mistet|function|neutral
+n-miste|miste|lose|verb|||mister, mistet, mistet|function|neutral
 n-port|port|gate|noun|m|porter||home|neutral
-n-bringe|bringe|to bring|verb|||bringer, brakte, brakt|function|neutral
+n-bringe|bringe|bring|verb|||bringer, brakte, brakt|function|neutral
 n-hage|hage|garden|noun|m|hager||home|neutral
 n-gjerde|gjerde|fence|noun|n|gjerder||home|neutral
-n-dra|dra|to go / to pull|verb|||drar, dro, dratt|function|neutral
+n-dra|dra|go / pull|verb|||drar, dro, dratt|function|neutral
 n-vaer|vær|weather|noun|n|||weather|neutral
-n-vente|vente|to wait|verb|||venter, ventet, ventet|function|neutral
+n-vente|vente|wait|verb|||venter, ventet, ventet|function|neutral
 n-leilighet|leilighet|apartment|noun|f|leiligheter||home|neutral
-n-falle|falle|to fall|verb|||faller, falt, falt|function|neutral
+n-falle|falle|fall|verb|||faller, falt, falt|function|neutral
 n-bygning|bygning|building|noun|m|bygninger||city|neutral
 n-hjoerne|hjørne|corner|noun|n|hjørner||home|neutral
-n-bruke|bruke|to use|verb|||bruker, brukte, brukt|function|neutral
+n-bruke|bruke|use|verb|||bruker, brukte, brukt|function|neutral
 n-loft|loft|attic|noun|n|loft||home|neutral
-n-bygge|bygge|to build|verb|||bygger, bygde, bygd|function|neutral
+n-bygge|bygge|build|verb|||bygger, bygde, bygd|function|neutral
 n-kjeller|kjeller|basement|noun|m|kjellere||home|neutral
 n-balkong|balkong|balcony|noun|m|balkonger||home|neutral
-n-synes|synes|to think / to seem|verb|||synes, syntes, synes|communication|neutral
+n-synes|synes|think / seem|verb|||synes, syntes, synes|communication|neutral
 n-moebel|møbel|furniture|noun|n|møbler||home|neutral
-n-tore|tore|to dare|verb|||tør, torde, tort|feelings|neutral
+n-tore|tore|dare|verb|||tør, torde, tort|feelings|neutral
 n-skuff|skuff|drawer|noun|m|skuffer||home|neutral
-n-flytte|flytte|to move (relocate)|verb|||flytter, flyttet, flyttet|home|neutral
+n-flytte|flytte|move (relocate)|verb|||flytter, flyttet, flyttet|home|neutral
 n-komfyr|komfyr|stove|noun|m|komfyrer||home|neutral
 n-ovn|ovn|oven|noun|m|ovner||home|neutral
-n-stoppe|stoppe|to stop|verb|||stopper, stoppet, stoppet|function|neutral
+n-stoppe|stoppe|stop|verb|||stopper, stoppet, stoppet|function|neutral
 n-kjoeleskap|kjøleskap|fridge|noun|n|kjøleskap||home|neutral
-n-fortsette|fortsette|to continue|verb|||fortsetter, fortsatte, fortsatt|function|neutral
+n-fortsette|fortsette|continue|verb|||fortsetter, fortsatte, fortsatt|function|neutral
 n-fryser|fryser|freezer|noun|m|frysere||home|neutral
 n-vask|vask|sink|noun|m|vasker||home|neutral
-n-fullfoere|fullføre|to complete|verb|||fullfører, fullførte, fullført|function|neutral
+n-fullfoere|fullføre|complete|verb|||fullfører, fullførte, fullført|function|neutral
 n-kran|kran|tap|noun|f|kraner||home|neutral
-n-avslutte|avslutte|to end|verb|||avslutter, avsluttet, avsluttet|function|neutral
+n-avslutte|avslutte|end|verb|||avslutter, avsluttet, avsluttet|function|neutral
 n-gryte|gryte|pot|noun|f|gryter||home|neutral
-n-starte|starte|to start|verb|||starter, startet, startet|function|neutral
+n-starte|starte|start|verb|||starter, startet, startet|function|neutral
 n-kjele|kjele|kettle|noun|m|kjeler||home|neutral
 n-tallerken|tallerken|plate|noun|m|tallerkener||home|neutral
-n-gjenta|gjenta|to repeat|verb|||gjentar, gjentok, gjentatt|function|neutral
+n-gjenta|gjenta|repeat|verb|||gjentar, gjentok, gjentatt|function|neutral
 n-kopp|kopp|cup|noun|m|kopper||home|neutral
-n-fange|fange|to catch|verb|||fanger, fanget, fanget|function|neutral
+n-fange|fange|catch|verb|||fanger, fanget, fanget|function|neutral
 n-glass|glass|glass|noun|n|glass||home|neutral
-n-gripe|gripe|to grab|verb|||griper, grep, grepet|function|neutral
+n-gripe|gripe|grab|verb|||griper, grep, grepet|function|neutral
 n-skaal|skål|bowl|noun|f|skåler||home|neutral
 n-kniv|kniv|knife|noun|m|kniver||home|neutral
-n-slippe|slippe|to release / to drop|verb|||slipper, slapp, sluppet|function|neutral
+n-slippe|slippe|release / drop|verb|||slipper, slapp, sluppet|function|neutral
 n-gaffel|gaffel|fork|noun|m|gafler||home|neutral
-n-dytte|dytte|to push|verb|||dytter, dyttet, dyttet|function|colloquial
+n-dytte|dytte|push|verb|||dytter, dyttet, dyttet|function|colloquial
 n-skje|skje|spoon|noun|f|skjeer||home|neutral
 n-flaske|flaske|bottle|noun|f|flasker||home|neutral
-n-skyve|skyve|to push / to shove|verb|||skyver, skjøv, skjøvet|function|neutral
+n-skyve|skyve|push / shove|verb|||skyver, skjøv, skjøvet|function|neutral
 n-boks|boks|can|noun|m|bokser||home|neutral
-n-trekke|trekke|to pull|verb|||trekker, trakk, trukket|function|neutral
+n-trekke|trekke|pull|verb|||trekker, trakk, trukket|function|neutral
 n-pose|pose|bag|noun|m|poser||shopping|neutral
-n-dele|dele|to share / to divide|verb|||deler, delte, delt|function|neutral
+n-dele|dele|share / divide|verb|||deler, delte, delt|function|neutral
 n-spann|spann|bucket|noun|n|spann||home|neutral
 n-boette|bøtte|bucket|noun|f|bøtter||home|neutral
-n-samle|samle|to gather / to collect|verb|||samler, samlet, samlet|function|neutral
+n-samle|samle|gather / collect|verb|||samler, samlet, samlet|function|neutral
 n-kost|kost|broom|noun|m|koster||home|neutral
-n-bytte|bytte|to swap / to change|verb|||bytter, byttet, byttet|function|neutral
+n-bytte|bytte|swap / change|verb|||bytter, byttet, byttet|function|neutral
 n-klut|klut|cloth|noun|m|kluter||home|neutral
 n-saape|såpe|soap|noun|f|||home|neutral
-n-endre|endre|to change|verb|||endrer, endret, endret|function|neutral
+n-endre|endre|change|verb|||endrer, endret, endret|function|neutral
 n-haandkle|håndkle|towel|noun|n|håndklær||home|neutral
-n-oeke|øke|to increase|verb|||øker, økte, økt|function|neutral
+n-oeke|øke|increase|verb|||øker, økte, økt|function|neutral
 n-tannboerste|tannbørste|toothbrush|noun|m|tannbørster||home|neutral
-n-fylle|fylle|to fill|verb|||fyller, fylte, fylt|function|neutral
+n-fylle|fylle|fill|verb|||fyller, fylte, fylt|function|neutral
 n-do|do|toilet|noun|n|||home|colloquial
 n-toalett|toalett|toilet|noun|n|toaletter||home|neutral
-n-oedelegge|ødelegge|to destroy / to break|verb|||ødelegger, ødela, ødelagt|function|neutral
+n-oedelegge|ødelegge|destroy / break|verb|||ødelegger, ødela, ødelagt|function|neutral
 n-dusj|dusj|shower|noun|m|dusjer||home|neutral
-n-reparere|reparere|to repair|verb|||reparerer, reparerte, reparert|function|neutral
+n-reparere|reparere|repair|verb|||reparerer, reparerte, reparert|function|neutral
 n-baderom|baderom|bathroom|noun|n|baderom||home|neutral
 n-lys|lys|light|noun|n|lys||home|neutral
-n-fikse|fikse|to fix|verb|||fikser, fikset, fikset|function|colloquial
+n-fikse|fikse|fix|verb|||fikser, fikset, fikset|function|colloquial
 n-stearinlys|stearinlys|candle|noun|n|stearinlys||home|neutral
-n-boeye|bøye|to bend|verb|||bøyer, bøyde, bøyd|function|neutral
+n-boeye|bøye|bend|verb|||bøyer, bøyde, bøyd|function|neutral
 n-fyrstikk|fyrstikk|match|noun|f|fyrstikker||home|neutral
-n-rive|rive|to tear|verb|||river, rev, revet|function|neutral
+n-rive|rive|tear|verb|||river, rev, revet|function|neutral
 n-klokke|klokke|clock|noun|f|klokker||time|neutral
 n-radio|radio|radio|noun|m|radioer||technology|neutral
-n-slaa|slå|to hit / to strike|verb|||slår, slo, slått|function|neutral
+n-slaa|slå|hit / strike|verb|||slår, slo, slått|function|neutral
 n-broed|brød|bread|noun|n|brød||food|neutral
-n-sparke|sparke|to kick|verb|||sparker, sparket, sparket|sport|neutral
+n-sparke|sparke|kick|verb|||sparker, sparket, sparket|sport|neutral
 n-smoer|smør|butter|noun|n|||food|neutral
-n-baere|bære|to carry|verb|||bærer, bar, båret|function|neutral
+n-baere|bære|carry|verb|||bærer, bar, båret|function|neutral
 n-ost|ost|cheese|noun|m|oster||food|neutral
 n-egg|egg|egg|noun|n|egg||food|neutral
-n-henge|henge|to hang|verb|||henger, hang, hengt|home|neutral
+n-henge|henge|hang|verb|||henger, hang, hengt|home|neutral
 n-melk|melk|milk|noun|f|||food|neutral
-n-motta|motta|to receive|verb|||mottar, mottok, mottatt|communication|formal
+n-motta|motta|receive|verb|||mottar, mottok, mottatt|communication|formal
 n-kjoett|kjøtt|meat|noun|n|||food|neutral
 n-fisk|fisk|fish|noun|m|fisker||food|neutral
-n-hente|hente|to fetch / to pick up|verb|||henter, hentet, hentet|function|neutral
+n-hente|hente|fetch / pick up|verb|||henter, hentet, hentet|function|neutral
 n-kylling|kylling|chicken|noun|m|kyllinger||food|neutral
-n-levere|levere|to deliver|verb|||leverer, leverte, levert|work|neutral
+n-levere|levere|deliver|verb|||leverer, leverte, levert|work|neutral
 n-poelse|pølse|sausage|noun|f|pølser||food|neutral
-n-tilby|tilby|to offer|verb|||tilbyr, tilbød, tilbudt|work|neutral
+n-tilby|tilby|offer|verb|||tilbyr, tilbød, tilbudt|work|neutral
 n-skinke|skinke|ham|noun|f|skinker||food|neutral
 n-suppe|suppe|soup|noun|f|supper||food|neutral
-n-vokte|vokte|to guard|verb|||vokter, voktet, voktet|function|neutral
+n-vokte|vokte|guard|verb|||vokter, voktet, voktet|function|neutral
 n-salat|salat|salad|noun|m|salater||food|neutral
-n-beskytte|beskytte|to protect|verb|||beskytter, beskyttet, beskyttet|function|neutral
+n-beskytte|beskytte|protect|verb|||beskytter, beskyttet, beskyttet|function|neutral
 n-ris|ris|rice|noun|m|||food|neutral
 n-pasta|pasta|pasta|noun|m|||food|neutral
-n-redde|redde|to save / to rescue|verb|||redder, reddet, reddet|function|neutral
+n-redde|redde|save / rescue|verb|||redder, reddet, reddet|function|neutral
 n-potet|potet|potato|noun|m|poteter||food|neutral
-n-lete|lete|to look for|verb|||leter, lette, lett|function|neutral
+n-lete|lete|look for|verb|||leter, lette, lett|function|neutral
 n-loek|løk|onion|noun|m|løker||food|neutral
-n-kikke|kikke|to peek / to look|verb|||kikker, kikket, kikket|function|colloquial
+n-kikke|kikke|peek / look|verb|||kikker, kikket, kikket|function|colloquial
 n-gulrot|gulrot|carrot|noun|f|gulrøtter||food|neutral
 n-tomat|tomat|tomato|noun|m|tomater||food|neutral
-n-droemme|drømme|to dream|verb|||drømmer, drømte, drømt|feelings|neutral
+n-droemme|drømme|dream|verb|||drømmer, drømte, drømt|feelings|neutral
 n-agurk|agurk|cucumber|noun|m|agurker||food|neutral
-n-foedes|fødes|to be born|verb|||fødes, fødtes, født|health|neutral
+n-foedes|fødes|be born|verb|||fødes, fødtes, født|health|neutral
 n-eple|eple|apple|noun|n|epler||food|neutral
-n-hende|hende|to happen|verb|||hender, hendte, hendt|abstract|neutral
+n-hende|hende|happen|verb|||hender, hendte, hendt|abstract|neutral
 n-banan|banan|banana|noun|m|bananer||food|neutral
 n-appelsin|appelsin|orange|noun|m|appelsiner||food|neutral
-n-foregaa|foregå|to take place|verb|||foregår, foregikk, foregått|abstract|formal
+n-foregaa|foregå|take place|verb|||foregår, foregikk, foregått|abstract|formal
 n-paere|pære|pear|noun|f|pærer||food|neutral
-n-virke|virke|to work / to seem|verb|||virker, virket, virket|function|neutral
+n-virke|virke|work / seem|verb|||virker, virket, virket|function|neutral
 n-drue|drue|grape|noun|f|druer||food|neutral
 n-jordbaer|jordbær|strawberry|noun|n|jordbær||food|neutral
-n-fungere|fungere|to function|verb|||fungerer, fungerte, fungert|function|neutral
+n-fungere|fungere|function|verb|||fungerer, fungerte, fungert|function|neutral
 n-baer|bær|berry|noun|n|bær||food|neutral
-n-gjelde|gjelde|to apply / to be valid|verb|||gjelder, gjaldt, gjeldt|abstract|formal
+n-gjelde|gjelde|apply / be valid|verb|||gjelder, gjaldt, gjeldt|abstract|formal
 n-frukt|frukt|fruit|noun|f|frukter||food|neutral
-n-tilhoere|tilhøre|to belong to|verb|||tilhører, tilhørte, tilhørt|abstract|formal
+n-tilhoere|tilhøre|belong to|verb|||tilhører, tilhørte, tilhørt|abstract|formal
 n-groennsak|grønnsak|vegetable|noun|f|grønnsaker||food|neutral
 n-sukker|sukker|sugar|noun|n|||food|neutral
-n-mangle|mangle|to lack|verb|||mangler, manglet, manglet|abstract|neutral
+n-mangle|mangle|lack|verb|||mangler, manglet, manglet|abstract|neutral
 n-salt|salt|salt|noun|n|||food|neutral
-n-inneholde|inneholde|to contain|verb|||inneholder, inneholdt, inneholdt|abstract|neutral
+n-inneholde|inneholde|contain|verb|||inneholder, inneholdt, inneholdt|abstract|neutral
 n-pepper|pepper|pepper|noun|m|||food|neutral
 n-mel|mel|flour|noun|n|||food|neutral
-n-loese|løse|to solve|verb|||løser, løste, løst|function|neutral
+n-loese|løse|solve|verb|||løser, løste, løst|function|neutral
 n-olje|olje|oil|noun|f|oljer||food|neutral
-n-lykkes|lykkes|to succeed|verb|||lykkes, lyktes, lykkes|abstract|neutral
+n-lykkes|lykkes|succeed|verb|||lykkes, lyktes, lykkes|abstract|neutral
 n-honning|honning|honey|noun|m|||food|neutral
-n-mislykkes|mislykkes|to fail|verb|||mislykkes, mislyktes, mislykkes|abstract|neutral
+n-mislykkes|mislykkes|fail|verb|||mislykkes, mislyktes, mislykkes|abstract|neutral
 n-syltetoey|syltetøy|jam|noun|n|||food|neutral
 n-sjokolade|sjokolade|chocolate|noun|m|sjokolader||food|neutral
-n-delta|delta|to participate|verb|||deltar, deltok, deltatt|society|neutral
+n-delta|delta|participate|verb|||deltar, deltok, deltatt|society|neutral
 n-kake|kake|cake|noun|f|kaker||food|neutral
-n-moetes|møtes|to meet (each other)|verb|||møtes, møttes, møtt|function|neutral
+n-moetes|møtes|meet (each other)|verb|||møtes, møttes, møtt|function|neutral
 n-kjeks|kjeks|biscuit|noun|m|kjeks||food|neutral
 n-is|is|ice cream|noun|m|iser||food|neutral
-n-lede|lede|to lead|verb|||leder, ledet, ledet|work|neutral
+n-lede|lede|lead|verb|||leder, ledet, ledet|work|neutral
 n-godteri|godteri|candy|noun|n|||food|neutral
-n-styre|styre|to control / to steer|verb|||styrer, styrte, styrt|function|neutral
+n-styre|styre|control / steer|verb|||styrer, styrte, styrt|function|neutral
 n-kaffe|kaffe|coffee|noun|m|||food|neutral
-n-ordne|ordne|to arrange / to sort out|verb|||ordner, ordnet, ordnet|function|neutral
+n-ordne|ordne|arrange / sort out|verb|||ordner, ordnet, ordnet|function|neutral
 n-te|te|tea|noun|m|||food|neutral
 n-juice|juice|juice|noun|m|||food|neutral
-n-toerke|tørke|to dry / to wipe|verb|||tørker, tørket, tørket|home|neutral
+n-toerke|tørke|dry / wipe|verb|||tørker, tørket, tørket|home|neutral
 n-oel|øl|beer|noun|n|||food|neutral
-n-smelte|smelte|to melt|verb|||smelter, smeltet, smeltet|nature|neutral
+n-smelte|smelte|melt|verb|||smelter, smeltet, smeltet|nature|neutral
 n-vin|vin|wine|noun|m|viner||food|neutral
-n-brenne|brenne|to burn|verb|||brenner, brant, brent|function|neutral
+n-brenne|brenne|burn|verb|||brenner, brant, brent|function|neutral
 n-saft|saft|juice|noun|f|safter||food|neutral
 n-frokost|frokost|breakfast|noun|m|frokoster||food|neutral
-n-tenne|tenne|to light / to ignite|verb|||tenner, tente, tent|function|neutral
+n-tenne|tenne|light / ignite|verb|||tenner, tente, tent|function|neutral
 n-lunsj|lunsj|lunch|noun|m|lunsjer||food|neutral
-n-slukke|slukke|to extinguish|verb|||slukker, slukket, slukket|function|neutral
+n-slukke|slukke|extinguish|verb|||slukker, slukket, slukket|function|neutral
 n-middag|middag|dinner|noun|m|middager||food|neutral
 n-maaltid|måltid|meal|noun|n|måltider||food|neutral
-n-lyse|lyse|to light / to glow|verb|||lyser, lyste, lyst|function|neutral
+n-lyse|lyse|light / glow|verb|||lyser, lyste, lyst|function|neutral
 n-rett|rett|dish|noun|m|retter||food|neutral
-n-flyte|flyte|to float|verb|||flyter, fløt, flytt|nature|neutral
+n-flyte|flyte|float|verb|||flyter, fløt, flytt|nature|neutral
 n-oppskrift|oppskrift|recipe|noun|f|oppskrifter||food|neutral
-n-synke|synke|to sink|verb|||synker, sank, sunket|nature|neutral
+n-synke|synke|sink|verb|||synker, sank, sunket|nature|neutral
 n-sild|sild|herring|noun|f|sild||food|neutral
 n-laks|laks|salmon|noun|m|laks||food|neutral
-n-klatre|klatre|to climb|verb|||klatrer, klatret, klatret|sport|neutral
+n-klatre|klatre|climb|verb|||klatrer, klatret, klatret|sport|neutral
 n-reke|reke|shrimp|noun|f|reker||food|neutral
-n-krype|krype|to crawl|verb|||kryper, krøp, krøpet|function|neutral
+n-krype|krype|crawl|verb|||kryper, krøp, krøpet|function|neutral
 n-noett|nøtt|nut|noun|f|nøtter||food|neutral
 n-klaer|klær|clothes|noun||klær||clothing|neutral
-n-gli|gli|to slide / to glide|verb|||glir, gled, glidd|function|neutral
+n-gli|gli|slide / glide|verb|||glir, gled, glidd|function|neutral
 n-genser|genser|sweater|noun|m|gensere||clothing|neutral
-n-snu|snu|to turn|verb|||snur, snudde, snudd|function|neutral
+n-snu|snu|turn|verb|||snur, snudde, snudd|function|neutral
 n-skjorte|skjorte|shirt|noun|f|skjorter||clothing|neutral
-n-klikke|klikke|to click|verb|||klikker, klikket, klikket|technology|colloquial
+n-klikke|klikke|click|verb|||klikker, klikket, klikket|technology|colloquial
 n-bukse|bukse|trousers|noun|f|bukser||clothing|neutral
 n-kjole|kjole|dress|noun|m|kjoler||clothing|neutral
-n-lagre|lagre|to save / to store|verb|||lagrer, lagret, lagret|technology|neutral
+n-lagre|lagre|save / store|verb|||lagrer, lagret, lagret|technology|neutral
 n-skjoert|skjørt|skirt|noun|n|skjørt||clothing|neutral
-n-skru|skru|to screw / to turn|verb|||skrur, skrudde, skrudd|technology|colloquial
+n-skru|skru|screw / turn|verb|||skrur, skrudde, skrudd|technology|colloquial
 n-jakke|jakke|jacket|noun|f|jakker||clothing|neutral
 n-frakk|frakk|coat|noun|m|frakker||clothing|neutral
-n-fortjene|fortjene|to deserve|verb|||fortjener, fortjente, fortjent|abstract|neutral
+n-fortjene|fortjene|deserve|verb|||fortjener, fortjente, fortjent|abstract|neutral
 n-kaape|kåpe|coat|noun|f|kåper||clothing|neutral
-n-skylde|skylde|to owe|verb|||skylder, skyldte, skyldt|money|neutral
+n-skylde|skylde|owe|verb|||skylder, skyldte, skyldt|money|neutral
 n-sko|sko|shoe|noun|m|sko||clothing|neutral
-n-unngaa|unngå|to avoid|verb|||unngår, unngikk, unngått|function|neutral
+n-unngaa|unngå|avoid|verb|||unngår, unngikk, unngått|function|neutral
 n-stoevel|støvel|boot|noun|m|støvler||clothing|neutral
 n-sokk|sokk|sock|noun|m|sokker||clothing|neutral
-n-roemme|rømme|to flee / to escape|verb|||rømmer, rømte, rømt|function|neutral
+n-roemme|rømme|flee / escape|verb|||rømmer, rømte, rømt|function|neutral
 n-stroempe|strømpe|stocking|noun|f|strømper||clothing|neutral
-n-gjemme|gjemme|to hide|verb|||gjemmer, gjemte, gjemt|function|neutral
+n-gjemme|gjemme|hide|verb|||gjemmer, gjemte, gjemt|function|neutral
 n-hatt|hatt|hat|noun|m|hatter||clothing|neutral
-n-forsvinne|forsvinne|to disappear|verb|||forsvinner, forsvant, forsvunnet|function|neutral
+n-forsvinne|forsvinne|disappear|verb|||forsvinner, forsvant, forsvunnet|function|neutral
 n-lue|lue|cap|noun|f|luer||clothing|neutral
 n-skjerf|skjerf|scarf|noun|n|skjerf||clothing|neutral
-n-ankomme|ankomme|to arrive|verb|||ankommer, ankom, ankommet|travel|formal
+n-ankomme|ankomme|arrive|verb|||ankommer, ankom, ankommet|travel|formal
 n-hanske|hanske|glove|noun|m|hansker||clothing|neutral
-n-forlate|forlate|to leave|verb|||forlater, forlot, forlatt|function|neutral
+n-forlate|forlate|leave|verb|||forlater, forlot, forlatt|function|neutral
 n-vott|vott|mitten|noun|m|votter||clothing|neutral
 n-belte|belte|belt|noun|n|belter||clothing|neutral
-n-haste|haste|to be urgent|verb|||haster, hastet, hastet|abstract|neutral
+n-haste|haste|be urgent|verb|||haster, hastet, hastet|abstract|neutral
 n-slips|slips|tie|noun|n|slips||clothing|neutral
-n-utsette|utsette|to postpone|verb|||utsetter, utsatte, utsatt|function|neutral
+n-utsette|utsette|postpone|verb|||utsetter, utsatte, utsatt|function|neutral
 n-dress|dress|suit|noun|m|dresser||clothing|neutral
-n-foreslaa|foreslå|to suggest|verb|||foreslår, foreslo, foreslått|communication|neutral
+n-foreslaa|foreslå|suggest|verb|||foreslår, foreslo, foreslått|communication|neutral
 n-undertoey|undertøy|underwear|noun|n|||clothing|neutral
 n-pyjamas|pyjamas|pyjamas|noun|m|pyjamaser||clothing|neutral
-n-anbefale|anbefale|to recommend|verb|||anbefaler, anbefalte, anbefalt|communication|neutral
+n-anbefale|anbefale|recommend|verb|||anbefaler, anbefalte, anbefalt|communication|neutral
 n-badedrakt|badedrakt|swimsuit|noun|f|badedrakter||clothing|neutral
-n-advare|advare|to warn|verb|||advarer, advarte, advart|communication|neutral
+n-advare|advare|warn|verb|||advarer, advarte, advart|communication|neutral
 n-lomme|lomme|pocket|noun|f|lommer||clothing|neutral
 n-knapp|knapp|button|noun|m|knapper||clothing|neutral
-n-true|true|to threaten|verb|||truer, truet, truet|communication|neutral
+n-true|true|threaten|verb|||truer, truet, truet|communication|neutral
 n-glidelaas|glidelås|zipper|noun|m|glidelåser||clothing|neutral
-n-overtale|overtale|to persuade|verb|||overtaler, overtalte, overtalt|communication|neutral
+n-overtale|overtale|persuade|verb|||overtaler, overtalte, overtalt|communication|neutral
 n-veske|veske|bag|noun|f|vesker||clothing|neutral
-n-overbevise|overbevise|to convince|verb|||overbeviser, overbeviste, overbevist|communication|neutral
+n-overbevise|overbevise|convince|verb|||overbeviser, overbeviste, overbevist|communication|neutral
 n-sekk|sekk|backpack|noun|m|sekker||clothing|neutral
 n-koffert|koffert|suitcase|noun|m|kofferter||travel|neutral
-n-diskutere|diskutere|to discuss|verb|||diskuterer, diskuterte, diskutert|communication|neutral
+n-diskutere|diskutere|discuss|verb|||diskuterer, diskuterte, diskutert|communication|neutral
 n-paraply|paraply|umbrella|noun|m|paraplyer||everyday|neutral
-n-gjette|gjette|to guess|verb|||gjetter, gjettet, gjettet|function|colloquial
+n-gjette|gjette|guess|verb|||gjetter, gjettet, gjettet|function|colloquial
 n-briller|briller|glasses|noun||briller||clothing|neutral
 n-ring|ring|ring|noun|m|ringer||clothing|neutral
-n-lure|lure|to wonder / to trick|verb|||lurer, lurte, lurt|function|colloquial
+n-lure|lure|wonder / trick|verb|||lurer, lurte, lurt|function|colloquial
 n-smykke|smykke|jewellery|noun|n|smykker||clothing|neutral
-n-trives|trives|to thrive / to feel at home|verb|||trives, trivdes, trivdes|feelings|neutral
+n-trives|trives|thrive / feel at home|verb|||trives, trivdes, trivdes|feelings|neutral
 n-stoff|stoff|fabric|noun|n|stoffer||clothing|neutral
-n-foretrekke|foretrekke|to prefer|verb|||foretrekker, foretrakk, foretrukket|abstract|neutral
+n-foretrekke|foretrekke|prefer|verb|||foretrekker, foretrakk, foretrukket|abstract|neutral
 n-ull|ull|wool|noun|f|||clothing|neutral
 n-bomull|bomull|cotton|noun|f|||clothing|neutral
 n-rask|rask|fast / quick|adj||||function|neutral
@@ -1707,52 +1707,52 @@ n-laan|lån|loan|noun|n|lån||money|neutral
 n-annen|annen|other / another|pron||||function|neutral
 n-vare|vare|product / goods|noun|f|varer||shopping|neutral
 n-handel|handel|trade / commerce|noun|m|handler||money|neutral
-n-bevege|bevege|to move|verb|||beveger, beveget, beveget|function|neutral
+n-bevege|bevege|move|verb|||beveger, beveget, beveget|function|neutral
 n-mobil|mobil|mobile phone|noun|m|mobiler||technology|colloquial
-n-binde|binde|to tie / to bind|verb|||binder, bandt, bundet|function|neutral
+n-binde|binde|tie / bind|verb|||binder, bandt, bundet|function|neutral
 n-datamaskin|datamaskin|computer|noun|m|datamaskiner||technology|neutral
 n-data|data|data|noun|n|data||technology|neutral
-n-feste|feste|to attach / to fasten|verb|||fester, festet, festet|function|neutral
+n-feste|feste|attach / fasten|verb|||fester, festet, festet|function|neutral
 n-internett|internett|internet|noun|n|internett||technology|neutral
-n-blande|blande|to mix|verb|||blander, blandet, blandet|function|neutral
+n-blande|blande|mix|verb|||blander, blandet, blandet|function|neutral
 n-nett|nett|network / net|noun|n|nett||technology|neutral
-n-skille|skille|to separate|verb|||skiller, skilte, skilt|function|neutral
+n-skille|skille|separate|verb|||skiller, skilte, skilt|function|neutral
 n-skjerm|skjerm|screen|noun|m|skjermer||technology|neutral
 n-tastatur|tastatur|keyboard|noun|n|tastaturer||technology|neutral
-n-skaffe|skaffe|to obtain / to provide|verb|||skaffer, skaffet, skaffet|function|neutral
+n-skaffe|skaffe|obtain / provide|verb|||skaffer, skaffet, skaffet|function|neutral
 n-app|app|app|noun|m|apper||technology|colloquial
-n-riste|riste|to shake|verb|||rister, ristet, ristet|function|neutral
+n-riste|riste|shake|verb|||rister, ristet, ristet|function|neutral
 n-program|program|program|noun|n|programmer||technology|neutral
 n-fil|fil|file|noun|f|filer||technology|neutral
-n-banke|banke|to knock|verb|||banker, banket, banket|function|neutral
+n-banke|banke|knock|verb|||banker, banket, banket|function|neutral
 n-passord|passord|password|noun|n|passord||technology|neutral
-n-spre|spre|to spread|verb|||sprer, spredte, spredt|function|neutral
+n-spre|spre|spread|verb|||sprer, spredte, spredt|function|neutral
 n-nettside|nettside|website|noun|f|nettsider||technology|neutral
-n-knytte|knytte|to tie / to knot|verb|||knytter, knyttet, knyttet|function|neutral
+n-knytte|knytte|tie / knot|verb|||knytter, knyttet, knyttet|function|neutral
 n-side|side|page / side|noun|f|sider||technology|neutral
 n-kamera|kamera|camera|noun|n|kameraer||technology|neutral
-n-orke|orke|to manage / to be bothered|verb|||orker, orket, orket|feelings|colloquial
+n-orke|orke|manage / be bothered|verb|||orker, orket, orket|feelings|colloquial
 n-video|video|video|noun|m|videoer||technology|neutral
-n-skjule|skjule|to conceal|verb|||skjuler, skjulte, skjult|function|neutral
+n-skjule|skjule|conceal|verb|||skjuler, skjulte, skjult|function|neutral
 n-musikk|musikk|music|noun|m|||sport|neutral
 n-fjernsyn|fjernsyn|television|noun|n|fjernsyn||technology|neutral
-n-jage|jage|to chase|verb|||jager, jaget, jaget|function|neutral
+n-jage|jage|chase|verb|||jager, jaget, jaget|function|neutral
 n-avis|avis|newspaper|noun|f|aviser||communication|neutral
-n-flykte|flykte|to flee|verb|||flykter, flyktet, flyktet|function|neutral
+n-flykte|flykte|flee|verb|||flykter, flyktet, flyktet|function|neutral
 n-nyhet|nyhet|news|noun|f|nyheter||communication|neutral
-n-godta|godta|to accept|verb|||godtar, godtok, godtatt|function|neutral
+n-godta|godta|accept|verb|||godtar, godtok, godtatt|function|neutral
 n-batteri|batteri|battery|noun|n|batterier||technology|neutral
 n-soek|søk|search|noun|n|søk||technology|neutral
-n-anta|anta|to assume|verb|||antar, antok, antatt|abstract|neutral
+n-anta|anta|assume|verb|||antar, antok, antatt|abstract|neutral
 n-sport|sport|sport|noun|m|||sport|neutral
-n-tvile|tvile|to doubt|verb|||tviler, tvilte, tvilt|feelings|neutral
+n-tvile|tvile|doubt|verb|||tviler, tvilte, tvilt|feelings|neutral
 n-idrett|idrett|sport / athletics|noun|m|idretter||sport|neutral
-n-vende|vende|to turn|verb|||vender, vendte, vendt|function|neutral
+n-vende|vende|turn|verb|||vender, vendte, vendt|function|neutral
 n-kamp|kamp|match / fight|noun|m|kamper||sport|neutral
 n-ball|ball|ball|noun|m|baller||sport|neutral
-n-stikke|stikke|to stab / to poke|verb|||stikker, stakk, stukket|function|neutral
+n-stikke|stikke|stab / poke|verb|||stikker, stakk, stukket|function|neutral
 n-fotball|fotball|football|noun|m|fotballer||sport|neutral
-n-knuse|knuse|to smash|verb|||knuser, knuste, knust|function|neutral
+n-knuse|knuse|smash|verb|||knuser, knuste, knust|function|neutral
 n-spiller|spiller|player|noun|m|spillere||sport|neutral
 n-trener|trener|coach|noun|m|trenere||sport|neutral
 n-fuktig|fuktig|damp / humid|adj||||weather|neutral
@@ -1764,10 +1764,10 @@ n-seier|seier|victory|noun|m|seirer||sport|neutral
 n-spill|spill|game|noun|n|spill||sport|neutral
 n-skjoer|skjør|fragile|adj||||function|neutral
 n-leketoey|leketøy|toy|noun|n|leketøy||sport|neutral
-n-nyse|nyse|to sneeze|verb|||nyser, nyste, nyst|body,health|neutral
+n-nyse|nyse|sneeze|verb|||nyser, nyste, nyst|body,health|neutral
 n-hobby|hobby|hobby|noun|m|hobbyer||sport|neutral
 n-fritid|fritid|free time|noun|f|||sport|neutral
-n-behoeve|behøve|to need|verb|||behøver, behøvde, behøvd|function|formal
+n-behoeve|behøve|need|verb|||behøver, behøvde, behøvd|function|formal
 n-konsert|konsert|concert|noun|m|konserter||sport|neutral
 n-pirkete|pirkete|fussy|adj||||feelings|colloquial
 n-film|film|film / movie|noun|m|filmer||sport|neutral
@@ -1779,164 +1779,164 @@ n-instrument|instrument|instrument|noun|n|instrumenter||sport|neutral
 n-real|real|decent|adj||||people,feelings|colloquial
 n-gitar|gitar|guitar|noun|m|gitarer||sport|neutral
 n-piano|piano|piano|noun|n|pianoer||sport|neutral
-n-avvente|avvente|to await|verb|||avventer, avventet, avventet|function|formal
+n-avvente|avvente|await|verb|||avventer, avventet, avventet|function|formal
 n-stat|stat|state|noun|m|stater||society|formal
 n-goey|gøy|fun|adj||||feelings|colloquial
 n-regjering|regjering|government|noun|f|regjeringer||society|formal
-n-frakte|frakte|to transport|verb|||frakter, fraktet, fraktet|travel,work|neutral
+n-frakte|frakte|transport|verb|||frakter, fraktet, fraktet|travel,work|neutral
 n-president|president|president|noun|m|presidenter||society|formal
 n-minister|minister|minister|noun|m|ministre||society|formal
-n-skrike|skrike|to scream|verb|||skriker, skrek, skreket|communication|neutral
+n-skrike|skrike|scream|verb|||skriker, skrek, skreket|communication|neutral
 n-politiker|politiker|politician|noun|m|politikere||society|neutral
-n-mumle|mumle|to mumble|verb|||mumler, mumlet, mumlet|communication|neutral
+n-mumle|mumle|mumble|verb|||mumler, mumlet, mumlet|communication|neutral
 n-parti|parti|party (political)|noun|n|partier||society|formal
-n-skravle|skravle|to chat|verb|||skravler, skravlet, skravlet|communication|colloquial
+n-skravle|skravle|chat|verb|||skravler, skravlet, skravlet|communication|colloquial
 n-valg|valg|election / choice|noun|n|valg||society|neutral
 n-lov|lov|law|noun|f|lover||society|formal
-n-besvare|besvare|to answer|verb|||besvarer, besvarte, besvart|communication|formal
+n-besvare|besvare|answer|verb|||besvarer, besvarte, besvart|communication|formal
 n-rettighet|rettighet|right (legal)|noun|f|rettigheter||society|formal
-n-berette|berette|to recount|verb|||beretter, berettet, berettet|communication|formal
+n-berette|berette|recount|verb|||beretter, berettet, berettet|communication|formal
 n-dom|dom|verdict / judgement|noun|m|dommer||society|formal
 n-dommer|dommer|judge / referee|noun|m|dommere||society|neutral
-n-forhoere|forhøre|to interrogate|verb|||forhører, forhørte, forhørt|communication|formal
+n-forhoere|forhøre|interrogate|verb|||forhører, forhørte, forhørt|communication|formal
 n-straff|straff|punishment|noun|m|straffer||society|formal
-n-samtykke|samtykke|to consent|verb|||samtykker, samtykket, samtykket|communication|formal
+n-samtykke|samtykke|consent|verb|||samtykker, samtykket, samtykket|communication|formal
 n-fengsel|fengsel|prison|noun|n|fengsler||society|neutral
-n-signalisere|signalisere|to signal|verb|||signaliserer, signaliserte, signalisert|communication|formal
+n-signalisere|signalisere|signal|verb|||signaliserer, signaliserte, signalisert|communication|formal
 n-kommune|kommune|municipality|noun|m|kommuner||society|neutral
 n-raadhus|rådhus|town hall|noun|n|rådhus||city|neutral
-n-glane|glane|to gawk|verb|||glaner, glante, glant|communication|colloquial
+n-glane|glane|gawk|verb|||glaner, glante, glant|communication|colloquial
 n-folkebibliotek|folkebibliotek|public library|noun|n|folkebiblioteker||city|neutral
-n-skotte|skotte|to glance|verb|||skotter, skottet, skottet|communication|colloquial
+n-skotte|skotte|glance|verb|||skotter, skottet, skottet|communication|colloquial
 n-skattekontor|skattekontor|tax office|noun|n|skattekontorer||society|formal
 n-vitenskap|vitenskap|science|noun|m|vitenskaper||abstract|formal
-n-tulle|tulle|to fool around|verb|||tuller, tullet, tullet|feelings|colloquial
+n-tulle|tulle|fool around|verb|||tuller, tullet, tullet|feelings|colloquial
 n-forskning|forskning|research|noun|f|||abstract|formal
-n-fnise|fnise|to giggle|verb|||fniser, fniste, fnist|feelings|neutral
+n-fnise|fnise|giggle|verb|||fniser, fniste, fnist|feelings|neutral
 n-energi|energi|energy|noun|m|energier||abstract|neutral
-n-hulke|hulke|to sob|verb|||hulker, hulket, hulket|feelings|neutral
+n-hulke|hulke|sob|verb|||hulker, hulket, hulket|feelings|neutral
 n-kraft|kraft|force / power|noun|f|krefter||abstract|neutral
 n-system|system|system|noun|n|systemer||abstract|neutral
-n-flire|flire|to grin|verb|||flirer, flirte, flirt|feelings|colloquial
+n-flire|flire|grin|verb|||flirer, flirte, flirt|feelings|colloquial
 n-metode|metode|method|noun|m|metoder||abstract|formal
-n-forguder|forguder|to adore|verb|||forguder, forgudet, forgudet|feelings|neutral
+n-forguder|forguder|adore|verb|||forguder, forgudet, forgudet|feelings|neutral
 n-teori|teori|theory|noun|m|teorier||abstract|formal
 n-id|idé|idea|noun|m|ideer||abstract|neutral
-n-avsky|avsky|to detest|verb|||avskyr, avskydde, avskydd|feelings|formal
+n-avsky|avsky|detest|verb|||avskyr, avskydde, avskydd|feelings|formal
 n-aarsak|årsak|cause|noun|f|årsaker||abstract|neutral
-n-grue|grue|to dread|verb|||gruer, gruet, gruet|feelings|neutral
+n-grue|grue|dread|verb|||gruer, gruet, gruet|feelings|neutral
 n-foelge|følge|consequence / result|noun|m|følger||abstract|neutral
-n-beroere|berøre|to touch|verb|||berører, berørte, berørt|feelings|neutral
+n-beroere|berøre|touch|verb|||berører, berørte, berørt|feelings|neutral
 n-resultat|resultat|result|noun|n|resultater||abstract|neutral
 n-eksempel|eksempel|example|noun|n|eksempler||abstract|neutral
-n-oppmuntre|oppmuntre|to encourage|verb|||oppmuntrer, oppmuntret, oppmuntret|feelings|neutral
+n-oppmuntre|oppmuntre|encourage|verb|||oppmuntrer, oppmuntret, oppmuntret|feelings|neutral
 n-problem|problem|problem|noun|n|problemer||abstract|neutral
-n-forskrekke|forskrekke|to startle|verb|||forskrekker, forskrekket, forskrekket|feelings|neutral
+n-forskrekke|forskrekke|startle|verb|||forskrekker, forskrekket, forskrekket|feelings|neutral
 n-loesning|løsning|solution|noun|f|løsninger||abstract|neutral
-n-bistaa|bistå|to assist|verb|||bistår, bisto, bistått|work,society|formal
+n-bistaa|bistå|assist|verb|||bistår, bisto, bistått|work,society|formal
 n-sak|sak|case / matter|noun|f|saker||abstract|neutral
 n-emne|emne|topic|noun|n|emner||abstract|neutral
-n-ivareta|ivareta|to look after|verb|||ivaretar, ivaretok, ivaretatt|work|formal
+n-ivareta|ivareta|look after|verb|||ivaretar, ivaretok, ivaretatt|work|formal
 n-form|form|form / shape|noun|f|former||abstract|neutral
-n-anskaffe|anskaffe|to acquire|verb|||anskaffer, anskaffet, anskaffet|work,shopping|formal
+n-anskaffe|anskaffe|acquire|verb|||anskaffer, anskaffet, anskaffet|work,shopping|formal
 n-mulighet|mulighet|possibility|noun|f|muligheter||abstract|neutral
 n-forskjell|forskjell|difference|noun|m|forskjeller||abstract|neutral
-n-utvelge|utvelge|to select|verb|||utvelger, utvalgte, utvalgt|function|formal
+n-utvelge|utvelge|select|verb|||utvelger, utvalgte, utvalgt|function|formal
 n-situasjon|situasjon|situation|noun|m|situasjoner||abstract|neutral
-n-teste|teste|to test|verb|||tester, testet, testet|function|neutral
+n-teste|teste|test|verb|||tester, testet, testet|function|neutral
 n-tilstand|tilstand|state / condition|noun|m|tilstander||abstract|formal
-n-benytte|benytte|to use|verb|||benytter, benyttet, benyttet|function|formal
+n-benytte|benytte|use|verb|||benytter, benyttet, benyttet|function|formal
 n-endring|endring|change|noun|f|endringer||abstract|neutral
 n-gangsti|gangsti|footpath|noun|m|gangstier||travel,city,nature|neutral
-n-tilberede|tilberede|to prepare food|verb|||tilbereder, tilberedte, tilberedt|food|formal
+n-tilberede|tilberede|prepare food|verb|||tilbereder, tilberedte, tilberedt|food|formal
 n-gardin|gardin|curtain|noun|n|gardiner||home|neutral
-n-fordampe|fordampe|to evaporate|verb|||fordamper, fordampet, fordampet|nature|formal
+n-fordampe|fordampe|evaporate|verb|||fordamper, fordampet, fordampet|nature|formal
 n-frist|frist|deadline|noun|m|frister||time,work|neutral
 n-stol|stol|chair|noun|m|stoler||home|neutral
-n-grille|grille|to grill|verb|||griller, grillet, grillet|food|neutral
+n-grille|grille|grill|verb|||griller, grillet, grillet|food|neutral
 n-pledd|pledd|blanket|noun|n|pledd||home|neutral
-n-kjevle|kjevle|to roll out dough|verb|||kjevler, kjevlet, kjevlet|food|neutral
+n-kjevle|kjevle|roll out dough|verb|||kjevler, kjevlet, kjevlet|food|neutral
 n-serviett|serviett|napkin|noun|m|servietter||home,food|neutral
-n-hakke|hakke|to chop|verb|||hakker, hakket, hakket|food|neutral
+n-hakke|hakke|chop|verb|||hakker, hakket, hakket|food|neutral
 n-bestikk|bestikk|cutlery|noun|n|bestikk||home,food|neutral
 n-stekepanne|stekepanne|frying pan|noun|f|stekepanner||home,food|neutral
-n-proevesmake|prøvesmake|to taste|verb|||prøvesmaker, prøvesmakte, prøvesmakt|food|neutral
+n-proevesmake|prøvesmake|taste|verb|||prøvesmaker, prøvesmakte, prøvesmakt|food|neutral
 n-kasserolle|kasserolle|saucepan|noun|f|kasseroller||home,food|neutral
-n-toemme|tømme|to empty|verb|||tømmer, tømte, tømt|home|neutral
+n-toemme|tømme|empty|verb|||tømmer, tømte, tømt|home|neutral
 n-vaskemaskin|vaskemaskin|washing machine|noun|m|vaskemaskiner||home|neutral
-n-etterfylle|etterfylle|to refill|verb|||etterfyller, etterfylte, etterfylt|home|neutral
+n-etterfylle|etterfylle|refill|verb|||etterfyller, etterfylte, etterfylt|home|neutral
 n-stoevsuger|støvsuger|vacuum cleaner|noun|m|støvsugere||home|neutral
 n-feiekost|feiekost|broom|noun|m|feiekoster||home|neutral
-n-skure|skure|to scrub|verb|||skurer, skurte, skurt|home|neutral
+n-skure|skure|scrub|verb|||skurer, skurte, skurt|home|neutral
 n-soeppelboette|søppelbøtte|trash can|noun|f|søppelbøtter||home|neutral
-n-polere|polere|to polish|verb|||polerer, polerte, polert|home|neutral
+n-polere|polere|polish|verb|||polerer, polerte, polert|home|neutral
 n-soeppel|søppel|garbage|noun|n|||home|neutral
 n-skuffeseksjon|skuffeseksjon|drawer|noun|m|skuffeseksjoner||home|neutral
-n-sortere|sortere|to sort|verb|||sorterer, sorterte, sortert|home|neutral
+n-sortere|sortere|sort|verb|||sorterer, sorterte, sortert|home|neutral
 n-haandduk|håndduk|hand cloth|noun|m|håndduker||home|neutral
-n-opphenge|opphenge|to hang up|verb|||opphenger, opphengte, opphengt|home|formal
+n-opphenge|opphenge|hang up|verb|||opphenger, opphengte, opphengt|home|formal
 n-saks|saks|scissors|noun|f|sakser||home,work|neutral
-n-knyte|knyte|to tie|verb|||knyter, knytte, knytt|function|neutral
+n-knyte|knyte|tie|verb|||knyter, knytte, knytt|function|neutral
 n-lim|lim|glue|noun|n|||home,work|neutral
 n-sytraad|sytråd|sewing thread|noun|m|sytråder||home,clothing|neutral
-n-montere|montere|to mount|verb|||monterer, monterte, montert|work|formal
+n-montere|montere|mount|verb|||monterer, monterte, montert|work|formal
 n-naal|nål|needle|noun|f|nåler||home,clothing|neutral
-n-stramme|stramme|to tighten|verb|||strammer, strammet, strammet|work|neutral
+n-stramme|stramme|tighten|verb|||strammer, strammet, strammet|work|neutral
 n-trykknapp|trykknapp|button|noun|m|trykknapper||clothing|neutral
 n-skinnhanske|skinnhanske|leather glove|noun|m|skinnhansker||clothing|neutral
-n-loesne|løsne|to loosen|verb|||løsner, løsnet, løsnet|function|neutral
+n-loesne|løsne|loosen|verb|||løsner, løsnet, løsnet|function|neutral
 n-ullvott|ullvott|wool mitten|noun|m|ullvotter||clothing|neutral
-n-dunke|dunke|to thump|verb|||dunker, dunket, dunket|function|colloquial
+n-dunke|dunke|thump|verb|||dunker, dunket, dunket|function|colloquial
 n-ullsokk|ullsokk|wool sock|noun|m|ullsokker||clothing|neutral
-n-slite|slite|to wear out|verb|||sliter, slet, slitt|function|neutral
+n-slite|slite|wear out|verb|||sliter, slet, slitt|function|neutral
 n-gummistoevel|gummistøvel|rubber boot|noun|m|gummistøvler||clothing|neutral
 n-sandal|sandal|sandal|noun|m|sandaler||clothing|neutral
-n-krumme|krumme|to curve|verb|||krummer, krummet, krummet|function|neutral
+n-krumme|krumme|curve|verb|||krummer, krummet, krummet|function|neutral
 n-toeffel|tøffel|slipper|noun|m|tøfler||clothing,home|neutral
-n-slepe|slepe|to tow|verb|||sleper, slepte, slept|function,travel|neutral
+n-slepe|slepe|tow|verb|||sleper, slepte, slept|function,travel|neutral
 n-shorts|shorts|shorts|noun|m|shorts||clothing|colloquial
 n-vest|vest|vest|noun|m|vester||clothing|neutral
-n-skubbe|skubbe|to push|verb|||skubber, skubbet, skubbet|function|colloquial
+n-skubbe|skubbe|push|verb|||skubber, skubbet, skubbet|function|colloquial
 n-bluse|bluse|blouse|noun|f|bluser||clothing|neutral
-n-fatte|fatte|to grasp|verb|||fatter, fattet, fattet|function|neutral
+n-fatte|fatte|grasp|verb|||fatter, fattet, fattet|function|neutral
 n-singlet|singlet|undershirt|noun|m|singleter||clothing|colloquial
-n-sleppe|sleppe|to release|verb|||slepper, slapp, sloppet|function|colloquial
+n-sleppe|sleppe|release|verb|||slepper, slapp, sloppet|function|colloquial
 n-truse|truse|underpants|noun|f|truser||clothing|neutral
 n-bh|bh|bra|noun|m|bh-er||clothing|colloquial
-n-slenge|slenge|to fling|verb|||slenger, slengte, slengt|function|colloquial
+n-slenge|slenge|fling|verb|||slenger, slengte, slengt|function|colloquial
 n-knapphull|knapphull|buttonhole|noun|n|knapphull||clothing|neutral
-n-fakke|fakke|to catch|verb|||fakker, fakket, fakket|function|colloquial
+n-fakke|fakke|catch|verb|||fakker, fakket, fakket|function|colloquial
 n-lommebok|lommebok|wallet|noun|f|lommebøker||money,shopping|neutral
-n-forfoelge|forfølge|to pursue|verb|||forfølger, forfulgte, forfulgt|function|formal
+n-forfoelge|forfølge|pursue|verb|||forfølger, forfulgte, forfulgt|function|formal
 n-mynt|mynt|coin|noun|m|mynter||money|neutral
 n-seddel|seddel|banknote|noun|m|sedler||money|neutral
-n-ramle|ramle|to tumble|verb|||ramler, ramlet, ramlet|function|colloquial
+n-ramle|ramle|tumble|verb|||ramler, ramlet, ramlet|function|colloquial
 n-bankkort|bankkort|bank card|noun|n|bankkort||money,shopping|neutral
-n-skli|skli|to slide|verb|||sklir, skled, sklidd|function|neutral
+n-skli|skli|slide|verb|||sklir, skled, sklidd|function|neutral
 n-kostnad|kostnad|cost|noun|m|kostnader||money|neutral
 n-kakao|kakao|cocoa|noun|m|||food|neutral
-n-aale|åle|to crawl|verb|||åler, ålte, ålt|function|neutral
+n-aale|åle|crawl|verb|||åler, ålte, ålt|function|neutral
 n-appelsinjuice|appelsinjuice|orange juice|noun|m|||food|colloquial
-n-klyve|klyve|to climb|verb|||klyver, kløv, kløvet|sport,nature|neutral
+n-klyve|klyve|climb|verb|||klyver, kløv, kløvet|sport,nature|neutral
 n-drikkevann|drikkevann|drinking water|noun|n|||food|neutral
-n-sprette|sprette|to bounce|verb|||spretter, sprettet, sprettet|sport|colloquial
+n-sprette|sprette|bounce|verb|||spretter, sprettet, sprettet|sport|colloquial
 n-margarin|margarin|margarine|noun|n|||food|neutral
 n-yoghurt|yoghurt|yogurt|noun|m|yoghurter||food|neutral
-n-jogge|jogge|to jog|verb|||jogger, jogget, jogget|sport|colloquial
+n-jogge|jogge|jog|verb|||jogger, jogget, jogget|sport|colloquial
 n-kesam|kesam|quark|noun|m|||food|neutral
-n-bade|bade|to bathe|verb|||bader, badet, badet|sport,nature|neutral
+n-bade|bade|bathe|verb|||bader, badet, badet|sport,nature|neutral
 n-floete|fløte|cream|noun|m|||food|neutral
 n-hvetemel|hvetemel|wheat flour|noun|n|||food|neutral
-n-traa|trå|to pedal|verb|||trår, trådde, trådd|sport,travel|neutral
+n-traa|trå|pedal|verb|||trår, trådde, trådd|sport,travel|neutral
 n-gjaer|gjær|yeast|noun|m|||food|neutral
-n-padle|padle|to paddle|verb|||padler, padlet, padlet|sport,travel|neutral
+n-padle|padle|paddle|verb|||padler, padlet, padlet|sport,travel|neutral
 n-deig|deig|dough|noun|m|deiger||food|neutral
-n-rate|rate|to steer|verb|||styrer, styrte, styrt|travel|neutral
+n-rate|rate|steer|verb|||styrer, styrte, styrt|travel|neutral
 n-bolle|bolle|bun|noun|m|boller||food|neutral
 n-kavring|kavring|rusk|noun|m|kavringer||food|neutral
-n-stanse|stanse|to stop|verb|||stanser, stanset, stanset|travel|neutral
+n-stanse|stanse|stop|verb|||stanser, stanset, stanset|travel|neutral
 n-knekkebroed|knekkebrød|crispbread|noun|n|knekkebrød||food|neutral
-n-pakke|pakke|to pack|verb|||pakker, pakket, pakket|travel|neutral
+n-pakke|pakke|pack|verb|||pakker, pakket, pakket|travel|neutral
 n-broedskive|brødskive|slice of bread|noun|f|brødskiver||food|neutral
 n-paalegg|pålegg|sandwich topping|noun|n|pålegg||food|neutral
 n-uttoerket|uttørket|parched|adj||||nature,weather|neutral
